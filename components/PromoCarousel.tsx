@@ -79,13 +79,11 @@ export function PromoCarousel({ slides }: { slides: Promo[] }) {
               // Promo.image in mock-data.ts) — a big glossy emoji reads as a
               // dimensional "3D" icon on both iOS and Android without needing
               // an icon asset, above the scrim so it stays bright rather than
-              // getting dimmed like background photo content. Always on the
-              // right: the text block above is a plain (non-mirrored) View
-              // pinned left regardless of language — see the module-level
-              // note on why this carousel doesn't mirror — so the icon has
-              // to stay fixed opposite it, not flip with isRTL, or the two
-              // collide in RTL. Drops away automatically once promo.image
-              // is set.
+              // getting dimmed like background photo content. Fixed on the
+              // right regardless of language, matching where the title sits
+              // in LTR — RTL slides put the title on the opposite side (see
+              // below) so this never collides with it. Drops away
+              // automatically once promo.image is set.
               <View
                 pointerEvents="none"
                 style={{
@@ -122,7 +120,7 @@ export function PromoCarousel({ slides }: { slides: Promo[] }) {
             <View style={{ flex: 1, padding: space.lg, justifyContent: 'space-between' }}>
               <View
                 style={{
-                  alignSelf: 'flex-start',
+                  alignSelf: isRTL ? 'flex-end' : 'flex-start',
                   backgroundColor: 'rgba(255,255,255,0.22)',
                   borderRadius: radius.pill,
                   paddingHorizontal: 10,
@@ -133,18 +131,23 @@ export function PromoCarousel({ slides }: { slides: Promo[] }) {
                 </AppText>
               </View>
 
-              <View style={{ gap: 10 }}>
+              {/* Title reads on the same side as the badge (right in Arabic,
+                  left in English) since it's text and follows reading
+                  direction. The CTA pill is deliberately pinned to the LEFT
+                  in both languages — it's an action, not text, and sitting
+                  opposite the title reads as "swipe/tap over here" instead
+                  of stacking directly under it. */}
+              <View style={{ gap: 10, alignItems: isRTL ? 'flex-end' : 'flex-start' }}>
                 <AppText variant="h2" color={colors.white} style={{ maxWidth: '62%' }}>
                   {lang === 'ar' ? promo.titleAr : promo.titleEn}
                 </AppText>
                 <View
                   style={{
                     alignSelf: 'flex-start',
-                    // The pill's own content order DOES follow reading
-                    // direction (unlike the fixed-left text block above) —
-                    // an arrow after the word in Arabic points the wrong way
-                    // since Arabic reads right-to-left, so the arrow belongs
-                    // before (start of) the word, not after.
+                    // The pill's own content order still follows reading
+                    // direction — an arrow after the word in Arabic points
+                    // the wrong way since Arabic reads right-to-left, so the
+                    // arrow belongs before (start of) the word, not after.
                     flexDirection: isRTL ? 'row-reverse' : 'row',
                     alignItems: 'center',
                     gap: 4,

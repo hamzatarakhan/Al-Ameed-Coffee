@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
@@ -11,6 +11,7 @@ import { useFonts as usePlexMonoFonts, IBMPlexMono_500Medium } from '@expo-googl
 import { LanguageProvider } from '@/lib/i18n';
 import { ThemeModeProvider, useThemeMode } from '@/lib/theme-mode';
 import { NotificationsProvider } from '@/lib/notifications-store';
+import { AnimatedSplash } from '@/components/AnimatedSplash';
 import { colors } from '@/lib/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -20,10 +21,14 @@ export default function RootLayout() {
   const [f2] = useMulishFonts({ Mulish_400Regular, Mulish_500Medium, Mulish_700Bold });
   const [f3] = useCairoFonts({ Cairo_400Regular, Cairo_500Medium, Cairo_600SemiBold, Cairo_700Bold });
   const [f4] = usePlexMonoFonts({ IBMPlexMono_500Medium });
+  const [showSplash, setShowSplash] = useState(true);
 
   const fontsLoaded = f1 && f2 && f3 && f4;
 
   useEffect(() => {
+    // Hand off from the static native splash to the animated JS one the
+    // moment fonts are ready — AnimatedSplash renders on the very next
+    // frame, so there's no bare-background flash in between.
     if (fontsLoaded) SplashScreen.hideAsync().catch(() => {});
   }, [fontsLoaded]);
 
@@ -37,6 +42,7 @@ export default function RootLayout() {
               shouldn't reset just because dark mode was toggled. */}
           <NotificationsProvider>
             <AppShell />
+            {showSplash ? <AnimatedSplash onFinish={() => setShowSplash(false)} /> : null}
           </NotificationsProvider>
         </LanguageProvider>
       </ThemeModeProvider>
