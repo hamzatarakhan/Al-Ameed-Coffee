@@ -10,6 +10,8 @@ import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useThemeMode } from '@/lib/theme-mode';
 import { useTabBarInset } from '@/lib/useTabBarInset';
+import { useAuth } from '@/lib/auth-store';
+import { confirmAction } from '@/lib/confirm';
 
 const BRANCH_PHONE = '+962 6 560 0000';
 const WEBSITE = 'https://alameedcoffee.com';
@@ -20,6 +22,11 @@ export default function AccountScreen() {
   const tabBarInset = useTabBarInset();
   const router = useRouter();
   const { isDark, toggle: toggleDark } = useThemeMode();
+  const auth = useAuth();
+
+  const signOut = () => {
+    confirmAction(t('account.signOut'), t('account.signOutConfirm'), t('account.signOut'), () => auth.signOut(), lang === 'ar' ? 'إغلاق' : 'Cancel', true);
+  };
 
   const invite = () => {
     Share.share({
@@ -31,15 +38,7 @@ export default function AccountScreen() {
   };
 
   const contactUs = () => {
-    Alert.alert(
-      t('account.contactUs'),
-      BRANCH_PHONE,
-      [
-        { text: t('branchDetail.call'), onPress: () => Linking.openURL(`tel:${BRANCH_PHONE}`) },
-        { text: lang === 'ar' ? 'إغلاق' : 'Close', style: 'cancel' },
-      ],
-      { cancelable: true },
-    );
+    confirmAction(t('account.contactUs'), BRANCH_PHONE, t('branchDetail.call'), () => Linking.openURL(`tel:${BRANCH_PHONE}`), lang === 'ar' ? 'إغلاق' : 'Close');
   };
 
   const rateApp = () => {
@@ -74,6 +73,26 @@ export default function AccountScreen() {
         <Item icon="call-outline" label={t('account.contactUs')} onPress={contactUs} />
         <Item icon="link-outline" label={t('account.connectWithUs')} onPress={() => Linking.openURL(WEBSITE)} />
         <Item icon="heart-outline" label={t('account.rateApp')} onPress={rateApp} />
+      </Section>
+
+      <Section title={t('account.sectionLegal')}>
+        <Item icon="document-text-outline" label={t('account.terms')} onPress={() => router.push('/legal/terms')} />
+        <Item icon="shield-checkmark-outline" label={t('account.privacy')} onPress={() => router.push('/legal/privacy')} />
+      </Section>
+
+      <Section title={t('account.sectionSession')}>
+        <Item icon="log-out-outline" label={t('account.signOut')} onPress={signOut} />
+        <Pressable onPress={() => router.push('/account/delete')}>
+          <Row style={{ alignItems: 'center', justifyContent: 'space-between', paddingVertical: space.md }}>
+            <Row style={{ alignItems: 'center', gap: space.md }}>
+              <Ionicons name="trash-outline" size={18} color={colors.critical} />
+              <AppText variant="body" color={colors.critical}>
+                {t('account.deleteAccount')}
+              </AppText>
+            </Row>
+            <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={16} color={colors.critical} />
+          </Row>
+        </Pressable>
       </Section>
 
       <AppText variant="label" color={colors.textMuted} align="center" style={{ marginTop: space.xl }}>

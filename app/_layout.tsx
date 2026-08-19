@@ -11,6 +11,8 @@ import { useFonts as usePlexMonoFonts, IBMPlexMono_500Medium } from '@expo-googl
 import { LanguageProvider } from '@/lib/i18n';
 import { ThemeModeProvider, useThemeMode } from '@/lib/theme-mode';
 import { NotificationsProvider } from '@/lib/notifications-store';
+import { AuthProvider, useAuth } from '@/lib/auth-store';
+import { ProfileProvider } from '@/lib/profile-store';
 import { AnimatedSplash } from '@/components/AnimatedSplash';
 import { colors } from '@/lib/theme';
 
@@ -38,12 +40,17 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <ThemeModeProvider>
         <LanguageProvider>
-          {/* Outside AppShell's keyed Stack on purpose — read/unread state
-              shouldn't reset just because dark mode was toggled. */}
-          <NotificationsProvider>
-            <AppShell />
-            {showSplash ? <AnimatedSplash onFinish={() => setShowSplash(false)} /> : null}
-          </NotificationsProvider>
+          {/* Outside AppShell's keyed Stack on purpose — read/unread state,
+              session, and profile edits shouldn't reset just because dark
+              mode was toggled. */}
+          <AuthProvider>
+            <ProfileProvider>
+              <NotificationsProvider>
+                <AppShell />
+                {showSplash ? <AnimatedSplash onFinish={() => setShowSplash(false)} /> : null}
+              </NotificationsProvider>
+            </ProfileProvider>
+          </AuthProvider>
         </LanguageProvider>
       </ThemeModeProvider>
     </SafeAreaProvider>
@@ -52,6 +59,7 @@ export default function RootLayout() {
 
 function AppShell() {
   const { isDark } = useThemeMode();
+  const { isAuthenticated } = useAuth();
 
   // react-native-screens freezes/keeps-alive inactive tab screens for native
   // transition performance — they don't re-render just because an ancestor's
@@ -62,18 +70,39 @@ function AppShell() {
   // relying on a re-render reaching frozen siblings. Cost: toggling resets
   // navigation to the initial route — acceptable since the toggle only lives
   // on the Account screen to begin with.
+  //
+  // Auth gating, on the other hand, does NOT use that same swap-the-whole-
+  // <Stack> trick: on web the current URL is resolved against whichever
+  // screens are declared, and swapping to a Stack instance that doesn't
+  // declare a screen for "/" made React Navigation fall back to matching
+  // "/" against the full file-based route table anyway — landing on the
+  // tabs even while `isAuthenticated` was correctly false. `Stack.Protected`
+  // is the API built for this: one Stack declares every screen (so URL
+  // matching always has a real target), and each guard just hides/redirects
+  // within it.
   return (
     <>
       <Stack key={isDark ? 'dark' : 'light'} screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="my-points" options={{ presentation: 'card' }} />
-        <Stack.Screen name="redeemed-rewards" options={{ presentation: 'card' }} />
-        <Stack.Screen name="notifications" options={{ presentation: 'card' }} />
-        <Stack.Screen name="notification/[id]" options={{ presentation: 'card' }} />
-        <Stack.Screen name="branches/index" options={{ presentation: 'card' }} />
-        <Stack.Screen name="branches/[id]" options={{ presentation: 'card' }} />
-        <Stack.Screen name="profile" options={{ presentation: 'card' }} />
-        <Stack.Screen name="orders" options={{ presentation: 'card' }} />
+        <Stack.Protected guard={!isAuthenticated}>
+          <Stack.Screen name="auth/login" />
+          <Stack.Screen name="auth/signup" />
+          <Stack.Screen name="auth/otp" />
+        </Stack.Protected>
+
+        <Stack.Protected guard={isAuthenticated}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="my-points" options={{ presentation: 'card' }} />
+          <Stack.Screen name="redeemed-rewards" options={{ presentation: 'card' }} />
+          <Stack.Screen name="notifications" options={{ presentation: 'card' }} />
+          <Stack.Screen name="notification/[id]" options={{ presentation: 'card' }} />
+          <Stack.Screen name="branches/index" options={{ presentation: 'card' }} />
+          <Stack.Screen name="branches/[id]" options={{ presentation: 'card' }} />
+          <Stack.Screen name="profile" options={{ presentation: 'card' }} />
+          <Stack.Screen name="orders" options={{ presentation: 'card' }} />
+          <Stack.Screen name="legal/terms" options={{ presentation: 'card' }} />
+          <Stack.Screen name="legal/privacy" options={{ presentation: 'card' }} />
+          <Stack.Screen name="account/delete" options={{ presentation: 'card' }} />
+        </Stack.Protected>
       </Stack>
       <StatusBar style={isDark ? 'light' : 'dark'} />
     </>

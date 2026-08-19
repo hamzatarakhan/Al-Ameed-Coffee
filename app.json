@@ -9,9 +9,12 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.alameedcoffee.app",
+      "usesAppleSignIn": true
     },
     "android": {
+      "package": "com.alameedcoffee.app",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -27,6 +30,13 @@
     },
     "plugins": [
       "expo-router",
+      "expo-apple-authentication",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Al Ameed Coffee uses your location to show the nearest branch and sort branches by distance."
+        }
+      ],
       [
         "expo-splash-screen",
         {

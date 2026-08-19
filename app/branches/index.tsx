@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import * as Location from 'expo-location';
 
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
@@ -14,15 +15,35 @@ import { branches } from '@/lib/mock-data';
 export default function BranchesListScreen() {
   const { t, lang, isRTL } = useLang();
   const router = useRouter();
+  const [locationGranted, setLocationGranted] = useState(false);
+
+  // No real branch coordinates yet (needs the real backend's geodata), so
+  // this only wires the actual permission prompt — distance sorting comes
+  // later once branches carry real lat/lng.
+  const enableLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    setLocationGranted(status === 'granted');
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <ScreenHeader title={t('branches.title')} />
       <ScrollView contentContainerStyle={{ padding: space.lg, paddingBottom: space.xxxl }}>
-        <Row style={{ alignItems: 'center', gap: space.xs, marginBottom: space.lg }}>
-          <Ionicons name="location-outline" size={14} color={colors.textMuted} />
-          <AppText variant="muted">{t('branches.distanceUnknown')}</AppText>
-        </Row>
+        {locationGranted ? (
+          <Row style={{ alignItems: 'center', gap: space.xs, marginBottom: space.lg }}>
+            <Ionicons name="checkmark-circle" size={14} color={colors.good} />
+            <AppText variant="muted">{t('branches.locationEnabled')}</AppText>
+          </Row>
+        ) : (
+          <Pressable onPress={enableLocation}>
+            <Row style={{ alignItems: 'center', gap: space.xs, marginBottom: space.lg }}>
+              <Ionicons name="location-outline" size={14} color={colors.brandInk} />
+              <AppText variant="muted" color={colors.brandInk}>
+                {t('branches.distanceUnknown')}
+              </AppText>
+            </Row>
+          </Pressable>
+        )}
 
         <View style={{ gap: space.md }}>
           {branches.map((b) => (
