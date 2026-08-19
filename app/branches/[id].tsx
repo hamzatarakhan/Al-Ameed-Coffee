@@ -32,7 +32,7 @@ export default function BranchDetailScreen() {
             icon={isRTL ? 'chevron-forward' : 'chevron-back'}
             onPress={() => router.back()}
             tone="light"
-            style={{ position: 'absolute', top: insets.top + space.sm, left: space.lg }}
+            style={{ position: 'absolute', top: insets.top + space.sm, [isRTL ? 'right' : 'left']: space.lg }}
           />
         </View>
 

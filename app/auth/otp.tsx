@@ -9,8 +9,9 @@ import { ScreenHeader } from '@/components/ScreenHeader';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useAuth } from '@/lib/auth-store';
+import { toWesternDigits } from '@/lib/digits';
 
-const BRANCH_PHONE = '+962 6 560 0000';
+const BRANCH_PHONE = '+962 6 581 4300';
 const RESEND_SECONDS = 59;
 
 export default function OtpScreen() {
@@ -49,7 +50,7 @@ export default function OtpScreen() {
   };
 
   const onChangeCode = (value: string) => {
-    const clean = value.replace(/\D/g, '').slice(0, 4);
+    const clean = toWesternDigits(value).replace(/\D/g, '').slice(0, 4);
     setCode(clean);
     if (clean.length === 4) verify(clean);
   };
@@ -99,7 +100,18 @@ export default function OtpScreen() {
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}>
-                    <AppText variant="display">{code[i] ?? ''}</AppText>
+                    <AppText
+                      variant="display"
+                      // The "display" scale's 34px line-height (sized for
+                      // multi-line text elsewhere) sits noticeably above
+                      // center inside a single-glyph 64px box, especially on
+                      // Android where extra font padding stacks on top of
+                      // it. Tightening the line-height and killing that
+                      // padding centers it for real instead of just via the
+                      // parent's justifyContent.
+                      style={{ lineHeight: 28, includeFontPadding: false, textAlignVertical: 'center' }}>
+                      {code[i] ?? ''}
+                    </AppText>
                   </View>
                 );
               })}

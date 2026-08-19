@@ -13,7 +13,7 @@ import { useTabBarInset } from '@/lib/useTabBarInset';
 import { useAuth } from '@/lib/auth-store';
 import { confirmAction } from '@/lib/confirm';
 
-const BRANCH_PHONE = '+962 6 560 0000';
+const BRANCH_PHONE = '+962 6 581 4300';
 const WEBSITE = 'https://alameedcoffee.com';
 
 export default function AccountScreen() {

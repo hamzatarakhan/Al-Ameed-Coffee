@@ -4,6 +4,7 @@ import { AppText } from './AppText';
 import { colors, fonts, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { normalizeJordanPhone } from '@/lib/phone';
+import { toWesternDigits } from '@/lib/digits';
 
 interface Props {
   label?: string;
@@ -57,7 +58,7 @@ export function PhoneInput({ label, value, onChangeText, error }: Props) {
         </View>
         <TextInput
           value={value}
-          onChangeText={(t2) => onChangeText(t2.replace(/\D/g, '').slice(0, 10))}
+          onChangeText={(t2) => onChangeText(toWesternDigits(t2).replace(/\D/g, '').slice(0, 10))}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           placeholder="07X XXX XXXX"
