@@ -158,19 +158,24 @@ function Dot({ delay }: { delay: number }) {
 const styles = StyleSheet.create({
   container: { alignItems: 'center', justifyContent: 'center', zIndex: 100 },
   center: { alignItems: 'center', justifyContent: 'center' },
-  logo: { width: 168, height: 168 },
+  // The source mark is a wide oval (~1.8:1), not a square — sizing the box
+  // to that ratio keeps `contain` from adding its own top/bottom letterbox
+  // padding on top of the logo's own margin, which is what created the big
+  // gap before the crop.
+  logo: { width: 210, height: 117 },
   glow: {
     position: 'absolute',
-    width: 220,
-    height: 220,
-    borderRadius: 110,
+    width: 230,
+    height: 148,
+    borderRadius: 74,
     backgroundColor: '#E51937',
     // Cheap radial-glow stand-in: a blurred-looking soft circle behind the
-    // logo via low opacity + large shadow blur (works on iOS/Android/web
-    // without pulling in a blur view here).
+    // logo via low opacity + shadow blur (works on iOS/Android/web without
+    // pulling in a blur view here) — kept close to the logo's own size so it
+    // reads as a glow, not a second larger disc.
     shadowColor: '#E51937',
-    shadowOpacity: 0.9,
-    shadowRadius: 60,
+    shadowOpacity: 0.8,
+    shadowRadius: 26,
     shadowOffset: { width: 0, height: 0 },
   },
   ring: {
@@ -183,21 +188,21 @@ const styles = StyleSheet.create({
   },
   steam: {
     position: 'absolute',
-    top: -30,
+    top: -14,
     width: 8,
     height: 26,
     borderRadius: 4,
     backgroundColor: 'rgba(255,255,255,0.5)',
   },
   titleAr: {
-    marginTop: 22,
+    marginTop: 6,
     fontFamily: fonts.displayAr,
     fontSize: 26,
     color: '#FFFFFF',
     textAlign: 'center',
   },
   titleEn: {
-    marginTop: 6,
+    marginTop: 4,
     fontFamily: fonts.bodyEnMedium,
     fontSize: 11,
     letterSpacing: 3,
