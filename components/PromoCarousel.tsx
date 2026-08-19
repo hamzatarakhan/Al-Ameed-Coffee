@@ -21,7 +21,7 @@ const SLIDE_HEIGHT = 210;
 export function PromoCarousel({ slides }: { slides: Promo[] }) {
   const { width } = useWindowDimensions();
   const slideWidth = width - SIDE_PADDING * 2;
-  const { lang } = useLang();
+  const { lang, isRTL } = useLang();
   const router = useRouter();
   const scrollRef = useRef<ScrollView>(null);
   const [index, setIndex] = useState(0);
@@ -140,7 +140,12 @@ export function PromoCarousel({ slides }: { slides: Promo[] }) {
                 <View
                   style={{
                     alignSelf: 'flex-start',
-                    flexDirection: 'row',
+                    // The pill's own content order DOES follow reading
+                    // direction (unlike the fixed-left text block above) —
+                    // an arrow after the word in Arabic points the wrong way
+                    // since Arabic reads right-to-left, so the arrow belongs
+                    // before (start of) the word, not after.
+                    flexDirection: isRTL ? 'row-reverse' : 'row',
                     alignItems: 'center',
                     gap: 4,
                     backgroundColor: 'rgba(255,255,255,0.16)',
@@ -153,7 +158,7 @@ export function PromoCarousel({ slides }: { slides: Promo[] }) {
                   <AppText variant="bodySemiBold" color={colors.white} style={{ fontSize: 13 }}>
                     {lang === 'ar' ? promo.ctaAr : promo.ctaEn}
                   </AppText>
-                  <Ionicons name="chevron-forward" size={13} color={colors.white} />
+                  <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={13} color={colors.white} />
                 </View>
               </View>
             </View>
