@@ -5,7 +5,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
-import { Row } from '@/components/Row';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
@@ -30,6 +29,7 @@ export default function OtpScreen() {
   const [code, setCode] = useState('');
   const [error, setError] = useState<string | undefined>();
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
+  const [focused, setFocused] = useState(false);
   const hiddenInput = useRef<TextInput>(null);
 
   useEffect(() => {
@@ -78,29 +78,39 @@ export default function OtpScreen() {
           </View>
 
           <Pressable onPress={() => hiddenInput.current?.focus()}>
-            <Row style={{ gap: space.sm, justifyContent: 'center' }}>
-              {[0, 1, 2, 3].map((i) => (
-                <View
-                  key={i}
-                  style={{
-                    width: 60,
-                    height: 64,
-                    borderRadius: radius.md,
-                    borderWidth: 1.5,
-                    borderColor: error ? colors.critical : colors.border,
-                    backgroundColor: colors.surface2,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <AppText variant="display">{code[i] ?? ''}</AppText>
-                </View>
-              ))}
-            </Row>
+            {/* Explicit flexDirection: 'row' (not the app's RTL-mirroring
+                Row component) — like the phone number field, a 4-digit code
+                is a fixed left-to-right sequence regardless of app
+                language; mirroring it made digits appear to fill from the
+                right, backwards from where they were actually typed. */}
+            <View style={{ flexDirection: 'row', gap: space.sm, justifyContent: 'center' }}>
+              {[0, 1, 2, 3].map((i) => {
+                const isActive = focused && i === code.length;
+                return (
+                  <View
+                    key={i}
+                    style={{
+                      width: 60,
+                      height: 64,
+                      borderRadius: radius.md,
+                      borderWidth: isActive ? 2 : 1.5,
+                      borderColor: error ? colors.critical : isActive ? colors.brand : colors.border,
+                      backgroundColor: colors.surface2,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <AppText variant="display">{code[i] ?? ''}</AppText>
+                  </View>
+                );
+              })}
+            </View>
           </Pressable>
           <TextInput
             ref={hiddenInput}
             value={code}
             onChangeText={onChangeCode}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
             keyboardType="number-pad"
             maxLength={4}
             autoFocus
