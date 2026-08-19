@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
+import { QrGlyph } from '@/components/QrGlyph';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
@@ -55,22 +56,6 @@ export default function CheckinScreen() {
         onPress={() => setScanned((s) => !s)}
         style={{ width: '100%' }}
       />
-    </View>
-  );
-}
-
-// ponytail: a drawn placeholder pattern instead of a real QR-encoding
-// library — this screen is a UX demo, not a functioning scanner integration.
-// Swap in react-native-qrcode-svg (or similar) when there's a real payload to encode.
-function QrGlyph() {
-  const cells = Array.from({ length: 25 }, (_, i) => (i * 7) % 5 < 2);
-  return (
-    <View style={{ width: 140, height: 140, flexDirection: 'row', flexWrap: 'wrap' }}>
-      {cells.map((filled, i) => (
-        <View key={i} style={{ width: '20%', height: '20%', padding: 2 }}>
-          <View style={{ flex: 1, backgroundColor: filled ? colors.text : 'transparent', borderRadius: 2 }} />
-        </View>
-      ))}
     </View>
   );
 }

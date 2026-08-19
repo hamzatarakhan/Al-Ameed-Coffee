@@ -96,6 +96,7 @@ const dict = {
     earned: { ar: 'كسبت {n} نقطة', en: 'You earned {n} points' },
     simulate: { ar: 'محاكاة المسح (تجريبي)', en: 'Simulate scan (demo)' },
     reset: { ar: 'إعادة', en: 'Reset' },
+    openFull: { ar: 'فتح الشاشة كاملة', en: 'Open full screen' },
   },
   notifications: {
     title: { ar: 'الإشعارات', en: 'Notifications' },

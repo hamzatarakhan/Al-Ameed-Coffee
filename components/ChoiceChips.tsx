@@ -2,6 +2,7 @@ import React from 'react';
 import { Pressable, View } from 'react-native';
 import { AppText } from './AppText';
 import { colors, radius, space } from '@/lib/theme';
+import { useLang } from '@/lib/i18n';
 
 export function ChoiceChips<T extends string>({
   options,
@@ -12,8 +13,10 @@ export function ChoiceChips<T extends string>({
   value: T;
   onChange: (v: T) => void;
 }) {
+  const { isRTL } = useLang();
+
   return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.xs }}>
+    <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', flexWrap: 'wrap', gap: space.xs }}>
       {options.map((opt) => {
         const selected = opt.value === value;
         return (

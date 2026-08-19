@@ -53,7 +53,7 @@ export default function CompleteProfileScreen() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={{ padding: space.lg, paddingTop: insets.top + space.xl, paddingBottom: space.xxl }} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={{ padding: space.lg, paddingTop: insets.top + space.xl, paddingBottom: space.xl }} keyboardShouldPersistTaps="handled">
         <View style={{ alignItems: 'center', marginBottom: space.xl }}>
           <Image source={LOGO} style={{ width: 84, height: 47 }} resizeMode="contain" />
           <AppText variant="h2" align="center" style={{ marginTop: space.md }}>
@@ -109,16 +109,19 @@ export default function CompleteProfileScreen() {
           </View>
 
           <Input label={t('auth.area')} placeholder={t('auth.areaPlaceholder')} value={area} onChangeText={setArea} />
-
-          <Button label={t('auth.saveContinue')} onPress={save} style={{ marginTop: space.sm }} />
-
-          <Pressable onPress={() => auth.completeProfile()} hitSlop={8} style={{ alignSelf: 'center', marginTop: space.sm }}>
-            <AppText variant="bodySemiBold" color={colors.textMuted}>
-              {t('auth.skipForNow')}
-            </AppText>
-          </Pressable>
         </View>
       </ScrollView>
+
+      {/* Outside the ScrollView on purpose — Save/Skip stay reachable at a
+          fixed spot instead of scrolling away with the fields above them. */}
+      <View style={{ padding: space.lg, paddingBottom: insets.bottom + space.md, borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.bg }}>
+        <Button label={t('auth.saveContinue')} onPress={save} />
+        <Pressable onPress={() => auth.completeProfile()} hitSlop={8} style={{ alignSelf: 'center', marginTop: space.sm }}>
+          <AppText variant="bodySemiBold" color={colors.textMuted}>
+            {t('auth.skipForNow')}
+          </AppText>
+        </Pressable>
+      </View>
     </KeyboardAvoidingView>
   );
 }

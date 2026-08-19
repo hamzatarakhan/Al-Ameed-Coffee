@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { CircleButton } from '@/components/CircleButton';
+import { CheckinPopup } from '@/components/CheckinPopup';
 import { PromoCarousel } from '@/components/PromoCarousel';
 import { RewardMedia } from '@/components/RewardMedia';
 import { colors, radius, shadow, space } from '@/lib/theme';
@@ -25,6 +26,7 @@ export default function HomeScreen() {
   const tabBarInset = useTabBarInset();
   const { notifications } = useNotifications();
   const hasUnreadNotifications = notifications.some((n) => !n.read);
+  const [showCheckin, setShowCheckin] = useState(true);
 
   const categories = [
     { icon: 'bag-handle' as const, label: t('home.quickOrder'), onPress: () => router.push('/order') },
@@ -34,7 +36,8 @@ export default function HomeScreen() {
   ];
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingBottom: space.xxxl + tabBarInset }}>
+    <>
+      <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingBottom: space.xxxl + tabBarInset }}>
       <Row
         style={{
           justifyContent: 'space-between',
@@ -164,6 +167,9 @@ export default function HomeScreen() {
           {lang === 'ar' ? 'EN' : 'عربي'}
         </AppText>
       </Pressable>
-    </ScrollView>
+      </ScrollView>
+
+      <CheckinPopup visible={showCheckin} onClose={() => setShowCheckin(false)} />
+    </>
   );
 }
