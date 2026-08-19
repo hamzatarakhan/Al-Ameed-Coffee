@@ -5,8 +5,14 @@ import React, { createContext, useContext, useState } from 'react';
 // startAuth/verifyOtp's bodies for real API calls once the backend exists —
 // every screen already calls through this hook, not fetch directly.
 
-// signedOut -> needsProfile (new accounts only, after OTP) -> signedIn.
-// Returning accounts and Apple sign-in skip straight to signedIn.
+// signedOut -> needsProfile (first successful OTP only) -> signedIn.
+// There's no backend to say whether a phone number is already
+// registered, so "new vs. returning" isn't a real signal here — the
+// login/signup screens are functionally identical either way. What
+// actually gates the profile-completion step is whether it's ever been
+// finished before (profileCompleted), not which screen you tapped
+// through. Apple sign-in skips straight to signedIn since its own
+// sheet is the verification step.
 export type AuthStatus = 'signedOut' | 'needsProfile' | 'signedIn';
 
 interface AuthValue {
@@ -27,21 +33,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<AuthStatus>('signedOut');
   const [pendingPhone, setPendingPhone] = useState<string | null>(null);
   const [pendingName, setPendingName] = useState<string | null>(null);
-  const [isNewAccount, setIsNewAccount] = useState(false);
+  const [profileCompleted, setProfileCompleted] = useState(false);
 
-  const startAuth = (phone: string, newAccount = false, name?: string) => {
+  const startAuth = (phone: string, _isNewAccount = false, name?: string) => {
     setPendingPhone(phone);
     setPendingName(name ?? null);
-    setIsNewAccount(newAccount);
   };
 
   const verifyOtp = (code: string) => {
     const ok = /^\d{4}$/.test(code);
-    if (ok) setStatus(isNewAccount ? 'needsProfile' : 'signedIn');
+    if (ok) setStatus(profileCompleted ? 'signedIn' : 'needsProfile');
     return ok;
   };
 
-  const completeProfile = () => setStatus('signedIn');
+  const completeProfile = () => {
+    setProfileCompleted(true);
+    setStatus('signedIn');
+  };
 
   // Apple's own sign-in sheet is the verification step — no separate OTP
   // needed once it resolves successfully.
@@ -55,6 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const deleteAccount = () => {
     setStatus('signedOut');
     setPendingPhone(null);
+    setProfileCompleted(false);
   };
 
   return (
