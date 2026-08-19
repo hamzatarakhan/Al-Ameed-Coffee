@@ -72,7 +72,7 @@ export default function HomeScreen() {
             <AppText variant="h2" color={colors.white}>
               {t('home.promoTitle')}
             </AppText>
-            <View style={{ alignSelf: 'flex-start', backgroundColor: colors.white, borderRadius: radius.pill, paddingHorizontal: space.lg, paddingVertical: space.sm }}>
+            <View style={{ alignSelf: 'flex-start', backgroundColor: colors.white, borderRadius: radius.sm, paddingHorizontal: space.lg, paddingVertical: space.sm }}>
               <AppText variant="bodySemiBold" color={colors.brand}>
                 {t('home.promoCta')}
               </AppText>

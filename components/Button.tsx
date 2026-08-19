@@ -57,7 +57,7 @@ export function Button({ label, onPress, variant = 'primary', loading, disabled,
 const styles = StyleSheet.create({
   base: {
     minHeight: 52,
-    borderRadius: radius.pill,
+    borderRadius: radius.sm,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: space.xl,

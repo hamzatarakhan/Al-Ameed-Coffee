@@ -14,7 +14,7 @@ interface Props {
 const tones = {
   light: { bg: colors.white, fg: colors.text },
   brand: { bg: colors.brand, fg: colors.white },
-  dark: { bg: 'rgba(23,19,16,0.55)', fg: colors.white },
+  dark: { bg: 'rgba(255,255,255,0.2)', fg: colors.white },
 };
 
 export function CircleButton({ icon, onPress, size = 40, tone = 'light', style }: Props) {

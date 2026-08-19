@@ -81,7 +81,7 @@ export default function RewardDetailScreen() {
                 backgroundColor: colors.surface,
                 borderWidth: 1,
                 borderColor: colors.border,
-                borderRadius: radius.pill,
+                borderRadius: radius.md,
               }}>
               <QtyButton icon="remove" onPress={() => setQty((q) => Math.max(1, q - 1))} />
               <AppText variant="mono" style={{ width: 36, textAlign: 'center' }}>

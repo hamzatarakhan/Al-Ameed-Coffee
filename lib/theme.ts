@@ -1,19 +1,20 @@
-// Palette + shape rebased on a coffee-app reference: bold orange accent,
-// near-black photography hero surfaces, clean white cards, pill controls.
+// Palette + type pulled directly from alameedcoffee.com: brand red #E51937,
+// black/white, warm greys, Avenir-led typography (see fonts below for the
+// free substitutes — Avenir LT Std itself isn't available on Google Fonts).
 export const colors = {
-  bg: '#FAF8F5',
+  bg: '#FFFFFF',
   surface: '#FFFFFF',
-  surface2: '#F4F0EB',
-  border: '#EBE4DB',
-  text: '#1E1712',
-  textMuted: '#8A8078',
-  brand: '#E8792E',
-  brandInk: '#B85A1B',
-  brandTint: '#FBEADB',
-  hero: '#171310',
-  gold: '#D99A3D',
+  surface2: '#F5F3F2',
+  border: '#E6E2E1',
+  text: '#212529',
+  textMuted: '#5C5555',
+  brand: '#E51937',
+  brandInk: '#B3122B',
+  brandTint: '#FBE7EA',
+  hero: '#000000',
+  gold: '#8A7F6A',
   good: '#3F8A5B',
-  warn: '#C08A1E',
+  warn: '#B8860B',
   critical: '#D6544A',
   goodBg: '#E7F2EA',
   warnBg: '#FBF0DA',
@@ -23,26 +24,29 @@ export const colors = {
 
 export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32, xxxl: 48 } as const;
 
-export const radius = { sm: 10, md: 14, lg: 20, xl: 28, pill: 999 } as const;
+// The real site runs almost entirely square (0px radius) CTAs and blocks —
+// mirrored here but softened slightly (8-14px) for touch-sized mobile controls
+// instead of copying literal 0px, which reads as unfinished on a phone.
+export const radius = { sm: 6, md: 10, lg: 14, xl: 18, pill: 999 } as const;
 
 // ponytail: fonts are loaded in app/_layout.tsx via @expo-google-fonts/*;
 // these family names must match the keys passed to useFonts() there.
 export const fonts = {
-  displayEn: 'Fraunces_600SemiBold',
-  displayEnBold: 'Fraunces_700Bold',
-  displayAr: 'MarkaziText_700Bold',
-  bodyEn: 'IBMPlexSans_400Regular',
-  bodyEnMedium: 'IBMPlexSans_500Medium',
-  bodyEnSemiBold: 'IBMPlexSans_600SemiBold',
-  bodyAr: 'IBMPlexSansArabic_400Regular',
-  bodyArMedium: 'IBMPlexSansArabic_500Medium',
-  bodyArSemiBold: 'IBMPlexSansArabic_600SemiBold',
+  displayEn: 'Jost_600SemiBold',
+  displayEnBold: 'Jost_700Bold',
+  displayAr: 'Cairo_700Bold',
+  bodyEn: 'Mulish_400Regular',
+  bodyEnMedium: 'Mulish_500Medium',
+  bodyEnSemiBold: 'Mulish_700Bold',
+  bodyAr: 'Cairo_400Regular',
+  bodyArMedium: 'Cairo_500Medium',
+  bodyArSemiBold: 'Cairo_600SemiBold',
   mono: 'IBMPlexMono_500Medium',
 } as const;
 
 export const shadow = {
   card: {
-    shadowColor: '#1E1712',
+    shadowColor: '#000000',
     shadowOpacity: 0.06,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 6 },

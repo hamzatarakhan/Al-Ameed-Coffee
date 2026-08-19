@@ -3,20 +3,9 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { useFonts as useFrauncesFonts, Fraunces_600SemiBold, Fraunces_700Bold } from '@expo-google-fonts/fraunces';
-import {
-  useFonts as usePlexSansFonts,
-  IBMPlexSans_400Regular,
-  IBMPlexSans_500Medium,
-  IBMPlexSans_600SemiBold,
-} from '@expo-google-fonts/ibm-plex-sans';
-import {
-  useFonts as usePlexSansArFonts,
-  IBMPlexSansArabic_400Regular,
-  IBMPlexSansArabic_500Medium,
-  IBMPlexSansArabic_600SemiBold,
-} from '@expo-google-fonts/ibm-plex-sans-arabic';
-import { useFonts as useMarkaziFonts, MarkaziText_700Bold } from '@expo-google-fonts/markazi-text';
+import { useFonts as useJostFonts, Jost_600SemiBold, Jost_700Bold } from '@expo-google-fonts/jost';
+import { useFonts as useMulishFonts, Mulish_400Regular, Mulish_500Medium, Mulish_700Bold } from '@expo-google-fonts/mulish';
+import { useFonts as useCairoFonts, Cairo_400Regular, Cairo_500Medium, Cairo_600SemiBold, Cairo_700Bold } from '@expo-google-fonts/cairo';
 import { useFonts as usePlexMonoFonts, IBMPlexMono_500Medium } from '@expo-google-fonts/ibm-plex-mono';
 
 import { LanguageProvider } from '@/lib/i18n';
@@ -25,13 +14,12 @@ import { colors } from '@/lib/theme';
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
-  const [f1] = useFrauncesFonts({ Fraunces_600SemiBold, Fraunces_700Bold });
-  const [f2] = usePlexSansFonts({ IBMPlexSans_400Regular, IBMPlexSans_500Medium, IBMPlexSans_600SemiBold });
-  const [f3] = usePlexSansArFonts({ IBMPlexSansArabic_400Regular, IBMPlexSansArabic_500Medium, IBMPlexSansArabic_600SemiBold });
-  const [f4] = useMarkaziFonts({ MarkaziText_700Bold });
-  const [f5] = usePlexMonoFonts({ IBMPlexMono_500Medium });
+  const [f1] = useJostFonts({ Jost_600SemiBold, Jost_700Bold });
+  const [f2] = useMulishFonts({ Mulish_400Regular, Mulish_500Medium, Mulish_700Bold });
+  const [f3] = useCairoFonts({ Cairo_400Regular, Cairo_500Medium, Cairo_600SemiBold, Cairo_700Bold });
+  const [f4] = usePlexMonoFonts({ IBMPlexMono_500Medium });
 
-  const fontsLoaded = f1 && f2 && f3 && f4 && f5;
+  const fontsLoaded = f1 && f2 && f3 && f4;
 
   useEffect(() => {
     if (fontsLoaded) SplashScreen.hideAsync().catch(() => {});
