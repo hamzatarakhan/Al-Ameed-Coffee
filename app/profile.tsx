@@ -21,6 +21,7 @@ export default function ProfileScreen() {
 
   const name = lang === 'ar' ? profile.nameAr : profile.nameEn;
   const initial = name.trim().charAt(0);
+  const notSet = t('profile.notSet');
 
   const startEditing = () => {
     setDraft(profile);
@@ -131,21 +132,19 @@ export default function ProfileScreen() {
               { icon: 'call-outline' as const, label: t('profile.phone'), value: profile.phone },
               { icon: 'mail-outline' as const, label: t('profile.email'), value: profile.email },
               { icon: 'gift-outline' as const, label: t('profile.referralCode'), value: profile.referralCode },
-              ...(profile.dateOfBirth ? [{ icon: 'calendar-outline' as const, label: t('auth.dateOfBirth'), value: profile.dateOfBirth }] : []),
-              ...(profile.gender
-                ? [{ icon: 'male-female-outline' as const, label: t('auth.gender'), value: profile.gender === 'male' ? t('auth.genderMale') : t('auth.genderFemale') }]
-                : []),
-              ...(profile.maritalStatus
-                ? [
-                    {
-                      icon: 'heart-outline' as const,
-                      label: t('auth.maritalStatus'),
-                      value: profile.maritalStatus === 'single' ? t('auth.maritalSingle') : t('auth.maritalMarried'),
-                    },
-                  ]
-                : []),
-              ...(profile.city ? [{ icon: 'business-outline' as const, label: t('auth.city'), value: profile.city }] : []),
-              ...(profile.area ? [{ icon: 'map-outline' as const, label: t('auth.area'), value: profile.area }] : []),
+              { icon: 'calendar-outline' as const, label: t('auth.dateOfBirth'), value: profile.dateOfBirth || notSet },
+              {
+                icon: 'male-female-outline' as const,
+                label: t('auth.gender'),
+                value: profile.gender === 'male' ? t('auth.genderMale') : profile.gender === 'female' ? t('auth.genderFemale') : notSet,
+              },
+              {
+                icon: 'heart-outline' as const,
+                label: t('auth.maritalStatus'),
+                value: profile.maritalStatus === 'single' ? t('auth.maritalSingle') : profile.maritalStatus === 'married' ? t('auth.maritalMarried') : notSet,
+              },
+              { icon: 'business-outline' as const, label: t('auth.city'), value: profile.city || notSet },
+              { icon: 'map-outline' as const, label: t('auth.area'), value: profile.area || notSet },
             ].map((r, i, arr) => (
               <View key={r.label} style={{ borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderBottomColor: colors.border, paddingVertical: space.md }}>
                 <Row style={{ alignItems: 'center', gap: space.md }}>
@@ -156,7 +155,9 @@ export default function ProfileScreen() {
                     <AppText variant="label" color={colors.textMuted}>
                       {r.label}
                     </AppText>
-                    <AppText variant="body">{r.value}</AppText>
+                    <AppText variant="body" color={r.value === notSet ? colors.textMuted : undefined}>
+                      {r.value}
+                    </AppText>
                   </View>
                 </Row>
               </View>

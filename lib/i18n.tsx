@@ -136,6 +136,7 @@ const dict = {
     edit: { ar: 'تعديل', en: 'Edit' },
     save: { ar: 'حفظ', en: 'Save' },
     saved: { ar: 'تم حفظ التعديلات', en: 'Your changes were saved' },
+    notSet: { ar: 'غير محدد', en: 'Not set' },
   },
   deleteAccount: {
     title: { ar: 'حذف الحساب', en: 'Delete Account' },
