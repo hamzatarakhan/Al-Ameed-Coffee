@@ -42,9 +42,18 @@ export default function RootLayout() {
 function AppShell() {
   const { isDark } = useThemeMode();
 
+  // react-native-screens freezes/keeps-alive inactive tab screens for native
+  // transition performance — they don't re-render just because an ancestor's
+  // context value changed, so mutating `colors` and relying on cascade never
+  // reaches Home/Order/Check-in while Account (the toggle's origin) is the
+  // only one focused. A key on the whole navigator forces every screen to
+  // unmount and remount fresh (reading the now-mutated colors) instead of
+  // relying on a re-render reaching frozen siblings. Cost: toggling resets
+  // navigation to the initial route — acceptable since the toggle only lives
+  // on the Account screen to begin with.
   return (
     <>
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
+      <Stack key={isDark ? 'dark' : 'light'} screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="my-points" options={{ presentation: 'card' }} />
         <Stack.Screen name="redeemed-rewards" options={{ presentation: 'card' }} />
