@@ -31,7 +31,7 @@ export function ScreenHeader({ title, right }: { title: string; right?: React.Re
       <AppText variant="h2" style={{ flex: 1 }} align="center">
         {title}
       </AppText>
-      <View style={{ width: 32, alignItems: 'flex-end' }}>{right}</View>
+      <View style={{ minWidth: 32, alignItems: 'flex-end' }}>{right}</View>
     </Row>
   );
 }

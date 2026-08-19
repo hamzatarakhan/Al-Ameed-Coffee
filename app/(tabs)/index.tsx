@@ -11,10 +11,11 @@ import { PromoCarousel } from '@/components/PromoCarousel';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
-import { rewards, branches, promos, userPoints } from '@/lib/mock-data';
+import { rewards, branches, promos, notifications, userPoints } from '@/lib/mock-data';
 
 const cheapest = [...rewards].sort((a, b) => a.cost - b.cost);
 const nearestBranch = branches[0];
+const hasUnreadNotifications = notifications.some((n) => !n.read);
 
 export default function HomeScreen() {
   const { t, lang, toggle, isRTL } = useLang();
@@ -49,7 +50,24 @@ export default function HomeScreen() {
           <AppText variant="h2">{t('home.question')}</AppText>
         </View>
         <Row style={{ gap: space.sm }}>
-          <CircleButton icon="notifications-outline" onPress={() => router.push('/notifications')} tone="light" />
+          <View>
+            <CircleButton icon="notifications-outline" onPress={() => router.push('/notifications')} tone="light" />
+            {hasUnreadNotifications ? (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  [isRTL ? 'left' : 'right']: 0,
+                  width: 10,
+                  height: 10,
+                  borderRadius: 5,
+                  backgroundColor: colors.brand,
+                  borderWidth: 1.5,
+                  borderColor: colors.bg,
+                }}
+              />
+            ) : null}
+          </View>
           <CircleButton icon="person" onPress={() => router.push('/account')} tone="brand" />
         </Row>
       </Row>
