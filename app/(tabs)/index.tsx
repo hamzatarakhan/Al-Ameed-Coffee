@@ -155,7 +155,7 @@ export default function HomeScreen() {
                     {r.cost} {t('common.points')}
                   </AppText>
                 </View>
-                <CircleButton icon={isRTL ? 'chevron-back' : 'chevron-forward'} size={34} tone="brand" onPress={() => router.push(`/rewards/${r.id}`)} />
+                <CircleButton icon={isRTL ? 'chevron-back' : 'chevron-forward'} size={34} tone="light" onPress={() => router.push(`/rewards/${r.id}`)} />
               </Row>
             </Pressable>
           ))}

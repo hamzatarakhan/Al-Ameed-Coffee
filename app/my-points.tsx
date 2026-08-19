@@ -23,7 +23,7 @@ export default function MyPointsScreen() {
       <ScrollView contentContainerStyle={{ padding: space.lg, paddingBottom: space.xxxl }}>
         <Card style={{ marginBottom: space.lg }}>
           <AppText variant="muted">{t('points.balance')}</AppText>
-          <AppText variant="mono" style={{ fontSize: 34, lineHeight: 40, marginBottom: space.md }}>
+          <AppText variant="mono" style={{ fontSize: 34, lineHeight: 46, marginBottom: space.md }}>
             {userPoints}
           </AppText>
           <ProgressBar value={userPoints} max={cheapest.cost} />

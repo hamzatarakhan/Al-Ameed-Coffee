@@ -70,6 +70,11 @@ export function AppText({ variant = 'body', color, align, style, ...rest }: Prop
           writingDirection: isRTL ? 'rtl' : 'ltr',
           letterSpacing,
           textTransform: variant === 'label' ? 'uppercase' : undefined,
+          // Android stacks its own extra padding on top of lineHeight, which
+          // clips large/tightly-set glyphs against their box (seen on the
+          // OTP boxes and the points-balance number) — this is app-wide
+          // since it's a platform quirk, not a per-screen sizing mistake.
+          includeFontPadding: false,
         },
         variant === 'muted' && { color: colors.textMuted },
         style,

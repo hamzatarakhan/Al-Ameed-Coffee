@@ -6,12 +6,14 @@ import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { Card } from '@/components/Card';
 import { ChoiceChips } from '@/components/ChoiceChips';
+import { DateInput } from '@/components/DateInput';
 import { Input } from '@/components/Input';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { colors, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useProfile } from '@/lib/profile-store';
 import { jordanCities, type Gender, type MaritalStatus } from '@/lib/mock-data';
+import { formatDateDisplay } from '@/lib/date';
 
 export default function ProfileScreen() {
   const { t, lang } = useLang();
@@ -80,12 +82,11 @@ export default function ProfileScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
             />
-            <Input
+            <DateInput
               label={t('auth.dateOfBirth')}
               placeholder={t('auth.dobPlaceholder')}
               value={draft.dateOfBirth}
-              onChangeText={(v) => setDraft((d) => ({ ...d, dateOfBirth: v }))}
-              style={{ textAlign: 'left', writingDirection: 'ltr' }}
+              onChange={(v) => setDraft((d) => ({ ...d, dateOfBirth: v }))}
             />
             <View style={{ gap: space.xs }}>
               <AppText variant="label" color={colors.textMuted}>
@@ -132,7 +133,7 @@ export default function ProfileScreen() {
               { icon: 'call-outline' as const, label: t('profile.phone'), value: profile.phone },
               { icon: 'mail-outline' as const, label: t('profile.email'), value: profile.email },
               { icon: 'gift-outline' as const, label: t('profile.referralCode'), value: profile.referralCode },
-              { icon: 'calendar-outline' as const, label: t('auth.dateOfBirth'), value: profile.dateOfBirth || notSet },
+              { icon: 'calendar-outline' as const, label: t('auth.dateOfBirth'), value: profile.dateOfBirth ? formatDateDisplay(profile.dateOfBirth) : notSet },
               {
                 icon: 'male-female-outline' as const,
                 label: t('auth.gender'),

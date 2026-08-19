@@ -102,16 +102,10 @@ export default function OtpScreen() {
                     }}>
                     <AppText
                       variant="display"
-                      // Android stacks extra font padding on top of the
-                      // specified line-height, which pushed the glyph above
-                      // center inside this single-character 64px box.
-                      // includeFontPadding removes that padding — the actual
-                      // vertical centering still comes from the parent's
-                      // justifyContent, same as before. (A first attempt at
-                      // this also shrank lineHeight to 28, which was too
-                      // tight for the 27px font and clipped the glyph —
-                      // keep it close to the base 34 instead.)
-                      style={{ includeFontPadding: false, textAlignVertical: 'center' }}>
+                      // includeFontPadding is now off app-wide in AppText —
+                      // only the extra textAlignVertical is needed here to
+                      // finish centering the glyph in this single-character box.
+                      style={{ textAlignVertical: 'center' }}>
                       {code[i] ?? ''}
                     </AppText>
                   </View>

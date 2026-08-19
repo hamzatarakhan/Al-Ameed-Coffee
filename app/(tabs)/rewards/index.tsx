@@ -71,7 +71,7 @@ export default function RewardsGalleryScreen() {
                 <CircleButton
                   icon={locked ? 'lock-closed' : isRTL ? 'chevron-back' : 'chevron-forward'}
                   size={38}
-                  tone={locked ? 'light' : 'brand'}
+                  tone="light"
                   onPress={() => router.push(`/rewards/${r.id}`)}
                 />
               </Row>

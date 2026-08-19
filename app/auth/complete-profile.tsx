@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { ChoiceChips } from '@/components/ChoiceChips';
+import { DateInput } from '@/components/DateInput';
 import { Input } from '@/components/Input';
 import { colors, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
@@ -64,14 +65,7 @@ export default function CompleteProfileScreen() {
         <View style={{ gap: space.md }}>
           <Input label={t('auth.firstName')} value={firstName} onChangeText={setFirstName} error={error} />
           <Input label={t('auth.lastName')} value={lastName} onChangeText={setLastName} />
-          <Input
-            label={t('auth.dateOfBirth')}
-            placeholder={t('auth.dobPlaceholder')}
-            value={dob}
-            onChangeText={setDob}
-            keyboardType="numbers-and-punctuation"
-            style={{ textAlign: 'left', writingDirection: 'ltr' }}
-          />
+          <DateInput label={t('auth.dateOfBirth')} placeholder={t('auth.dobPlaceholder')} value={dob} onChange={setDob} />
 
           <View style={{ gap: space.xs }}>
             <AppText variant="label" color={colors.textMuted}>

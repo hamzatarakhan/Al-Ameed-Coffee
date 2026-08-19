@@ -13,6 +13,7 @@ const dict = {
     back: { ar: 'رجوع', en: 'Back' },
     seeAll: { ar: 'عرض الكل', en: 'See all' },
     points: { ar: 'نقطة', en: 'points' },
+    done: { ar: 'تم', en: 'Done' },
   },
   tabs: {
     home: { ar: 'الهوم', en: 'Home' },
