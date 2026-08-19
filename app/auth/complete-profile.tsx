@@ -64,7 +64,14 @@ export default function CompleteProfileScreen() {
         <View style={{ gap: space.md }}>
           <Input label={t('auth.firstName')} value={firstName} onChangeText={setFirstName} error={error} />
           <Input label={t('auth.lastName')} value={lastName} onChangeText={setLastName} />
-          <Input label={t('auth.dateOfBirth')} placeholder={t('auth.dobPlaceholder')} value={dob} onChangeText={setDob} keyboardType="numbers-and-punctuation" />
+          <Input
+            label={t('auth.dateOfBirth')}
+            placeholder={t('auth.dobPlaceholder')}
+            value={dob}
+            onChangeText={setDob}
+            keyboardType="numbers-and-punctuation"
+            style={{ textAlign: 'left', writingDirection: 'ltr' }}
+          />
 
           <View style={{ gap: space.xs }}>
             <AppText variant="label" color={colors.textMuted}>

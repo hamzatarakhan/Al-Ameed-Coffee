@@ -84,6 +84,7 @@ export default function ProfileScreen() {
               placeholder={t('auth.dobPlaceholder')}
               value={draft.dateOfBirth}
               onChangeText={(v) => setDraft((d) => ({ ...d, dateOfBirth: v }))}
+              style={{ textAlign: 'left', writingDirection: 'ltr' }}
             />
             <View style={{ gap: space.xs }}>
               <AppText variant="label" color={colors.textMuted}>

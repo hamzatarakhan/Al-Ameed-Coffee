@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TextInput, TextInputProps, View } from 'react-native';
 import { AppText } from './AppText';
 import { colors, fonts, radius, space } from '@/lib/theme';
@@ -9,8 +9,9 @@ interface Props extends TextInputProps {
   error?: string;
 }
 
-export function Input({ label, error, style, ...rest }: Props) {
+export function Input({ label, error, style, onFocus, onBlur, ...rest }: Props) {
   const { isRTL } = useLang();
+  const [focused, setFocused] = useState(false);
 
   return (
     <View style={{ gap: 6 }}>
@@ -21,14 +22,22 @@ export function Input({ label, error, style, ...rest }: Props) {
       ) : null}
       <TextInput
         placeholderTextColor={colors.textMuted}
+        onFocus={(e) => {
+          setFocused(true);
+          onFocus?.(e);
+        }}
+        onBlur={(e) => {
+          setFocused(false);
+          onBlur?.(e);
+        }}
         style={[
           {
             backgroundColor: colors.surface2,
-            borderWidth: 1,
-            borderColor: error ? colors.critical : colors.border,
+            borderWidth: focused ? 1.5 : 1,
+            borderColor: error ? colors.critical : focused ? colors.brand : colors.border,
             borderRadius: radius.md,
             paddingHorizontal: space.md,
-            paddingVertical: 13,
+            paddingVertical: focused ? 12.5 : 13,
             fontSize: 15,
             fontFamily: isRTL ? fonts.bodyAr : fonts.bodyEn,
             color: colors.text,

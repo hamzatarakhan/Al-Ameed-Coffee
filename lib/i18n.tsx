@@ -173,6 +173,8 @@ const dict = {
     haveAccount: { ar: 'عندك حساب؟', en: 'Already have an account?' },
     signIn: { ar: 'تسجيل الدخول', en: 'Sign in' },
     phoneRequired: { ar: 'أدخل رقم أردني صحيح (07XXXXXXXX)', en: 'Enter a valid Jordanian number (07XXXXXXXX)' },
+    phoneDigitsRemaining: { ar: 'أدخل {n} أرقام إضافية', en: 'Enter {n} more digits' },
+    phoneMustStartWith7: { ar: 'الرقم لازم يبلش بـ 7 (بعد الصفر لو كتبته)', en: 'The number must start with 7 (after the 0, if you typed one)' },
     nameRequired: { ar: 'أدخل اسمك الكامل', en: 'Enter your full name' },
     otpTitle: { ar: 'تفعيل الحساب', en: 'Activate account' },
     otpBody: { ar: 'لقد قمنا بإرسال رمز التفعيل لرقم هاتفك ({phone})', en: 'We sent an activation code to your number ({phone})' },
