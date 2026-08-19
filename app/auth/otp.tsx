@@ -48,7 +48,10 @@ export default function OtpScreen() {
     setDigits(next);
 
     if (clean && index < 3) {
-      inputs.current[index + 1]?.focus();
+      // A same-tick .focus() call can race the native re-render that
+      // actually mounts/updates the next box, especially right after
+      // typing — deferring one tick makes the jump land reliably.
+      setTimeout(() => inputs.current[index + 1]?.focus(), 0);
     }
     if (next.every((d) => d.length === 1)) {
       verify(next.join(''));
