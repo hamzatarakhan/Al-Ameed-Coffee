@@ -28,6 +28,7 @@ export const promos: Promo[] = [
     ctaEn: 'Try it',
     emoji: '☕',
     href: '/rewards',
+    image: require('../assets/images/slide-3.jpg'),
   },
   {
     id: 'checkin-bonus',
@@ -39,6 +40,7 @@ export const promos: Promo[] = [
     ctaEn: 'Check in',
     emoji: '⭐',
     href: '/checkin',
+    image: require('../assets/images/slide-1.jpg'),
   },
   {
     id: 'invite',
@@ -50,6 +52,7 @@ export const promos: Promo[] = [
     ctaEn: 'Invite now',
     emoji: '🎁',
     href: '/account',
+    image: require('../assets/images/slide-2.jpg'),
   },
 ];
 

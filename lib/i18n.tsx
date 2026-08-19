@@ -106,6 +106,7 @@ const dict = {
     title: { ar: 'حسابي', en: 'Account' },
     sectionAccount: { ar: 'الحساب', en: 'Account' },
     profile: { ar: 'ملفي الشخصي', en: 'My Profile' },
+    branches: { ar: 'الفروع', en: 'Branches' },
     myOrders: { ar: 'طلباتي', en: 'My Orders' },
     inviteFriends: { ar: 'دعوة أصدقاء', en: 'Invite Friends' },
     sectionPrefs: { ar: 'الإعدادات', en: 'Preferences' },

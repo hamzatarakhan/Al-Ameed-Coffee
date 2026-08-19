@@ -17,11 +17,15 @@ export function CircleButton({ icon, onPress, size = 40, tone = 'light', style }
 
   // "light" sits on plain page backgrounds (notification bell, list-row
   // chevrons) as often as it sits over hero photography, so unlike
-  // brand/dark it needs to stay visible against both a white page (soft
-  // grey fill + border, not invisible white-on-white) and a dark page
-  // (a slightly muted off-white, not glaring stark white).
+  // brand/dark it needs to stay visible in both themes: soft opaque grey
+  // fill in light mode (page bg is white, so it needs to read as its own
+  // surface), but a translucent white wash in dark mode instead of a solid
+  // fill — a solid light disc reads as a bright, out-of-place blob against
+  // a dark page, where a low-opacity white blends into the surface instead.
   const tones = {
-    light: { bg: isDark ? '#EDE9E7' : colors.surface2, fg: '#1A1A1A', border: colors.border },
+    light: isDark
+      ? { bg: 'rgba(255,255,255,0.12)', fg: colors.text, border: 'rgba(255,255,255,0.2)' }
+      : { bg: colors.surface2, fg: '#1A1A1A', border: colors.border },
     brand: { bg: colors.brand, fg: '#FFFFFF', border: 'transparent' },
     dark: { bg: 'rgba(255,255,255,0.2)', fg: '#FFFFFF', border: 'transparent' },
   };

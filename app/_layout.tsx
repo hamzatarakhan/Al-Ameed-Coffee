@@ -10,6 +10,7 @@ import { useFonts as usePlexMonoFonts, IBMPlexMono_500Medium } from '@expo-googl
 
 import { LanguageProvider } from '@/lib/i18n';
 import { ThemeModeProvider, useThemeMode } from '@/lib/theme-mode';
+import { NotificationsProvider } from '@/lib/notifications-store';
 import { colors } from '@/lib/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -32,7 +33,11 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <ThemeModeProvider>
         <LanguageProvider>
-          <AppShell />
+          {/* Outside AppShell's keyed Stack on purpose — read/unread state
+              shouldn't reset just because dark mode was toggled. */}
+          <NotificationsProvider>
+            <AppShell />
+          </NotificationsProvider>
         </LanguageProvider>
       </ThemeModeProvider>
     </SafeAreaProvider>
@@ -58,6 +63,7 @@ function AppShell() {
         <Stack.Screen name="my-points" options={{ presentation: 'card' }} />
         <Stack.Screen name="redeemed-rewards" options={{ presentation: 'card' }} />
         <Stack.Screen name="notifications" options={{ presentation: 'card' }} />
+        <Stack.Screen name="notification/[id]" options={{ presentation: 'card' }} />
         <Stack.Screen name="branches/index" options={{ presentation: 'card' }} />
         <Stack.Screen name="branches/[id]" options={{ presentation: 'card' }} />
         <Stack.Screen name="profile" options={{ presentation: 'card' }} />

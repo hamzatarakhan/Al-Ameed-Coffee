@@ -12,17 +12,19 @@ import { RewardMedia } from '@/components/RewardMedia';
 import { colors, radius, shadow, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
-import { rewards, branches, promos, notifications, userPoints } from '@/lib/mock-data';
+import { useNotifications } from '@/lib/notifications-store';
+import { rewards, branches, promos, userPoints } from '@/lib/mock-data';
 
 const cheapest = [...rewards].sort((a, b) => a.cost - b.cost);
 const nearestBranch = branches[0];
-const hasUnreadNotifications = notifications.some((n) => !n.read);
 
 export default function HomeScreen() {
   const { t, lang, toggle, isRTL } = useLang();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const tabBarInset = useTabBarInset();
+  const { notifications } = useNotifications();
+  const hasUnreadNotifications = notifications.some((n) => !n.read);
 
   const categories = [
     { icon: 'bag-handle' as const, label: t('home.quickOrder'), onPress: () => router.push('/order') },
