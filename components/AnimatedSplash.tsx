@@ -165,17 +165,17 @@ const styles = StyleSheet.create({
   logo: { width: 210, height: 117 },
   glow: {
     position: 'absolute',
-    // Centered on the logo+text group as a whole (not just the logo) via
-    // the classic top/left 50% + negative-margin trick, rather than relying
-    // on the parent's default absolute-child centering — that only centers
-    // on the flex box's own midpoint, which sits too high once text is
-    // added below the logo.
-    top: '50%',
-    left: '50%',
+    // `center`'s own width is auto (shrink-to-content), and RN/Yoga can't
+    // reliably resolve percentage insets against an auto-sized parent — a
+    // `left: '50%'` attempt here landed the circle way off to one side.
+    // Horizontal centering instead comes for free from the parent's
+    // `alignItems: 'center'` (which only needs this view's own definite
+    // width, not a percentage), so only a fixed-pixel `top` is needed to
+    // pull the circle's center down from the logo's top (its default,
+    // unset-top position) to the true middle of the logo+text group.
+    top: -54,
     width: 280,
     height: 280,
-    marginLeft: -140,
-    marginTop: -140,
     borderRadius: 140,
     backgroundColor: '#E51937',
     // Cheap radial-glow stand-in: a blurred-looking soft circle via low
