@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { profile as seedProfile } from './mock-data';
 
-export type EditableProfile = { nameAr: string; nameEn: string; phone: string; email: string };
+export type EditableProfile = Partial<typeof seedProfile>;
 
 interface ProfileValue {
   profile: typeof seedProfile;

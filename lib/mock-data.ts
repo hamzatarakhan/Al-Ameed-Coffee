@@ -322,6 +322,9 @@ export const orders: Order[] = [
   },
 ];
 
+export type Gender = 'male' | 'female' | '';
+export type MaritalStatus = 'single' | 'married' | '';
+
 export const profile = {
   nameAr: 'حمزة طرقان',
   nameEn: 'Hamza Tarkan',
@@ -329,4 +332,11 @@ export const profile = {
   email: 'hamza@example.com',
   memberSince: '2026-07-13',
   referralCode: 'AMEED-HZ20',
+  dateOfBirth: '',
+  gender: '' as Gender,
+  maritalStatus: '' as MaritalStatus,
+  city: '',
+  area: '',
 };
+
+export const jordanCities = ['عمّان', 'إربد', 'الزرقاء', 'الكرك', 'العقبة', 'مادبا', 'السلط', 'المفرق'];

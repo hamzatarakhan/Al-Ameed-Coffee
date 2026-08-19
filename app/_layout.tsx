@@ -59,7 +59,7 @@ export default function RootLayout() {
 
 function AppShell() {
   const { isDark } = useThemeMode();
-  const { isAuthenticated } = useAuth();
+  const { status } = useAuth();
 
   // react-native-screens freezes/keeps-alive inactive tab screens for native
   // transition performance — they don't re-render just because an ancestor's
@@ -76,20 +76,25 @@ function AppShell() {
   // screens are declared, and swapping to a Stack instance that doesn't
   // declare a screen for "/" made React Navigation fall back to matching
   // "/" against the full file-based route table anyway — landing on the
-  // tabs even while `isAuthenticated` was correctly false. `Stack.Protected`
-  // is the API built for this: one Stack declares every screen (so URL
-  // matching always has a real target), and each guard just hides/redirects
-  // within it.
+  // tabs even while auth was correctly signed out. `Stack.Protected` is the
+  // API built for this: one Stack declares every screen (so URL matching
+  // always has a real target), and each guard just hides/redirects within
+  // it. Three states instead of a boolean: new accounts land in
+  // needsProfile after OTP (see auth/complete-profile) before signedIn.
   return (
     <>
       <Stack key={isDark ? 'dark' : 'light'} screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
-        <Stack.Protected guard={!isAuthenticated}>
+        <Stack.Protected guard={status === 'signedOut'}>
           <Stack.Screen name="auth/login" />
           <Stack.Screen name="auth/signup" />
           <Stack.Screen name="auth/otp" />
         </Stack.Protected>
 
-        <Stack.Protected guard={isAuthenticated}>
+        <Stack.Protected guard={status === 'needsProfile'}>
+          <Stack.Screen name="auth/complete-profile" />
+        </Stack.Protected>
+
+        <Stack.Protected guard={status === 'signedIn'}>
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="my-points" options={{ presentation: 'card' }} />
           <Stack.Screen name="redeemed-rewards" options={{ presentation: 'card' }} />

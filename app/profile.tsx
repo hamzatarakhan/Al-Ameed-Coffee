@@ -5,11 +5,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { Card } from '@/components/Card';
+import { ChoiceChips } from '@/components/ChoiceChips';
 import { Input } from '@/components/Input';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { colors, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useProfile } from '@/lib/profile-store';
+import { jordanCities, type Gender, type MaritalStatus } from '@/lib/mock-data';
 
 export default function ProfileScreen() {
   const { t, lang } = useLang();
@@ -77,6 +79,49 @@ export default function ProfileScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
             />
+            <Input
+              label={t('auth.dateOfBirth')}
+              placeholder={t('auth.dobPlaceholder')}
+              value={draft.dateOfBirth}
+              onChangeText={(v) => setDraft((d) => ({ ...d, dateOfBirth: v }))}
+            />
+            <View style={{ gap: space.xs }}>
+              <AppText variant="label" color={colors.textMuted}>
+                {t('auth.gender')}
+              </AppText>
+              <ChoiceChips<Gender>
+                value={draft.gender}
+                onChange={(v) => setDraft((d) => ({ ...d, gender: v }))}
+                options={[
+                  { value: 'male', label: t('auth.genderMale') },
+                  { value: 'female', label: t('auth.genderFemale') },
+                ]}
+              />
+            </View>
+            <View style={{ gap: space.xs }}>
+              <AppText variant="label" color={colors.textMuted}>
+                {t('auth.maritalStatus')}
+              </AppText>
+              <ChoiceChips<MaritalStatus>
+                value={draft.maritalStatus}
+                onChange={(v) => setDraft((d) => ({ ...d, maritalStatus: v }))}
+                options={[
+                  { value: 'single', label: t('auth.maritalSingle') },
+                  { value: 'married', label: t('auth.maritalMarried') },
+                ]}
+              />
+            </View>
+            <View style={{ gap: space.xs }}>
+              <AppText variant="label" color={colors.textMuted}>
+                {t('auth.city')}
+              </AppText>
+              <ChoiceChips<string>
+                value={draft.city}
+                onChange={(v) => setDraft((d) => ({ ...d, city: v }))}
+                options={jordanCities.map((c) => ({ value: c, label: c }))}
+              />
+            </View>
+            <Input label={t('auth.area')} placeholder={t('auth.areaPlaceholder')} value={draft.area} onChangeText={(v) => setDraft((d) => ({ ...d, area: v }))} />
           </Card>
         ) : (
           <Card>
@@ -85,6 +130,21 @@ export default function ProfileScreen() {
               { icon: 'call-outline' as const, label: t('profile.phone'), value: profile.phone },
               { icon: 'mail-outline' as const, label: t('profile.email'), value: profile.email },
               { icon: 'gift-outline' as const, label: t('profile.referralCode'), value: profile.referralCode },
+              ...(profile.dateOfBirth ? [{ icon: 'calendar-outline' as const, label: t('auth.dateOfBirth'), value: profile.dateOfBirth }] : []),
+              ...(profile.gender
+                ? [{ icon: 'male-female-outline' as const, label: t('auth.gender'), value: profile.gender === 'male' ? t('auth.genderMale') : t('auth.genderFemale') }]
+                : []),
+              ...(profile.maritalStatus
+                ? [
+                    {
+                      icon: 'heart-outline' as const,
+                      label: t('auth.maritalStatus'),
+                      value: profile.maritalStatus === 'single' ? t('auth.maritalSingle') : t('auth.maritalMarried'),
+                    },
+                  ]
+                : []),
+              ...(profile.city ? [{ icon: 'business-outline' as const, label: t('auth.city'), value: profile.city }] : []),
+              ...(profile.area ? [{ icon: 'map-outline' as const, label: t('auth.area'), value: profile.area }] : []),
             ].map((r, i, arr) => (
               <View key={r.label} style={{ borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderBottomColor: colors.border, paddingVertical: space.md }}>
                 <Row style={{ alignItems: 'center', gap: space.md }}>

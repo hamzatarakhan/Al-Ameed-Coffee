@@ -6,12 +6,17 @@ import React, { createContext, useContext, useState } from 'react';
 // exists — every screen already calls through this hook, not fetch directly.
 export const DEMO_OTP = '1234';
 
+// signedOut -> needsProfile (new accounts only, after OTP) -> signedIn.
+// Returning accounts and Apple sign-in skip straight to signedIn.
+export type AuthStatus = 'signedOut' | 'needsProfile' | 'signedIn';
+
 interface AuthValue {
-  isAuthenticated: boolean;
+  status: AuthStatus;
   pendingPhone: string | null;
-  isNewAccount: boolean;
-  startAuth: (phone: string, isNewAccount?: boolean) => void;
+  pendingName: string | null;
+  startAuth: (phone: string, isNewAccount?: boolean, name?: string) => void;
   verifyOtp: (code: string) => boolean;
+  completeProfile: () => void;
   signInWithApple: () => void;
   signOut: () => void;
   deleteAccount: () => void;
@@ -20,38 +25,41 @@ interface AuthValue {
 const AuthContext = createContext<AuthValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [status, setStatus] = useState<AuthStatus>('signedOut');
   const [pendingPhone, setPendingPhone] = useState<string | null>(null);
+  const [pendingName, setPendingName] = useState<string | null>(null);
   const [isNewAccount, setIsNewAccount] = useState(false);
 
-  const startAuth = (phone: string, newAccount = false) => {
+  const startAuth = (phone: string, newAccount = false, name?: string) => {
     setPendingPhone(phone);
+    setPendingName(name ?? null);
     setIsNewAccount(newAccount);
   };
 
   const verifyOtp = (code: string) => {
     const ok = code === DEMO_OTP;
-    if (ok) setIsAuthenticated(true);
+    if (ok) setStatus(isNewAccount ? 'needsProfile' : 'signedIn');
     return ok;
   };
 
+  const completeProfile = () => setStatus('signedIn');
+
   // Apple's own sign-in sheet is the verification step — no separate OTP
   // needed once it resolves successfully.
-  const signInWithApple = () => setIsAuthenticated(true);
+  const signInWithApple = () => setStatus('signedIn');
 
   const signOut = () => {
-    setIsAuthenticated(false);
+    setStatus('signedOut');
     setPendingPhone(null);
   };
 
   const deleteAccount = () => {
-    setIsAuthenticated(false);
+    setStatus('signedOut');
     setPendingPhone(null);
   };
 
   return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, pendingPhone, isNewAccount, startAuth, verifyOtp, signInWithApple, signOut, deleteAccount }}>
+    <AuthContext.Provider value={{ status, pendingPhone, pendingName, startAuth, verifyOtp, completeProfile, signInWithApple, signOut, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   );
