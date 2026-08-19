@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, shadow } from '@/lib/theme';
+import { colors } from '@/lib/theme';
 
 interface Props {
   icon: keyof typeof Ionicons.glyphMap;
@@ -11,13 +11,16 @@ interface Props {
   style?: ViewStyle;
 }
 
-const tones = {
-  light: { bg: colors.white, fg: colors.text },
-  brand: { bg: colors.brand, fg: colors.white },
-  dark: { bg: 'rgba(255,255,255,0.2)', fg: colors.white },
-};
-
 export function CircleButton({ icon, onPress, size = 40, tone = 'light', style }: Props) {
+  // Computed per render (not at module load) so it picks up live theme
+  // changes — and "light"/"dark" tones stay fixed white-on-dark-icon /
+  // dark-on-white-icon regardless of app theme, since they're circles drawn
+  // over photography, not surfaces that should follow light/dark mode.
+  const tones = {
+    light: { bg: '#FFFFFF', fg: '#1A1A1A' },
+    brand: { bg: colors.brand, fg: '#FFFFFF' },
+    dark: { bg: 'rgba(255,255,255,0.2)', fg: '#FFFFFF' },
+  };
   const t = tones[tone];
   return (
     <Pressable
@@ -31,7 +34,6 @@ export function CircleButton({ icon, onPress, size = 40, tone = 'light', style }
           backgroundColor: t.bg,
           alignItems: 'center',
           justifyContent: 'center',
-          ...shadow.floating,
         },
         style,
       ]}>

@@ -7,10 +7,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { CircleButton } from '@/components/CircleButton';
+import { PromoCarousel } from '@/components/PromoCarousel';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
-import { rewards, branches, userPoints } from '@/lib/mock-data';
+import { rewards, branches, promos, userPoints } from '@/lib/mock-data';
 
 const cheapest = [...rewards].sort((a, b) => a.cost - b.cost);
 const nearestBranch = branches[0];
@@ -53,36 +54,9 @@ export default function HomeScreen() {
         </Row>
       </Row>
 
-      <View style={{ paddingHorizontal: space.lg }}>
-        <Pressable
-          onPress={() => router.push('/rewards')}
-          style={{
-            backgroundColor: colors.brand,
-            borderRadius: radius.xl,
-            padding: space.xl,
-            marginBottom: space.xl,
-            overflow: 'hidden',
-            flexDirection: isRTL ? 'row-reverse' : 'row',
-            alignItems: 'center',
-          }}>
-          <View style={{ flex: 1, gap: space.md }}>
-            <View style={{ alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.25)', borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 3 }}>
-              <AppText variant="label" color={colors.white}>
-                {t('home.promoBadge')}
-              </AppText>
-            </View>
-            <AppText variant="h2" color={colors.white}>
-              {t('home.promoTitle')}
-            </AppText>
-            <View style={{ alignSelf: 'flex-start', backgroundColor: colors.white, borderRadius: radius.sm, paddingHorizontal: space.lg, paddingVertical: space.sm }}>
-              <AppText variant="bodySemiBold" color={colors.brand}>
-                {t('home.promoCta')}
-              </AppText>
-            </View>
-          </View>
-          <AppText style={{ fontSize: 56, opacity: 0.9 }}>☕</AppText>
-        </Pressable>
+      <PromoCarousel slides={promos} />
 
+      <View style={{ paddingHorizontal: space.lg }}>
         <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: space.md }}>
           <AppText variant="muted">{t('home.yourPoints')}</AppText>
           <AppText variant="mono" color={colors.brandInk}>
@@ -106,7 +80,7 @@ export default function HomeScreen() {
                 paddingVertical: space.md,
               }}>
               <Ionicons name={c.icon} size={20} color={i === 0 ? colors.white : colors.brandInk} />
-              <AppText variant="label" color={i === 0 ? colors.white : colors.textMuted} style={{ fontSize: 10 }}>
+              <AppText variant="label" color={i === 0 ? colors.white : colors.textMuted} align="center">
                 {c.label}
               </AppText>
             </Pressable>
@@ -116,7 +90,7 @@ export default function HomeScreen() {
         <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: space.md }}>
           <AppText variant="h3">{t('home.popular')}</AppText>
           <Pressable onPress={() => router.push('/rewards')}>
-            <AppText variant="bodyMedium" color={colors.brand} style={{ fontSize: 13 }}>
+            <AppText variant="bodyMedium" color={colors.brand}>
               {t('common.seeAll')}
             </AppText>
           </Pressable>
@@ -130,14 +104,14 @@ export default function HomeScreen() {
               style={{ backgroundColor: colors.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, padding: space.sm }}>
               <Row style={{ alignItems: 'center', gap: space.md }}>
                 <View style={{ width: 64, height: 64, borderRadius: radius.md, backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center' }}>
-                  <AppText style={{ fontSize: 28 }}>{r.emoji}</AppText>
+                  <AppText style={{ fontSize: 28, lineHeight: 32 }}>{r.emoji}</AppText>
                 </View>
                 <View style={{ flex: 1 }}>
                   <AppText variant="bodySemiBold">{lang === 'ar' ? r.nameAr : r.nameEn}</AppText>
-                  <AppText variant="muted" style={{ fontSize: 12 }} numberOfLines={1}>
+                  <AppText variant="muted" numberOfLines={1}>
                     {lang === 'ar' ? r.descAr : r.descEn}
                   </AppText>
-                  <AppText variant="mono" color={colors.brandInk} style={{ fontSize: 12, marginTop: 2 }}>
+                  <AppText variant="mono" color={colors.brandInk} style={{ marginTop: 2 }}>
                     {r.cost} {t('common.points')}
                   </AppText>
                 </View>

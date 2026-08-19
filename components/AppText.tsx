@@ -5,16 +5,19 @@ import { useLang } from '@/lib/i18n';
 
 export type TextVariant = 'display' | 'h2' | 'h3' | 'body' | 'bodyMedium' | 'bodySemiBold' | 'muted' | 'mono' | 'label';
 
-const sizes: Record<TextVariant, number> = {
-  display: 26,
-  h2: 19,
-  h3: 15.5,
-  body: 15,
-  bodyMedium: 15,
-  bodySemiBold: 15,
-  muted: 13.5,
-  mono: 12,
-  label: 11,
+// Every variant carries its own lineHeight — Arabic (Cairo) diacritics and
+// descenders sit outside the Latin font metrics RN falls back to, so without
+// an explicit, generous lineHeight they visually clip at the top/bottom.
+const scale: Record<TextVariant, { size: number; line: number }> = {
+  display: { size: 27, line: 34 },
+  h2: { size: 20, line: 27 },
+  h3: { size: 16, line: 22 },
+  body: { size: 15, line: 22 },
+  bodyMedium: { size: 15, line: 22 },
+  bodySemiBold: { size: 15, line: 22 },
+  muted: { size: 14, line: 20 },
+  mono: { size: 13, line: 18 },
+  label: { size: 12, line: 17 },
 };
 
 interface Props extends TextProps {
@@ -32,14 +35,17 @@ export function AppText({ variant = 'body', color, align, style, ...rest }: Prop
         return isRTL ? fonts.displayAr : fonts.displayEn;
       case 'h2':
       case 'h3':
-        return isRTL ? fonts.bodyArSemiBold : fonts.bodyEnSemiBold;
       case 'bodySemiBold':
         return isRTL ? fonts.bodyArSemiBold : fonts.bodyEnSemiBold;
       case 'bodyMedium':
         return isRTL ? fonts.bodyArMedium : fonts.bodyEnMedium;
+      // IBM Plex Mono has no Arabic glyphs — on RTL, chips/tags/prices fall
+      // back to Cairo instead, or the OS silently substitutes its own font
+      // per-glyph, which is what was reading as "broken/cut off" text.
       case 'mono':
+        return isRTL ? fonts.bodyArMedium : fonts.mono;
       case 'label':
-        return fonts.mono;
+        return isRTL ? fonts.bodyArSemiBold : fonts.mono;
       default:
         return isRTL ? fonts.bodyAr : fonts.bodyEn;
     }
@@ -49,6 +55,7 @@ export function AppText({ variant = 'body', color, align, style, ...rest }: Prop
     align === 'center' ? 'center' : align === 'end' ? (isRTL ? 'left' : 'right') : isRTL ? 'right' : 'left';
 
   const letterSpacing = variant === 'label' ? 0.6 : variant === 'mono' ? 0.2 : undefined;
+  const { size, line } = scale[variant];
 
   return (
     <Text
@@ -56,14 +63,14 @@ export function AppText({ variant = 'body', color, align, style, ...rest }: Prop
       style={[
         {
           fontFamily: family,
-          fontSize: sizes[variant],
+          fontSize: size,
+          lineHeight: line,
           color: color ?? colors.text,
           textAlign: resolvedAlign,
           writingDirection: isRTL ? 'rtl' : 'ltr',
           letterSpacing,
           textTransform: variant === 'label' ? 'uppercase' : undefined,
         },
-        variant === 'display' && { lineHeight: sizes.display * 1.2 },
         variant === 'muted' && { color: colors.textMuted },
         style,
       ]}

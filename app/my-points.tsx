@@ -23,11 +23,11 @@ export default function MyPointsScreen() {
       <ScrollView contentContainerStyle={{ padding: space.lg, paddingBottom: space.xxxl }}>
         <Card style={{ marginBottom: space.lg }}>
           <AppText variant="muted">{t('points.balance')}</AppText>
-          <AppText variant="mono" style={{ fontSize: 34, marginBottom: space.md }}>
+          <AppText variant="mono" style={{ fontSize: 34, lineHeight: 40, marginBottom: space.md }}>
             {userPoints}
           </AppText>
           <ProgressBar value={userPoints} max={cheapest.cost} />
-          <AppText variant="muted" style={{ marginTop: space.sm, fontSize: 12.5 }}>
+          <AppText variant="muted" style={{ marginTop: space.sm }}>
             {t('points.nextReward', { name: lang === 'ar' ? cheapest.nameAr : cheapest.nameEn })}
           </AppText>
         </Card>
@@ -63,12 +63,11 @@ export default function MyPointsScreen() {
                 <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
                   <View>
                     <AppText variant="bodyMedium">{lang === 'ar' ? tx.labelAr : tx.labelEn}</AppText>
-                    <AppText variant="muted" style={{ fontSize: 12 }}>
-                      {tx.date}
-                    </AppText>
+                    <AppText variant="muted">{tx.date}</AppText>
                   </View>
-                  <AppText variant="mono" color={colors.good}>
-                    +{tx.points}
+                  <AppText variant="mono" color={tx.points < 0 ? colors.critical : colors.good}>
+                    {tx.points > 0 ? '+' : ''}
+                    {tx.points}
                   </AppText>
                 </Row>
               </Card>

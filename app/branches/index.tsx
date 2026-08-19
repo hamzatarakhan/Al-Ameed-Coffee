@@ -21,9 +21,7 @@ export default function BranchesListScreen() {
       <ScrollView contentContainerStyle={{ padding: space.lg, paddingBottom: space.xxxl }}>
         <Row style={{ alignItems: 'center', gap: space.xs, marginBottom: space.lg }}>
           <Ionicons name="location-outline" size={14} color={colors.textMuted} />
-          <AppText variant="muted" style={{ fontSize: 12.5 }}>
-            {t('branches.distanceUnknown')}
-          </AppText>
+          <AppText variant="muted">{t('branches.distanceUnknown')}</AppText>
         </Row>
 
         <View style={{ gap: space.md }}>
@@ -42,9 +40,7 @@ export default function BranchesListScreen() {
                 <AppText variant="bodySemiBold">{lang === 'ar' ? b.nameAr : b.nameEn}</AppText>
                 <Pill tone={b.openNow ? 'good' : 'neutral'} label={b.openNow ? t('branches.openNow') : t('branches.closed')} />
               </Row>
-              <AppText variant="muted" style={{ fontSize: 13 }}>
-                {lang === 'ar' ? b.addressAr : b.addressEn}
-              </AppText>
+              <AppText variant="muted">{lang === 'ar' ? b.addressAr : b.addressEn}</AppText>
               <Row style={{ alignItems: 'center', gap: 4, marginTop: space.sm }}>
                 <AppText variant="label" color={colors.brandInk}>
                   {t('common.seeAll')}

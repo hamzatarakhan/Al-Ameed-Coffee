@@ -58,14 +58,14 @@ export default function RewardsGalleryScreen() {
               }}>
               <Row style={{ alignItems: 'center', gap: space.md }}>
                 <View style={{ width: 68, height: 68, borderRadius: radius.md, backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center' }}>
-                  <AppText style={{ fontSize: 30 }}>{r.emoji}</AppText>
+                  <AppText style={{ fontSize: 30, lineHeight: 34 }}>{r.emoji}</AppText>
                 </View>
                 <View style={{ flex: 1 }}>
                   <AppText variant="bodySemiBold">{lang === 'ar' ? r.nameAr : r.nameEn}</AppText>
-                  <AppText variant="muted" numberOfLines={1} style={{ fontSize: 12.5, marginBottom: 3 }}>
+                  <AppText variant="muted" numberOfLines={1} style={{ marginBottom: 3 }}>
                     {lang === 'ar' ? r.descAr : r.descEn}
                   </AppText>
-                  <AppText variant="mono" color={locked ? colors.warn : colors.brandInk} style={{ fontSize: 12.5 }}>
+                  <AppText variant="mono" color={locked ? colors.warn : colors.brandInk}>
                     {locked ? t('rewards.pointsToGo', { n: r.cost - userPoints }) : `${r.cost} ${t('common.points')}`}
                   </AppText>
                 </View>

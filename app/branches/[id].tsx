@@ -25,7 +25,7 @@ export default function BranchDetailScreen() {
       <ScrollView bounces={false} contentContainerStyle={{ paddingBottom: space.xxxl }}>
         <View style={{ height: 220, backgroundColor: colors.hero, alignItems: 'center', justifyContent: 'center', gap: space.xs }}>
           <Ionicons name="map" size={28} color={colors.brand} />
-          <AppText variant="muted" color="#C9BEB4" style={{ fontSize: 12.5 }}>
+          <AppText variant="muted" color="#C9BEB4">
             {t('branchDetail.mapPreview')}
           </AppText>
           <CircleButton

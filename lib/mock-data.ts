@@ -1,3 +1,51 @@
+export type Promo = {
+  id: string;
+  badgeAr: string;
+  badgeEn: string;
+  titleAr: string;
+  titleEn: string;
+  ctaAr: string;
+  ctaEn: string;
+  emoji: string;
+  href: string;
+};
+
+export const promos: Promo[] = [
+  {
+    id: 'cappuccino',
+    badgeAr: 'جديد',
+    badgeEn: 'NEW',
+    titleAr: 'كابتشينو العميد الجديد وصل',
+    titleEn: 'New Al Ameed Cappuccino is here',
+    ctaAr: 'جرّبه',
+    ctaEn: 'Try it',
+    emoji: '☕',
+    href: '/rewards',
+  },
+  {
+    id: 'checkin-bonus',
+    badgeAr: 'هالأسبوع',
+    badgeEn: 'THIS WEEK',
+    titleAr: 'سجّل حضورك واكسب ضعف النقاط',
+    titleEn: 'Check in this week for double points',
+    ctaAr: 'سجّل الآن',
+    ctaEn: 'Check in',
+    emoji: '⭐',
+    href: '/checkin',
+  },
+  {
+    id: 'invite',
+    badgeAr: 'هدية',
+    badgeEn: 'GIFT',
+    titleAr: 'ادعُ صديق واكسبوا 50 نقطة الاثنين',
+    titleEn: 'Invite a friend, you both earn 50 points',
+    ctaAr: 'ادعُ الآن',
+    ctaEn: 'Invite now',
+    emoji: '🎁',
+    href: '/account',
+  },
+];
+
 export type Reward = {
   id: string;
   nameAr: string;
@@ -121,11 +169,22 @@ export type Transaction = {
   date: string;
 };
 
+// ponytail: generous test data so every list/empty-state combo is easy to
+// eyeball — set an array back to [] to see that screen's EmptyState instead.
 export const transactions: Transaction[] = [
+  { id: 'tx-checkin-5', labelAr: 'تسجيل حضور - فرع الشميساني', labelEn: 'Check-in - Shmaisani branch', points: 10, date: '2026-08-18' },
+  { id: 'tx-order-4', labelAr: 'طلب عبر التطبيق', labelEn: 'Order via app', points: 25, date: '2026-08-15' },
+  { id: 'tx-invite', labelAr: 'دعوة صديق - سارة أحمد', labelEn: 'Friend invite - Sara Ahmad', points: 50, date: '2026-08-10' },
+  { id: 'tx-checkin-4', labelAr: 'تسجيل حضور - تجربة العميد', labelEn: 'Check-in - AlAmeed Experience', points: 10, date: '2026-08-06' },
+  { id: 'tx-order-3', labelAr: 'طلب عبر التطبيق', labelEn: 'Order via app', points: 30, date: '2026-08-02' },
+  { id: 'tx-redeem-1', labelAr: 'استبدال: كوب سيراميك', labelEn: 'Redeemed: Ceramic Mug', points: -180, date: '2026-07-29' },
+  { id: 'tx-checkin-3', labelAr: 'تسجيل حضور - فرع الشميساني', labelEn: 'Check-in - Shmaisani branch', points: 10, date: '2026-07-25' },
+  { id: 'tx-order-2', labelAr: 'طلب عبر التطبيق', labelEn: 'Order via app', points: 40, date: '2026-07-20' },
+  { id: 'tx-checkin-2', labelAr: 'تسجيل حضور - قرية الحجرة', labelEn: 'Check-in - Hujra Village', points: 10, date: '2026-07-17' },
   { id: 'reg-gift', labelAr: 'هدية التسجيل', labelEn: 'Registration Gift', points: 20, date: '2026-07-13' },
 ];
 
-export const userPoints = 20;
+export const userPoints = 265;
 
 export type Notification = {
   id: string;
@@ -137,6 +196,125 @@ export type Notification = {
   read: boolean;
 };
 
-// Seeded empty on purpose — the audit's fix for the old "big blank void
-// below one item" bug is a real EmptyState, so the demo shows that state.
-export const notifications: Notification[] = [];
+export const notifications: Notification[] = [
+  {
+    id: 'notif-1',
+    titleAr: 'كابتشينو العميد الجديد وصل',
+    titleEn: 'New Al Ameed Cappuccino is here',
+    bodyAr: 'جرّبه هلق بأي فرع واكسب نقاط إضافية أول أسبوع.',
+    bodyEn: 'Try it now at any branch and earn bonus points this first week.',
+    date: '2026-08-18',
+    read: false,
+  },
+  {
+    id: 'notif-2',
+    titleAr: 'كسبت 10 نقاط',
+    titleEn: 'You earned 10 points',
+    bodyAr: 'من تسجيل حضورك بفرع الشميساني.',
+    bodyEn: 'From checking in at the Shmaisani branch.',
+    date: '2026-08-18',
+    read: false,
+  },
+  {
+    id: 'notif-3',
+    titleAr: 'باقي القليل على هديتك',
+    titleEn: 'Almost at your next reward',
+    bodyAr: 'باقي 5 نقاط بس عشان تفتح "كيس بن مطحون 500غ".',
+    bodyEn: 'Just 5 more points to unlock the 500g Ground Coffee.',
+    date: '2026-08-16',
+    read: true,
+  },
+  {
+    id: 'notif-4',
+    titleAr: 'فرع جديد: تجربة العميد',
+    titleEn: 'New branch: AlAmeed Experience',
+    bodyAr: 'افتتحنا فرع جديد بأم السماق — زورونا!',
+    bodyEn: "We opened a new branch in Um Uthaina — come say hi!",
+    date: '2026-08-10',
+    read: true,
+  },
+  {
+    id: 'notif-5',
+    titleAr: 'هدية التسجيل',
+    titleEn: 'Registration Gift',
+    bodyAr: 'شكرًا لتحميلك تطبيق بن العميد، ضفنالك 20 نقطة مجانية.',
+    bodyEn: 'Thanks for downloading the Al Ameed app — 20 free points added.',
+    date: '2026-07-13',
+    read: true,
+  },
+];
+
+export type Redemption = {
+  id: string;
+  nameAr: string;
+  nameEn: string;
+  emoji: string;
+  ref: string;
+  date: string;
+};
+
+export const redemptions: Redemption[] = [
+  { id: 'r1', nameAr: 'كوب سيراميك', nameEn: 'Ceramic Mug', emoji: '🍵', ref: 'RD-10482', date: '2026-07-29' },
+  { id: 'r2', nameAr: 'هدية التسجيل', nameEn: 'Registration Gift', emoji: '🎁', ref: 'RD-10011', date: '2026-07-13' },
+];
+
+export type Order = {
+  id: string;
+  itemsAr: string;
+  itemsEn: string;
+  itemCount: number;
+  branchAr: string;
+  branchEn: string;
+  price: string;
+  date: string;
+  statusAr: string;
+  statusEn: string;
+};
+
+export const orders: Order[] = [
+  {
+    id: 'o1',
+    itemsAr: 'كابتشينو، كرواسون',
+    itemsEn: 'Cappuccino, Croissant',
+    itemCount: 2,
+    branchAr: 'الشميساني',
+    branchEn: 'Shmaisani',
+    price: '4.50 د.أ',
+    date: '2026-08-15',
+    statusAr: 'مكتمل',
+    statusEn: 'Completed',
+  },
+  {
+    id: 'o2',
+    itemsAr: 'قهوة تركية × 2',
+    itemsEn: 'Turkish Coffee × 2',
+    itemCount: 2,
+    branchAr: 'تجربة العميد',
+    branchEn: 'AlAmeed Experience',
+    price: '3.00 د.أ',
+    date: '2026-08-06',
+    statusAr: 'مكتمل',
+    statusEn: 'Completed',
+  },
+  {
+    id: 'o3',
+    itemsAr: 'إسبريسو، مافن شوكولاتة',
+    itemsEn: 'Espresso, Chocolate Muffin',
+    itemCount: 2,
+    branchAr: 'قرية الحجرة',
+    branchEn: 'Hujra Village',
+    price: '3.75 د.أ',
+    date: '2026-07-20',
+    statusAr: 'مكتمل',
+    statusEn: 'Completed',
+  },
+];
+
+export const profile = {
+  nameAr: 'حمزة طرقان',
+  nameEn: 'Hamza Tarkan',
+  phone: '+962 79 000 0000',
+  email: 'hamza@example.com',
+  memberSince: '2026-07-13',
+  referralCode: 'AMEED-HZ20',
+};

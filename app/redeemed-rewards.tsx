@@ -8,11 +8,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { colors, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
-
-// The old app showed a literal "NO PHOTO" stock image here. Seeded empty so
-// the EmptyState (the actual fix) renders — flip to a mock redeemed list to
-// see the populated card layout instead.
-const redemptions: { id: string; nameAr: string; nameEn: string; ref: string; date: string }[] = [];
+import { redemptions } from '@/lib/mock-data';
 
 export default function RedeemedRewardsScreen() {
   const { t, lang } = useLang();
@@ -27,10 +23,13 @@ export default function RedeemedRewardsScreen() {
           <View style={{ gap: space.sm }}>
             {redemptions.map((r) => (
               <Card key={r.id}>
-                <Row style={{ justifyContent: 'space-between' }}>
-                  <View>
+                <Row style={{ alignItems: 'center', gap: space.md }}>
+                  <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center' }}>
+                    <AppText style={{ fontSize: 22, lineHeight: 26 }}>{r.emoji}</AppText>
+                  </View>
+                  <View style={{ flex: 1 }}>
                     <AppText variant="bodyMedium">{lang === 'ar' ? r.nameAr : r.nameEn}</AppText>
-                    <AppText variant="muted" style={{ fontSize: 12 }}>
+                    <AppText variant="muted">
                       {t('redeemed.ref')} {r.ref} · {r.date}
                     </AppText>
                   </View>

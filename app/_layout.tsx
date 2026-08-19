@@ -9,6 +9,7 @@ import { useFonts as useCairoFonts, Cairo_400Regular, Cairo_500Medium, Cairo_600
 import { useFonts as usePlexMonoFonts, IBMPlexMono_500Medium } from '@expo-google-fonts/ibm-plex-mono';
 
 import { LanguageProvider } from '@/lib/i18n';
+import { ThemeModeProvider, useThemeMode } from '@/lib/theme-mode';
 import { colors } from '@/lib/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -29,17 +30,31 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <LanguageProvider>
-        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="my-points" options={{ presentation: 'card' }} />
-          <Stack.Screen name="redeemed-rewards" options={{ presentation: 'card' }} />
-          <Stack.Screen name="notifications" options={{ presentation: 'card' }} />
-          <Stack.Screen name="branches/index" options={{ presentation: 'card' }} />
-          <Stack.Screen name="branches/[id]" options={{ presentation: 'card' }} />
-        </Stack>
-        <StatusBar style="dark" />
-      </LanguageProvider>
+      <ThemeModeProvider>
+        <LanguageProvider>
+          <AppShell />
+        </LanguageProvider>
+      </ThemeModeProvider>
     </SafeAreaProvider>
+  );
+}
+
+function AppShell() {
+  const { isDark } = useThemeMode();
+
+  return (
+    <>
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="my-points" options={{ presentation: 'card' }} />
+        <Stack.Screen name="redeemed-rewards" options={{ presentation: 'card' }} />
+        <Stack.Screen name="notifications" options={{ presentation: 'card' }} />
+        <Stack.Screen name="branches/index" options={{ presentation: 'card' }} />
+        <Stack.Screen name="branches/[id]" options={{ presentation: 'card' }} />
+        <Stack.Screen name="profile" options={{ presentation: 'card' }} />
+        <Stack.Screen name="orders" options={{ presentation: 'card' }} />
+      </Stack>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
+    </>
   );
 }

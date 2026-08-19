@@ -10,6 +10,7 @@ import { Button } from '@/components/Button';
 import { CircleButton } from '@/components/CircleButton';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
+import { useTabBarInset } from '@/lib/useTabBarInset';
 import { rewards, userPoints } from '@/lib/mock-data';
 
 export default function RewardDetailScreen() {
@@ -17,6 +18,7 @@ export default function RewardDetailScreen() {
   const { t, lang, isRTL } = useLang();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const tabBarInset = useTabBarInset();
   const [qty, setQty] = useState(1);
   const [success, setSuccess] = useState(false);
 
@@ -27,7 +29,7 @@ export default function RewardDetailScreen() {
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <ScrollView bounces={false} contentContainerStyle={{ paddingBottom: 150 }}>
         <View style={{ height: 320, backgroundColor: colors.hero, alignItems: 'center', justifyContent: 'center' }}>
-          <AppText style={{ fontSize: 120 }}>{reward.emoji}</AppText>
+          <AppText style={{ fontSize: 120, lineHeight: 132 }}>{reward.emoji}</AppText>
           <Row
             style={{
               position: 'absolute',
@@ -53,23 +55,19 @@ export default function RewardDetailScreen() {
             <AppText variant="h2" style={{ flex: 1 }}>
               {lang === 'ar' ? reward.nameAr : reward.nameEn}
             </AppText>
-            <AppText variant="mono" color={colors.brandInk} style={{ fontSize: 16 }}>
+            <AppText variant="mono" color={colors.brandInk} style={{ fontSize: 17, lineHeight: 22 }}>
               {reward.cost}
             </AppText>
           </Row>
 
           <Row style={{ alignItems: 'center', gap: space.md, marginBottom: space.lg }}>
             <Row style={{ alignItems: 'center', gap: 4 }}>
-              <Ionicons name="pricetag-outline" size={13} color={colors.textMuted} />
-              <AppText variant="muted" style={{ fontSize: 12.5 }}>
-                {lang === 'ar' ? reward.categoryAr : reward.categoryEn}
-              </AppText>
+              <Ionicons name="pricetag-outline" size={14} color={colors.textMuted} />
+              <AppText variant="muted">{lang === 'ar' ? reward.categoryAr : reward.categoryEn}</AppText>
             </Row>
             <Row style={{ alignItems: 'center', gap: 4 }}>
-              <Ionicons name="time-outline" size={13} color={colors.textMuted} />
-              <AppText variant="muted" style={{ fontSize: 12.5 }}>
-                {t('rewardDetail.fulfillment')}
-              </AppText>
+              <Ionicons name="time-outline" size={14} color={colors.textMuted} />
+              <AppText variant="muted">{t('rewardDetail.fulfillment')}</AppText>
             </Row>
           </Row>
 
@@ -100,10 +98,12 @@ export default function RewardDetailScreen() {
           position: 'absolute',
           left: 0,
           right: 0,
-          bottom: 0,
+          bottom: tabBarInset,
           padding: space.lg,
-          paddingBottom: insets.bottom + space.md,
+          paddingBottom: tabBarInset > 0 ? space.md : insets.bottom + space.md,
           backgroundColor: colors.bg,
+          borderTopWidth: 1,
+          borderTopColor: colors.border,
         }}>
         <Button
           label={locked ? t('rewardDetail.locked') : t('rewardDetail.redeem')}

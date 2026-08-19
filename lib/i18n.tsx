@@ -22,13 +22,8 @@ const dict = {
     account: { ar: 'حسابي', en: 'Account' },
   },
   home: {
-    welcome: { ar: 'أهلًا', en: 'Welcome' },
     question: { ar: 'شو حابب تطلب اليوم؟', en: 'What would you like today?' },
-    promoTitle: { ar: 'كابتشينو العميد الجديد وصل', en: 'New Al Ameed Cappuccino is here' },
-    promoCta: { ar: 'جرّبه', en: 'Try it' },
-    promoBadge: { ar: 'جديد', en: 'NEW' },
     yourPoints: { ar: 'رصيد نقاطك', en: 'Your points' },
-    toNextReward: { ar: 'باقي {n} نقطة لأقرب هدية', en: '{n} points to your next reward' },
     quickOrder: { ar: 'اطلب الآن', en: 'Order Now' },
     quickPoints: { ar: 'نقاطي', en: 'My Points' },
     quickRedeemed: { ar: 'المستبدلة', en: 'Redeemed' },
@@ -121,6 +116,20 @@ const dict = {
     connectWithUs: { ar: 'تابعنا', en: 'Connect With Us' },
     rateApp: { ar: 'قيّم التطبيق', en: 'Rate Our App' },
     devInfo: { ar: 'الإصدار 1.0.0 · Al Ameed Coffee', en: 'Version 1.0.0 · Al Ameed Coffee' },
+  },
+  profile: {
+    title: { ar: 'ملفي الشخصي', en: 'My Profile' },
+    memberSince: { ar: 'عضو منذ {date}', en: 'Member since {date}' },
+    name: { ar: 'الاسم', en: 'Name' },
+    phone: { ar: 'رقم الهاتف', en: 'Phone number' },
+    email: { ar: 'البريد الإلكتروني', en: 'Email' },
+    referralCode: { ar: 'كود الدعوة', en: 'Referral code' },
+  },
+  orders: {
+    title: { ar: 'طلباتي', en: 'My Orders' },
+    empty: { ar: 'لسا ما طلبت شي', en: "You haven't ordered yet" },
+    emptyBody: { ar: 'أول طلب إلك رح يبان هون', en: 'Your first order will show up here' },
+    itemsCount: { ar: '{n} أصناف', en: '{n} items' },
   },
 } as const;
 
