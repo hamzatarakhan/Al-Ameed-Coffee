@@ -108,22 +108,37 @@ export default function HomeScreen() {
               <Pressable
                 key={c.label}
                 onPress={c.onPress}
-                style={{
-                  flex: 1,
-                  alignItems: 'center',
-                  gap: space.xs,
-                  backgroundColor: i === 0 ? colors.brand : colors.surface2,
-                  borderRadius: radius.md,
-                  paddingVertical: space.sm,
-                }}>
-                <Ionicons name={c.icon} size={19} color={i === 0 ? colors.white : colors.brandInk} />
-                <AppText
-                  variant="label"
-                  color={i === 0 ? colors.white : colors.textMuted}
-                  align="center"
-                  style={!isRTL ? { fontSize: 9.5, lineHeight: 12, letterSpacing: 0.3 } : undefined}>
-                  {c.label}
-                </AppText>
+                // Default press feedback (Android's ripple especially) reads
+                // as a heavy dark flash — swap it for a light wash of the
+                // brand color instead, same tint the rest of the app already
+                // uses for "soft brand" surfaces.
+                android_ripple={{ color: colors.brandTint }}
+                style={({ pressed }) => [
+                  {
+                    flex: 1,
+                    alignItems: 'center',
+                    gap: space.xs,
+                    backgroundColor: i === 0 ? colors.brand : colors.surface2,
+                    borderRadius: radius.md,
+                    paddingVertical: space.sm,
+                  },
+                  pressed && { backgroundColor: colors.brandTint },
+                ]}>
+                {({ pressed }) => {
+                  const highlighted = i === 0 && !pressed;
+                  return (
+                    <>
+                      <Ionicons name={c.icon} size={19} color={highlighted ? colors.white : colors.brandInk} />
+                      <AppText
+                        variant="label"
+                        color={highlighted ? colors.white : colors.textMuted}
+                        align="center"
+                        style={!isRTL ? { fontSize: 9.5, lineHeight: 12, letterSpacing: 0.3 } : undefined}>
+                        {c.label}
+                      </AppText>
+                    </>
+                  );
+                }}
               </Pressable>
             ))}
           </Row>
