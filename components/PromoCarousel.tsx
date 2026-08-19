@@ -90,15 +90,27 @@ export function PromoCarousel({ slides }: { slides: Promo[] }) {
                 </AppText>
               </View>
 
-              <View style={{ gap: 6 }}>
+              <View style={{ gap: 10 }}>
                 <AppText variant="h2" color={colors.white} style={{ maxWidth: '85%' }}>
                   {lang === 'ar' ? promo.titleAr : promo.titleEn}
                 </AppText>
-                <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: 4 }}>
-                  <AppText variant="bodySemiBold" color={colors.white}>
+                <View
+                  style={{
+                    alignSelf: 'flex-start',
+                    flexDirection: isRTL ? 'row-reverse' : 'row',
+                    alignItems: 'center',
+                    gap: 4,
+                    backgroundColor: 'rgba(255,255,255,0.16)',
+                    borderWidth: 1,
+                    borderColor: 'rgba(255,255,255,0.4)',
+                    borderRadius: radius.pill,
+                    paddingVertical: 7,
+                    paddingHorizontal: 14,
+                  }}>
+                  <AppText variant="bodySemiBold" color={colors.white} style={{ fontSize: 13 }}>
                     {lang === 'ar' ? promo.ctaAr : promo.ctaEn}
                   </AppText>
-                  <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={15} color={colors.white} />
+                  <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={13} color={colors.white} />
                 </View>
               </View>
             </View>
