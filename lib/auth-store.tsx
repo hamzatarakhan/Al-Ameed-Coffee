@@ -1,10 +1,9 @@
 import React, { createContext, useContext, useState } from 'react';
 
 // ponytail: no real backend/SMS provider yet, so this is a working demo auth
-// flow (any 4-digit code matching DEMO_OTP passes) instead of a real one.
-// Swap startAuth/verifyOtp's bodies for real API calls once the backend
-// exists — every screen already calls through this hook, not fetch directly.
-export const DEMO_OTP = '1234';
+// flow (any 4-digit code passes) instead of a real one. Swap
+// startAuth/verifyOtp's bodies for real API calls once the backend exists —
+// every screen already calls through this hook, not fetch directly.
 
 // signedOut -> needsProfile (new accounts only, after OTP) -> signedIn.
 // Returning accounts and Apple sign-in skip straight to signedIn.
@@ -37,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const verifyOtp = (code: string) => {
-    const ok = code === DEMO_OTP;
+    const ok = /^\d{4}$/.test(code);
     if (ok) setStatus(isNewAccount ? 'needsProfile' : 'signedIn');
     return ok;
   };

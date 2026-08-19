@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { KeyboardAvoidingView, Linking, NativeSyntheticEvent, Platform, Pressable, ScrollView, TextInput, TextInputKeyPressEventData, View } from 'react-native';
+import { KeyboardAvoidingView, Linking, Platform, Pressable, ScrollView, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -20,10 +20,17 @@ export default function OtpScreen() {
   const insets = useSafeAreaInsets();
   const auth = useAuth();
 
-  const [digits, setDigits] = useState(['', '', '', '']);
+  // A single real TextInput captures every keystroke; the 4 boxes below are
+  // pure display driven off `code`. Four separate maxLength=1 inputs with
+  // manual focus-jumping between them is the classic OTP pattern, but it's
+  // fragile on real iOS devices — predictive text / the one-time-code
+  // QuickType bar can interfere with the focus handoff between boxes in
+  // ways that never show up in a browser/simulator. Routing all typing
+  // through one input sidesteps that whole class of bug.
+  const [code, setCode] = useState('');
   const [error, setError] = useState<string | undefined>();
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
-  const inputs = useRef<(TextInput | null)[]>([]);
+  const hiddenInput = useRef<TextInput>(null);
 
   useEffect(() => {
     if (secondsLeft <= 0) return;
@@ -31,8 +38,8 @@ export default function OtpScreen() {
     return () => clearTimeout(timer);
   }, [secondsLeft]);
 
-  const verify = (code: string) => {
-    if (auth.verifyOtp(code)) {
+  const verify = (value: string) => {
+    if (auth.verifyOtp(value)) {
       setError(undefined);
       // No explicit navigation needed — AppShell swaps stacks the moment
       // auth.status changes.
@@ -41,27 +48,10 @@ export default function OtpScreen() {
     setError(t('auth.otpInvalid'));
   };
 
-  const setDigit = (index: number, value: string) => {
-    const clean = value.replace(/\D/g, '').slice(-1);
-    const next = [...digits];
-    next[index] = clean;
-    setDigits(next);
-
-    if (clean && index < 3) {
-      // A same-tick .focus() call can race the native re-render that
-      // actually mounts/updates the next box, especially right after
-      // typing — deferring one tick makes the jump land reliably.
-      setTimeout(() => inputs.current[index + 1]?.focus(), 0);
-    }
-    if (next.every((d) => d.length === 1)) {
-      verify(next.join(''));
-    }
-  };
-
-  const onKeyPress = (index: number, e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
-    if (e.nativeEvent.key === 'Backspace' && !digits[index] && index > 0) {
-      inputs.current[index - 1]?.focus();
-    }
+  const onChangeCode = (value: string) => {
+    const clean = value.replace(/\D/g, '').slice(0, 4);
+    setCode(clean);
+    if (clean.length === 4) verify(clean);
   };
 
   const resend = () => {
@@ -87,39 +77,45 @@ export default function OtpScreen() {
             </AppText>
           </View>
 
-          <Row style={{ gap: space.sm, justifyContent: 'center' }}>
-            {digits.map((d, i) => (
-              <TextInput
-                key={i}
-                ref={(r) => {
-                  inputs.current[i] = r;
-                }}
-                value={d}
-                onChangeText={(v) => setDigit(i, v)}
-                onKeyPress={(e) => onKeyPress(i, e)}
-                keyboardType="number-pad"
-                maxLength={1}
-                style={{
-                  width: 60,
-                  height: 64,
-                  borderRadius: radius.md,
-                  borderWidth: 1.5,
-                  borderColor: error ? colors.critical : colors.border,
-                  backgroundColor: colors.surface2,
-                  textAlign: 'center',
-                  fontSize: 24,
-                  color: colors.text,
-                }}
-              />
-            ))}
-          </Row>
+          <Pressable onPress={() => hiddenInput.current?.focus()}>
+            <Row style={{ gap: space.sm, justifyContent: 'center' }}>
+              {[0, 1, 2, 3].map((i) => (
+                <View
+                  key={i}
+                  style={{
+                    width: 60,
+                    height: 64,
+                    borderRadius: radius.md,
+                    borderWidth: 1.5,
+                    borderColor: error ? colors.critical : colors.border,
+                    backgroundColor: colors.surface2,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <AppText variant="display">{code[i] ?? ''}</AppText>
+                </View>
+              ))}
+            </Row>
+          </Pressable>
+          <TextInput
+            ref={hiddenInput}
+            value={code}
+            onChangeText={onChangeCode}
+            keyboardType="number-pad"
+            maxLength={4}
+            autoFocus
+            // Visually hidden but still a real, focusable, typeable input —
+            // 0 size + opacity is the standard way to keep a TextInput
+            // functional while the 4 boxes above do the actual display.
+            style={{ position: 'absolute', width: 1, height: 1, opacity: 0 }}
+          />
           {error ? (
             <AppText variant="label" color={colors.critical} align="center" style={{ marginTop: space.sm }}>
               {error}
             </AppText>
           ) : null}
 
-          <Button label={t('auth.verify')} onPress={() => verify(digits.join(''))} style={{ marginTop: space.lg }} />
+          <Button label={t('auth.verify')} onPress={() => verify(code)} style={{ marginTop: space.lg }} />
 
           <View style={{ alignItems: 'center', marginTop: space.lg, gap: space.xs }}>
             {secondsLeft > 0 ? (
