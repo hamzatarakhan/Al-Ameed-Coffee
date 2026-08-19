@@ -102,14 +102,16 @@ export default function OtpScreen() {
                     }}>
                     <AppText
                       variant="display"
-                      // The "display" scale's 34px line-height (sized for
-                      // multi-line text elsewhere) sits noticeably above
-                      // center inside a single-glyph 64px box, especially on
-                      // Android where extra font padding stacks on top of
-                      // it. Tightening the line-height and killing that
-                      // padding centers it for real instead of just via the
-                      // parent's justifyContent.
-                      style={{ lineHeight: 28, includeFontPadding: false, textAlignVertical: 'center' }}>
+                      // Android stacks extra font padding on top of the
+                      // specified line-height, which pushed the glyph above
+                      // center inside this single-character 64px box.
+                      // includeFontPadding removes that padding — the actual
+                      // vertical centering still comes from the parent's
+                      // justifyContent, same as before. (A first attempt at
+                      // this also shrank lineHeight to 28, which was too
+                      // tight for the 27px font and clipped the glyph —
+                      // keep it close to the base 34 instead.)
+                      style={{ includeFontPadding: false, textAlignVertical: 'center' }}>
                       {code[i] ?? ''}
                     </AppText>
                   </View>
