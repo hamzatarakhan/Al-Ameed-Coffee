@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "al-ameed-app",
-    "slug": "al-ameed-app",
+    "name": "Al Ameed Coffee",
+    "slug": "al-ameed-coffee",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -33,9 +33,9 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#FAF6F0",
           "dark": {
-            "backgroundColor": "#000000"
+            "backgroundColor": "#1C1210"
           }
         }
       ]
