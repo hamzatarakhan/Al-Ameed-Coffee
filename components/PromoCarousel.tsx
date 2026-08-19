@@ -21,7 +21,7 @@ const SLIDE_HEIGHT = 210;
 export function PromoCarousel({ slides }: { slides: Promo[] }) {
   const { width } = useWindowDimensions();
   const slideWidth = width - SIDE_PADDING * 2;
-  const { lang, isRTL } = useLang();
+  const { lang } = useLang();
   const router = useRouter();
   const scrollRef = useRef<ScrollView>(null);
   const [index, setIndex] = useState(0);
@@ -65,9 +65,7 @@ export function PromoCarousel({ slides }: { slides: Promo[] }) {
               overflow: 'hidden',
               backgroundColor: colors.brand,
             }}>
-            {promo.image ? (
-              <Image source={promo.image} style={{ position: 'absolute', inset: 0 }} contentFit="cover" transition={150} />
-            ) : null}
+            {promo.image ? <Image source={promo.image} style={{ position: 'absolute', inset: 0 }} contentFit="cover" transition={150} /> : null}
             {/* Dark scrim so white text stays legible over any photo — heavier at the
                 bottom where the title/CTA sit, present even without a photo yet so the
                 badge/title read the same once one is dropped in. */}
@@ -76,6 +74,51 @@ export function PromoCarousel({ slides }: { slides: Promo[] }) {
               locations={[0, 0.45, 1]}
               style={{ position: 'absolute', inset: 0 }}
             />
+            {!promo.image && (
+              // Stand-in for the empty space until a real photo is set (see
+              // Promo.image in mock-data.ts) — a big glossy emoji reads as a
+              // dimensional "3D" icon on both iOS and Android without needing
+              // an icon asset, above the scrim so it stays bright rather than
+              // getting dimmed like background photo content. Always on the
+              // right: the text block above is a plain (non-mirrored) View
+              // pinned left regardless of language — see the module-level
+              // note on why this carousel doesn't mirror — so the icon has
+              // to stay fixed opposite it, not flip with isRTL, or the two
+              // collide in RTL. Drops away automatically once promo.image
+              // is set.
+              <View
+                pointerEvents="none"
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  bottom: 0,
+                  right: -8,
+                  width: 150,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <View
+                  style={{
+                    width: 108,
+                    height: 108,
+                    borderRadius: 54,
+                    backgroundColor: 'rgba(255,255,255,0.14)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <AppText
+                    style={{
+                      fontSize: 62,
+                      lineHeight: 70,
+                      textShadowColor: 'rgba(0,0,0,0.35)',
+                      textShadowOffset: { width: 0, height: 6 },
+                      textShadowRadius: 10,
+                    }}>
+                    {promo.emoji}
+                  </AppText>
+                </View>
+              </View>
+            )}
             <View style={{ flex: 1, padding: space.lg, justifyContent: 'space-between' }}>
               <View
                 style={{
@@ -91,13 +134,13 @@ export function PromoCarousel({ slides }: { slides: Promo[] }) {
               </View>
 
               <View style={{ gap: 10 }}>
-                <AppText variant="h2" color={colors.white} style={{ maxWidth: '85%' }}>
+                <AppText variant="h2" color={colors.white} style={{ maxWidth: '62%' }}>
                   {lang === 'ar' ? promo.titleAr : promo.titleEn}
                 </AppText>
                 <View
                   style={{
                     alignSelf: 'flex-start',
-                    flexDirection: isRTL ? 'row-reverse' : 'row',
+                    flexDirection: 'row',
                     alignItems: 'center',
                     gap: 4,
                     backgroundColor: 'rgba(255,255,255,0.16)',
@@ -110,7 +153,7 @@ export function PromoCarousel({ slides }: { slides: Promo[] }) {
                   <AppText variant="bodySemiBold" color={colors.white} style={{ fontSize: 13 }}>
                     {lang === 'ar' ? promo.ctaAr : promo.ctaEn}
                   </AppText>
-                  <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={13} color={colors.white} />
+                  <Ionicons name="chevron-forward" size={13} color={colors.white} />
                 </View>
               </View>
             </View>
