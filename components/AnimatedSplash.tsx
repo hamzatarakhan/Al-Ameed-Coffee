@@ -165,17 +165,24 @@ const styles = StyleSheet.create({
   logo: { width: 210, height: 117 },
   glow: {
     position: 'absolute',
-    width: 230,
-    height: 148,
-    borderRadius: 74,
+    // Centered on the logo+text group as a whole (not just the logo) via
+    // the classic top/left 50% + negative-margin trick, rather than relying
+    // on the parent's default absolute-child centering — that only centers
+    // on the flex box's own midpoint, which sits too high once text is
+    // added below the logo.
+    top: '50%',
+    left: '50%',
+    width: 280,
+    height: 280,
+    marginLeft: -140,
+    marginTop: -140,
+    borderRadius: 140,
     backgroundColor: '#E51937',
-    // Cheap radial-glow stand-in: a blurred-looking soft circle behind the
-    // logo via low opacity + shadow blur (works on iOS/Android/web without
-    // pulling in a blur view here) — kept close to the logo's own size so it
-    // reads as a glow, not a second larger disc.
+    // Cheap radial-glow stand-in: a blurred-looking soft circle via low
+    // opacity + shadow blur (works on iOS/Android/web without a blur view).
     shadowColor: '#E51937',
-    shadowOpacity: 0.8,
-    shadowRadius: 26,
+    shadowOpacity: 0.75,
+    shadowRadius: 24,
     shadowOffset: { width: 0, height: 0 },
   },
   ring: {
