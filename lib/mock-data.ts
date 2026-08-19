@@ -103,6 +103,7 @@ export const rewards: Reward[] = [
     emoji: '🍵',
     categoryAr: 'أدوات قهوة',
     categoryEn: 'Coffeeware',
+    image: require('../assets/images/reward-mug.jpg'),
   },
   {
     id: 'beans',
@@ -114,6 +115,7 @@ export const rewards: Reward[] = [
     categoryAr: 'بن',
     categoryEn: 'Coffee',
     emoji: '🫘',
+    image: require('../assets/images/reward-beans.jpg'),
   },
 ];
 
