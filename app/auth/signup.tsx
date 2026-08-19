@@ -6,11 +6,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { PhoneInput } from '@/components/PhoneInput';
 import { Row } from '@/components/Row';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { colors, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useAuth } from '@/lib/auth-store';
+import { isValidJordanPhone } from '@/lib/phone';
 
 export default function SignupScreen() {
   const { t } = useLang();
@@ -25,7 +27,7 @@ export default function SignupScreen() {
   const submit = () => {
     const nextErrors: typeof errors = {};
     if (name.trim().length < 2) nextErrors.name = t('auth.nameRequired');
-    if (phone.replace(/\D/g, '').length < 7) nextErrors.phone = t('auth.phoneRequired');
+    if (!isValidJordanPhone(phone)) nextErrors.phone = t('auth.phoneRequired');
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
@@ -40,14 +42,7 @@ export default function SignupScreen() {
         <ScrollView contentContainerStyle={{ padding: space.lg, paddingBottom: insets.bottom + space.xxl }} keyboardShouldPersistTaps="handled">
           <View style={{ gap: space.md }}>
             <Input label={t('auth.nameLabel')} placeholder={t('auth.namePlaceholder')} value={name} onChangeText={setName} error={errors.name} />
-            <Input
-              label={t('auth.phoneLabel')}
-              placeholder={t('auth.phonePlaceholder')}
-              value={phone}
-              onChangeText={setPhone}
-              keyboardType="phone-pad"
-              error={errors.phone}
-            />
+            <PhoneInput label={t('auth.phoneLabel')} value={phone} onChangeText={setPhone} error={errors.phone} />
             <Button label={t('auth.continue')} onPress={submit} style={{ marginTop: space.sm }} />
           </View>
 

@@ -172,7 +172,7 @@ const dict = {
     createAccount: { ar: 'إنشاء حساب', en: 'Create account' },
     haveAccount: { ar: 'عندك حساب؟', en: 'Already have an account?' },
     signIn: { ar: 'تسجيل الدخول', en: 'Sign in' },
-    phoneRequired: { ar: 'أدخل رقم هاتف صحيح', en: 'Enter a valid phone number' },
+    phoneRequired: { ar: 'أدخل رقم أردني صحيح (07XXXXXXXX)', en: 'Enter a valid Jordanian number (07XXXXXXXX)' },
     nameRequired: { ar: 'أدخل اسمك الكامل', en: 'Enter your full name' },
     otpTitle: { ar: 'أدخل رمز التحقق', en: 'Enter verification code' },
     otpBody: { ar: 'أرسلنا رمز مكوّن من 4 أرقام إلى {phone}', en: 'We sent a 4-digit code to {phone}' },

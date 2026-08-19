@@ -6,11 +6,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
-import { Input } from '@/components/Input';
+import { PhoneInput } from '@/components/PhoneInput';
 import { Row } from '@/components/Row';
 import { colors, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useAuth } from '@/lib/auth-store';
+import { isValidJordanPhone } from '@/lib/phone';
 
 const LOGO = require('../../assets/images/logo.png');
 
@@ -31,7 +32,7 @@ export default function LoginScreen() {
   }, []);
 
   const submit = () => {
-    if (phone.replace(/\D/g, '').length < 7) {
+    if (!isValidJordanPhone(phone)) {
       setError(t('auth.phoneRequired'));
       return;
     }
@@ -68,14 +69,7 @@ export default function LoginScreen() {
         </View>
 
         <View style={{ gap: space.md }}>
-          <Input
-            label={t('auth.phoneLabel')}
-            placeholder={t('auth.phonePlaceholder')}
-            value={phone}
-            onChangeText={setPhone}
-            keyboardType="phone-pad"
-            error={error}
-          />
+          <PhoneInput label={t('auth.phoneLabel')} value={phone} onChangeText={setPhone} error={error} />
           <Button label={t('auth.continue')} onPress={submit} />
         </View>
 
