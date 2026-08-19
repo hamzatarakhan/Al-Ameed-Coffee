@@ -1,6 +1,7 @@
 import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, ViewStyle } from 'react-native';
 import { AppText } from './AppText';
+import { Row } from './Row';
 import { colors, radius, space } from '@/lib/theme';
 
 type Variant = 'primary' | 'secondary' | 'ghost';
@@ -11,11 +12,13 @@ interface Props {
   variant?: Variant;
   loading?: boolean;
   disabled?: boolean;
+  trailing?: string;
   style?: ViewStyle;
 }
 
-export function Button({ label, onPress, variant = 'primary', loading, disabled, style }: Props) {
+export function Button({ label, onPress, variant = 'primary', loading, disabled, trailing, style }: Props) {
   const isDisabled = disabled || loading;
+  const fg = variant === 'primary' ? colors.white : colors.brandInk;
   return (
     <Pressable
       accessibilityRole="button"
@@ -32,12 +35,18 @@ export function Button({ label, onPress, variant = 'primary', loading, disabled,
         style,
       ]}>
       {loading ? (
-        <ActivityIndicator color={variant === 'primary' ? colors.white : colors.brandInk} />
+        <ActivityIndicator color={fg} />
+      ) : trailing ? (
+        <Row style={{ flex: 1, alignItems: 'center', justifyContent: 'space-between' }}>
+          <AppText variant="bodySemiBold" color={fg}>
+            {label}
+          </AppText>
+          <AppText variant="bodySemiBold" color={fg}>
+            {trailing}
+          </AppText>
+        </Row>
       ) : (
-        <AppText
-          variant="bodySemiBold"
-          align="center"
-          color={variant === 'primary' ? colors.white : colors.brandInk}>
+        <AppText variant="bodySemiBold" align="center" color={fg}>
           {label}
         </AppText>
       )}
@@ -47,10 +56,10 @@ export function Button({ label, onPress, variant = 'primary', loading, disabled,
 
 const styles = StyleSheet.create({
   base: {
-    minHeight: 48,
-    borderRadius: radius.md,
+    minHeight: 52,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: space.lg,
+    paddingHorizontal: space.xl,
   },
 });

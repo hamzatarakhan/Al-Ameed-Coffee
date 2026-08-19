@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
-import { Pill } from '@/components/Pill';
+import { CircleButton } from '@/components/CircleButton';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { rewards, userPoints } from '@/lib/mock-data';
@@ -13,7 +13,7 @@ import { rewards, userPoints } from '@/lib/mock-data';
 type Sort = 'affordable' | 'cost';
 
 export default function RewardsGalleryScreen() {
-  const { t, lang } = useLang();
+  const { t, lang, isRTL } = useLang();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [sort, setSort] = useState<Sort>('affordable');
@@ -51,24 +51,28 @@ export default function RewardsGalleryScreen() {
                 borderRadius: radius.lg,
                 borderWidth: 1,
                 borderColor: colors.border,
-                overflow: 'hidden',
-                opacity: locked ? 0.7 : 1,
+                padding: space.sm,
+                opacity: locked ? 0.75 : 1,
               }}>
-              <Row style={{ alignItems: 'stretch' }}>
-                <View style={{ width: 96, aspectRatio: 1, backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center' }}>
-                  <AppText style={{ fontSize: 36 }}>{r.emoji}</AppText>
+              <Row style={{ alignItems: 'center', gap: space.md }}>
+                <View style={{ width: 68, height: 68, borderRadius: radius.md, backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center' }}>
+                  <AppText style={{ fontSize: 30 }}>{r.emoji}</AppText>
                 </View>
-                <View style={{ flex: 1, padding: space.md, gap: space.xs, justifyContent: 'center' }}>
+                <View style={{ flex: 1 }}>
                   <AppText variant="bodySemiBold">{lang === 'ar' ? r.nameAr : r.nameEn}</AppText>
-                  <AppText variant="muted" numberOfLines={2} style={{ fontSize: 12.5 }}>
+                  <AppText variant="muted" numberOfLines={1} style={{ fontSize: 12.5, marginBottom: 3 }}>
                     {lang === 'ar' ? r.descAr : r.descEn}
                   </AppText>
-                  {locked ? (
-                    <Pill tone="warn" label={t('rewards.pointsToGo', { n: r.cost - userPoints })} />
-                  ) : (
-                    <Pill tone="good" label={`${r.cost} ${t('common.points')}`} />
-                  )}
+                  <AppText variant="mono" color={locked ? colors.warn : colors.brandInk} style={{ fontSize: 12.5 }}>
+                    {locked ? t('rewards.pointsToGo', { n: r.cost - userPoints }) : `${r.cost} ${t('common.points')}`}
+                  </AppText>
                 </View>
+                <CircleButton
+                  icon={locked ? 'lock-closed' : isRTL ? 'chevron-back' : 'chevron-forward'}
+                  size={38}
+                  tone={locked ? 'light' : 'brand'}
+                  onPress={() => router.push(`/rewards/${r.id}`)}
+                />
               </Row>
             </Pressable>
           );

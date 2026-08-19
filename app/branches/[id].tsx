@@ -1,63 +1,71 @@
 import React from 'react';
 import { Linking, ScrollView, View } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { Button } from '@/components/Button';
-import { ScreenHeader } from '@/components/ScreenHeader';
+import { Pill } from '@/components/Pill';
+import { CircleButton } from '@/components/CircleButton';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { branches } from '@/lib/mock-data';
 
 export default function BranchDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { t, lang } = useLang();
+  const { t, lang, isRTL } = useLang();
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
   const branch = branches.find((b) => b.id === id) ?? branches[0];
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
-      <ScreenHeader title={lang === 'ar' ? branch.nameAr : branch.nameEn} />
-      <ScrollView contentContainerStyle={{ padding: space.lg, paddingBottom: space.xxxl, gap: space.xl }}>
-        <View
-          style={{
-            aspectRatio: 16 / 9,
-            borderRadius: radius.lg,
-            backgroundColor: colors.surface2,
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: space.xs,
-          }}>
-          <Ionicons name="map-outline" size={28} color={colors.gold} />
-          <AppText variant="muted" style={{ fontSize: 12.5 }}>
+      <ScrollView bounces={false} contentContainerStyle={{ paddingBottom: space.xxxl }}>
+        <View style={{ height: 220, backgroundColor: colors.hero, alignItems: 'center', justifyContent: 'center', gap: space.xs }}>
+          <Ionicons name="map" size={28} color={colors.brand} />
+          <AppText variant="muted" color="#C9BEB4" style={{ fontSize: 12.5 }}>
             {t('branchDetail.mapPreview')}
           </AppText>
-        </View>
-
-        <View style={{ gap: space.xs }}>
-          <AppText variant="label" color={colors.gold}>
-            {t('branchDetail.address')}
-          </AppText>
-          <AppText variant="body">{lang === 'ar' ? branch.addressAr : branch.addressEn}</AppText>
-        </View>
-
-        <View style={{ gap: space.xs }}>
-          <AppText variant="label" color={colors.gold}>
-            {t('branchDetail.hours')}
-          </AppText>
-          <AppText variant="body">{lang === 'ar' ? branch.hoursWeekdaysAr : branch.hoursWeekdaysEn}</AppText>
-          <AppText variant="body">{lang === 'ar' ? branch.hoursWeekendAr : branch.hoursWeekendEn}</AppText>
-        </View>
-
-        <Row style={{ gap: space.md }}>
-          <Button
-            label={t('branchDetail.location')}
-            style={{ flex: 1 }}
-            onPress={() => Linking.openURL(`https://maps.google.com/?q=${encodeURIComponent(lang === 'ar' ? branch.addressAr : branch.addressEn)}`)}
+          <CircleButton
+            icon={isRTL ? 'chevron-forward' : 'chevron-back'}
+            onPress={() => router.back()}
+            tone="light"
+            style={{ position: 'absolute', top: insets.top + space.sm, left: space.lg }}
           />
-          <Button label={t('branchDetail.call')} variant="secondary" style={{ flex: 1 }} onPress={() => Linking.openURL(`tel:${branch.phone}`)} />
-        </Row>
+        </View>
+
+        <View style={{ backgroundColor: colors.bg, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, marginTop: -20, padding: space.xl, gap: space.lg }}>
+          <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+            <AppText variant="h2">{lang === 'ar' ? branch.nameAr : branch.nameEn}</AppText>
+            <Pill tone={branch.openNow ? 'good' : 'neutral'} label={branch.openNow ? t('branches.openNow') : t('branches.closed')} />
+          </Row>
+
+          <View style={{ gap: space.xs }}>
+            <AppText variant="label" color={colors.brand}>
+              {t('branchDetail.address')}
+            </AppText>
+            <AppText variant="body">{lang === 'ar' ? branch.addressAr : branch.addressEn}</AppText>
+          </View>
+
+          <View style={{ gap: space.xs }}>
+            <AppText variant="label" color={colors.brand}>
+              {t('branchDetail.hours')}
+            </AppText>
+            <AppText variant="body">{lang === 'ar' ? branch.hoursWeekdaysAr : branch.hoursWeekdaysEn}</AppText>
+            <AppText variant="body">{lang === 'ar' ? branch.hoursWeekendAr : branch.hoursWeekendEn}</AppText>
+          </View>
+
+          <Row style={{ gap: space.md }}>
+            <Button
+              label={t('branchDetail.location')}
+              style={{ flex: 1 }}
+              onPress={() => Linking.openURL(`https://maps.google.com/?q=${encodeURIComponent(lang === 'ar' ? branch.addressAr : branch.addressEn)}`)}
+            />
+            <Button label={t('branchDetail.call')} variant="secondary" style={{ flex: 1 }} onPress={() => Linking.openURL(`tel:${branch.phone}`)} />
+          </Row>
+        </View>
       </ScrollView>
     </View>
   );

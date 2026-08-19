@@ -38,8 +38,8 @@ export default function OrderScreen() {
           <View
             style={{
               backgroundColor: colors.surface,
-              borderTopLeftRadius: radius.lg,
-              borderTopRightRadius: radius.lg,
+              borderTopLeftRadius: radius.xl,
+              borderTopRightRadius: radius.xl,
               padding: space.xl,
               paddingBottom: insets.bottom + space.xl,
               gap: space.sm,

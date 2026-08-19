@@ -23,14 +23,17 @@ const dict = {
   },
   home: {
     welcome: { ar: 'أهلًا', en: 'Welcome' },
-    promoTitle: { ar: 'كابتشينو العميد الجديد', en: 'New Al Ameed Cappuccino' },
+    question: { ar: 'شو حابب تطلب اليوم؟', en: 'What would you like today?' },
+    promoTitle: { ar: 'كابتشينو العميد الجديد وصل', en: 'New Al Ameed Cappuccino is here' },
+    promoCta: { ar: 'جرّبه', en: 'Try it' },
     promoBadge: { ar: 'جديد', en: 'NEW' },
     yourPoints: { ar: 'رصيد نقاطك', en: 'Your points' },
     toNextReward: { ar: 'باقي {n} نقطة لأقرب هدية', en: '{n} points to your next reward' },
     quickOrder: { ar: 'اطلب الآن', en: 'Order Now' },
     quickPoints: { ar: 'نقاطي', en: 'My Points' },
-    quickRedeemed: { ar: 'الهدايا المستبدلة', en: 'Redeemed' },
-    quickRewards: { ar: 'معرض الهدايا', en: 'Rewards Gallery' },
+    quickRedeemed: { ar: 'المستبدلة', en: 'Redeemed' },
+    quickRewards: { ar: 'الهدايا', en: 'Rewards' },
+    popular: { ar: 'أشهر الهدايا', en: 'Popular Rewards' },
   },
   rewards: {
     title: { ar: 'معرض الهدايا', en: 'Rewards Gallery' },
@@ -40,6 +43,7 @@ const dict = {
     empty: { ar: 'ما في هدايا متاحة هلق', en: 'No rewards available right now' },
   },
   rewardDetail: {
+    fulfillment: { ar: 'التسليم خلال 3–5 أيام', en: 'Delivered in 3–5 days' },
     quantity: { ar: 'الكمية', en: 'Quantity' },
     redeem: { ar: 'استبدال', en: 'Redeem' },
     locked: { ar: 'نقاط غير كافية', en: 'Not enough points' },

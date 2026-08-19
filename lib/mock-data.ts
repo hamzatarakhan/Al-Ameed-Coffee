@@ -6,6 +6,8 @@ export type Reward = {
   descAr: string;
   descEn: string;
   emoji: string;
+  categoryAr: string;
+  categoryEn: string;
 };
 
 export const rewards: Reward[] = [
@@ -17,6 +19,8 @@ export const rewards: Reward[] = [
     descAr: 'طقم 4 قطع فرشات مطاط بنقشة بن العميد، معبأة بعلبة أنيقة.',
     descEn: 'A set of 4 rubber coasters subtly branded with the Al Ameed Coffee pattern, boxed.',
     emoji: '☕',
+    categoryAr: 'أدوات قهوة',
+    categoryEn: 'Coffeeware',
   },
   {
     id: 'backpack',
@@ -26,6 +30,8 @@ export const rewards: Reward[] = [
     descAr: 'حقيبة ظهر رياضية خفيفة، قماش مقاوم للماء، مقاس واحد يناسب الجميع.',
     descEn: 'Lightweight sports backpack, water-resistant fabric, one size fits all.',
     emoji: '🎒',
+    categoryAr: 'إكسسوارات',
+    categoryEn: 'Accessories',
   },
   {
     id: 'mug',
@@ -35,6 +41,8 @@ export const rewards: Reward[] = [
     descAr: 'كوب سيراميك سعة 350 مل بلوجو بن العميد، آمن للفرن المايكروويف وغسالة الصحون.',
     descEn: '350ml ceramic mug with the Al Ameed logo, microwave and dishwasher safe.',
     emoji: '🍵',
+    categoryAr: 'أدوات قهوة',
+    categoryEn: 'Coffeeware',
   },
   {
     id: 'beans',
@@ -43,6 +51,8 @@ export const rewards: Reward[] = [
     cost: 90,
     descAr: 'كيس بن عربيكا 100% مطحون طازج، وزن 500 غرام.',
     descEn: '100% Arabica, freshly ground, 500g bag.',
+    categoryAr: 'بن',
+    categoryEn: 'Coffee',
     emoji: '🫘',
   },
 ];
