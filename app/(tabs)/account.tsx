@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Linking, Pressable, ScrollView, Share, Switch, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Notifications from 'expo-notifications';
 
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
@@ -23,6 +24,25 @@ export default function AccountScreen() {
   const router = useRouter();
   const { isDark, toggle: toggleDark } = useThemeMode();
   const auth = useAuth();
+  const [notifGranted, setNotifGranted] = useState(false);
+
+  useEffect(() => {
+    Notifications.getPermissionsAsync().then((res) => setNotifGranted(res.status === 'granted'));
+  }, []);
+
+  const toggleNotifications = async (value: boolean) => {
+    if (!value) {
+      // Apps can't revoke their own OS notification permission — the only
+      // way "off" is real is through system settings.
+      Linking.openSettings();
+      return;
+    }
+    const res = await Notifications.requestPermissionsAsync();
+    setNotifGranted(res.status === 'granted');
+    if (res.status !== 'granted') {
+      Alert.alert(t('account.notifications'), t('account.notifDenied'));
+    }
+  };
 
   const signOut = () => {
     confirmAction(t('account.signOut'), t('account.signOutConfirm'), t('account.signOut'), () => auth.signOut(), lang === 'ar' ? 'إغلاق' : 'Cancel', true);
@@ -66,6 +86,13 @@ export default function AccountScreen() {
             <AppText variant="body">{t('account.nightMode')}</AppText>
           </Row>
           <Switch value={isDark} onValueChange={toggleDark} trackColor={{ true: colors.brand, false: colors.border }} />
+        </Row>
+        <Row style={{ alignItems: 'center', justifyContent: 'space-between', paddingVertical: space.md }}>
+          <Row style={{ alignItems: 'center', gap: space.md }}>
+            <Ionicons name="notifications-outline" size={18} color={colors.textMuted} />
+            <AppText variant="body">{t('account.notifications')}</AppText>
+          </Row>
+          <Switch value={notifGranted} onValueChange={toggleNotifications} trackColor={{ true: colors.brand, false: colors.border }} />
         </Row>
       </Section>
 

@@ -16,7 +16,7 @@
     "android": {
       "package": "com.alameedcoffee.app",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#FAF6F0",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
@@ -35,6 +35,13 @@
         "expo-location",
         {
           "locationWhenInUsePermission": "Al Ameed Coffee uses your location to show the nearest branch and sort branches by distance."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/android-icon-monochrome.png",
+          "color": "#E51937"
         }
       ],
       [

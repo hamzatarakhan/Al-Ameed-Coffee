@@ -115,6 +115,11 @@ const dict = {
     sectionPrefs: { ar: 'الإعدادات', en: 'Preferences' },
     language: { ar: 'اللغة', en: 'Language' },
     nightMode: { ar: 'الوضع الليلي', en: 'Night Mode' },
+    notifications: { ar: 'الإشعارات', en: 'Notifications' },
+    notifDenied: {
+      ar: 'الإشعارات موقوفة من إعدادات الجهاز. لتفعيلها، افتح إعدادات النظام وفعّلها لتطبيق بن العميد.',
+      en: 'Notifications are off at the device level. To enable them, open system settings and turn them on for Al Ameed Coffee.',
+    },
     sectionSupport: { ar: 'الدعم', en: 'Support' },
     contactUs: { ar: 'تواصل معنا', en: 'Contact Us' },
     connectWithUs: { ar: 'تابعنا', en: 'Connect With Us' },
@@ -154,6 +159,30 @@ const dict = {
   },
   legal: {
     lastUpdated: { ar: 'آخر تحديث: {date}', en: 'Last updated: {date}' },
+  },
+  deleteData: {
+    title: { ar: 'حذف بياناتك', en: 'Delete Your Data' },
+    intro: {
+      ar: 'تقدر تطلب حذف حسابك وكل بياناتك من بن العميد بأي وقت، سواء كان عندك التطبيق أو لأ.',
+      en: 'You can request deletion of your account and all your data from Al Ameed Coffee at any time, whether or not you still have the app.',
+    },
+    whatWeStoreTitle: { ar: 'شو البيانات اللي نخزّنها', en: 'What data we store' },
+    whatWeStoreBody: {
+      ar: 'الاسم، رقم الهاتف، البريد الإلكتروني، تاريخ الميلاد، الجنس، الحالة الاجتماعية، المدينة والمنطقة، رصيد نقاطك، وسجل طلباتك وزياراتك.',
+      en: 'Name, phone number, email, date of birth, gender, marital status, city and area, your points balance, and your order/visit history.',
+    },
+    inAppTitle: { ar: 'إذا كان عندك التطبيق', en: "If you still have the app" },
+    inAppBody: {
+      ar: 'سجّل دخولك وروح لـ حسابي ← حذف الحساب. الحذف فوري ونهائي.',
+      en: 'Sign in and go to Account → Delete Account. Deletion is immediate and permanent.',
+    },
+    contactTitle: { ar: 'إذا ما قدرت تسجّل دخول', en: "If you can't sign in" },
+    contactBody: {
+      ar: 'راسلنا من بريدك المسجّل أو اتصل فينا وحدد رقم هاتفك المسجّل بالتطبيق، ورح نحذف بياناتك يدويًا.',
+      en: "Email us from your registered address or call us with the phone number you signed up with, and we'll delete your data manually.",
+    },
+    emailSubject: { ar: 'طلب حذف بياناتي - بن العميد', en: 'Data deletion request - Al Ameed Coffee' },
+    timeline: { ar: 'بنعالج طلبات الحذف اليدوية خلال ٧ أيام عمل كحد أقصى.', en: 'Manual deletion requests are processed within 7 business days.' },
   },
   orders: {
     title: { ar: 'طلباتي', en: 'My Orders' },

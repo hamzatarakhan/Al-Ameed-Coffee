@@ -104,10 +104,22 @@ function AppShell() {
           <Stack.Screen name="branches/[id]" options={{ presentation: 'card' }} />
           <Stack.Screen name="profile" options={{ presentation: 'card' }} />
           <Stack.Screen name="orders" options={{ presentation: 'card' }} />
-          <Stack.Screen name="legal/terms" options={{ presentation: 'card' }} />
-          <Stack.Screen name="legal/privacy" options={{ presentation: 'card' }} />
           <Stack.Screen name="account/delete" options={{ presentation: 'card' }} />
         </Stack.Protected>
+
+        {/* Always reachable regardless of auth state, unlike everything
+            above — App Store/Play Store review expects the privacy policy
+            and a data-deletion path to be reachable without being signed
+            in (Play in particular wants deletion requestable even by
+            someone who never installed the app). Declared last: React
+            Navigation falls back to a Stack's first declared screen when
+            the previously-active route becomes invalid (e.g. right after
+            OTP success moves status out of the group /auth/otp belonged
+            to) — first here previously meant login/signup landed on this
+            block instead of the tabs or complete-profile. */}
+        <Stack.Screen name="legal/terms" options={{ presentation: 'card' }} />
+        <Stack.Screen name="legal/privacy" options={{ presentation: 'card' }} />
+        <Stack.Screen name="legal/delete-data" options={{ presentation: 'card' }} />
       </Stack>
       <StatusBar style={isDark ? 'light' : 'dark'} />
     </>
