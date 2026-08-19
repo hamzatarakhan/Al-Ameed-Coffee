@@ -2,6 +2,7 @@ import React from 'react';
 import { Pressable, ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '@/lib/theme';
+import { useThemeMode } from '@/lib/theme-mode';
 
 interface Props {
   icon: keyof typeof Ionicons.glyphMap;
@@ -12,14 +13,17 @@ interface Props {
 }
 
 export function CircleButton({ icon, onPress, size = 40, tone = 'light', style }: Props) {
-  // Computed per render (not at module load) so it picks up live theme
-  // changes — and "light"/"dark" tones stay fixed white-on-dark-icon /
-  // dark-on-white-icon regardless of app theme, since they're circles drawn
-  // over photography, not surfaces that should follow light/dark mode.
+  const { isDark } = useThemeMode();
+
+  // "light" sits on plain page backgrounds (notification bell, list-row
+  // chevrons) as often as it sits over hero photography, so unlike
+  // brand/dark it needs to stay visible against both a white page (soft
+  // grey fill + border, not invisible white-on-white) and a dark page
+  // (a slightly muted off-white, not glaring stark white).
   const tones = {
-    light: { bg: '#FFFFFF', fg: '#1A1A1A' },
-    brand: { bg: colors.brand, fg: '#FFFFFF' },
-    dark: { bg: 'rgba(255,255,255,0.2)', fg: '#FFFFFF' },
+    light: { bg: isDark ? '#EDE9E7' : colors.surface2, fg: '#1A1A1A', border: colors.border },
+    brand: { bg: colors.brand, fg: '#FFFFFF', border: 'transparent' },
+    dark: { bg: 'rgba(255,255,255,0.2)', fg: '#FFFFFF', border: 'transparent' },
   };
   const t = tones[tone];
   return (
@@ -32,6 +36,8 @@ export function CircleButton({ icon, onPress, size = 40, tone = 'light', style }
           height: size,
           borderRadius: size / 2,
           backgroundColor: t.bg,
+          borderWidth: tone === 'light' ? 1 : 0,
+          borderColor: t.border,
           alignItems: 'center',
           justifyContent: 'center',
         },
