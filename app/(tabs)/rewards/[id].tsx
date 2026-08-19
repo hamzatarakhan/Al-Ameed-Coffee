@@ -8,6 +8,7 @@ import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { Button } from '@/components/Button';
 import { CircleButton } from '@/components/CircleButton';
+import { RewardMedia } from '@/components/RewardMedia';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
@@ -29,7 +30,12 @@ export default function RewardDetailScreen() {
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <ScrollView bounces={false} contentContainerStyle={{ paddingBottom: 150 }}>
         <View style={{ height: 320, backgroundColor: colors.hero, alignItems: 'center', justifyContent: 'center' }}>
-          <AppText style={{ fontSize: 120, lineHeight: 132 }}>{reward.emoji}</AppText>
+          <RewardMedia
+            image={reward.image}
+            emoji={reward.emoji}
+            emojiSize={120}
+            style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}
+          />
           <Row
             style={{
               position: 'absolute',

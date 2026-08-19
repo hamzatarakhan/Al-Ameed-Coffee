@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { CircleButton } from '@/components/CircleButton';
+import { RewardMedia } from '@/components/RewardMedia';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
@@ -57,9 +58,7 @@ export default function RewardsGalleryScreen() {
                 opacity: locked ? 0.75 : 1,
               }}>
               <Row style={{ alignItems: 'center', gap: space.md }}>
-                <View style={{ width: 68, height: 68, borderRadius: radius.md, backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center' }}>
-                  <AppText style={{ fontSize: 30, lineHeight: 34 }}>{r.emoji}</AppText>
-                </View>
+                <RewardMedia image={r.image} emoji={r.emoji} emojiSize={30} style={{ width: 68, height: 68, borderRadius: radius.md }} />
                 <View style={{ flex: 1 }}>
                   <AppText variant="bodySemiBold">{lang === 'ar' ? r.nameAr : r.nameEn}</AppText>
                   <AppText variant="muted" numberOfLines={1} style={{ marginBottom: 3 }}>

@@ -1,3 +1,5 @@
+import type { ImageSourcePropType } from 'react-native';
+
 export type Promo = {
   id: string;
   badgeAr: string;
@@ -8,6 +10,11 @@ export type Promo = {
   ctaEn: string;
   emoji: string;
   href: string;
+  // Local require()'d photo — optional so the app keeps building before the
+  // asset exists. Add `image: require('../assets/images/promo-x.jpg')` once
+  // the real photo is dropped in; every consumer already falls back cleanly
+  // to the emoji/gradient look when this is undefined.
+  image?: ImageSourcePropType;
 };
 
 export const promos: Promo[] = [
@@ -56,6 +63,8 @@ export type Reward = {
   emoji: string;
   categoryAr: string;
   categoryEn: string;
+  // Same optional-local-photo pattern as Promo.image — see that comment.
+  image?: ImageSourcePropType;
 };
 
 export const rewards: Reward[] = [

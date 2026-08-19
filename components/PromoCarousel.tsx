@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NativeScrollEvent, NativeSyntheticEvent, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
+import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter, Href } from 'expo-router';
 
 import { AppText } from './AppText';
@@ -9,6 +12,7 @@ import type { Promo } from '@/lib/mock-data';
 
 const AUTO_ADVANCE_MS = 4500;
 const SIDE_PADDING = space.lg;
+const SLIDE_HEIGHT = 210;
 
 // ponytail: scroll mechanics stay LTR-order regardless of app language —
 // mirroring drag direction + index math for RTL is a real rabbit hole for a
@@ -17,7 +21,7 @@ const SIDE_PADDING = space.lg;
 export function PromoCarousel({ slides }: { slides: Promo[] }) {
   const { width } = useWindowDimensions();
   const slideWidth = width - SIDE_PADDING * 2;
-  const { lang } = useLang();
+  const { lang, isRTL } = useLang();
   const router = useRouter();
   const scrollRef = useRef<ScrollView>(null);
   const [index, setIndex] = useState(0);
@@ -56,18 +60,27 @@ export function PromoCarousel({ slides }: { slides: Promo[] }) {
             onPress={() => router.push(promo.href as Href)}
             style={{
               width: slideWidth,
-              backgroundColor: colors.brand,
+              height: SLIDE_HEIGHT,
               borderRadius: radius.xl,
-              padding: space.xl,
               overflow: 'hidden',
-              flexDirection: 'row',
-              alignItems: 'center',
+              backgroundColor: colors.brand,
             }}>
-            <View style={{ flex: 1, gap: space.md }}>
+            {promo.image ? (
+              <Image source={promo.image} style={{ position: 'absolute', inset: 0 }} contentFit="cover" transition={150} />
+            ) : null}
+            {/* Dark scrim so white text stays legible over any photo — heavier at the
+                bottom where the title/CTA sit, present even without a photo yet so the
+                badge/title read the same once one is dropped in. */}
+            <LinearGradient
+              colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.15)', 'rgba(0,0,0,0.75)']}
+              locations={[0, 0.45, 1]}
+              style={{ position: 'absolute', inset: 0 }}
+            />
+            <View style={{ flex: 1, padding: space.lg, justifyContent: 'space-between' }}>
               <View
                 style={{
                   alignSelf: 'flex-start',
-                  backgroundColor: 'rgba(255,255,255,0.25)',
+                  backgroundColor: 'rgba(255,255,255,0.22)',
                   borderRadius: radius.pill,
                   paddingHorizontal: 10,
                   paddingVertical: 4,
@@ -76,16 +89,19 @@ export function PromoCarousel({ slides }: { slides: Promo[] }) {
                   {lang === 'ar' ? promo.badgeAr : promo.badgeEn}
                 </AppText>
               </View>
-              <AppText variant="h2" color={colors.white}>
-                {lang === 'ar' ? promo.titleAr : promo.titleEn}
-              </AppText>
-              <View style={{ alignSelf: 'flex-start', backgroundColor: colors.white, borderRadius: radius.sm, paddingHorizontal: space.lg, paddingVertical: space.sm }}>
-                <AppText variant="bodySemiBold" color={colors.brand}>
-                  {lang === 'ar' ? promo.ctaAr : promo.ctaEn}
+
+              <View style={{ gap: 6 }}>
+                <AppText variant="h2" color={colors.white} style={{ maxWidth: '85%' }}>
+                  {lang === 'ar' ? promo.titleAr : promo.titleEn}
                 </AppText>
+                <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: 4 }}>
+                  <AppText variant="bodySemiBold" color={colors.white}>
+                    {lang === 'ar' ? promo.ctaAr : promo.ctaEn}
+                  </AppText>
+                  <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={15} color={colors.white} />
+                </View>
               </View>
             </View>
-            <AppText style={{ fontSize: 56, lineHeight: 64, opacity: 0.9 }}>{promo.emoji}</AppText>
           </Pressable>
         ))}
       </ScrollView>

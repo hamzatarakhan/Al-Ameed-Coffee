@@ -8,7 +8,8 @@ import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { CircleButton } from '@/components/CircleButton';
 import { PromoCarousel } from '@/components/PromoCarousel';
-import { colors, radius, space } from '@/lib/theme';
+import { RewardMedia } from '@/components/RewardMedia';
+import { colors, radius, shadow, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
 import { rewards, branches, promos, notifications, userPoints } from '@/lib/mock-data';
@@ -75,35 +76,53 @@ export default function HomeScreen() {
       <PromoCarousel slides={promos} />
 
       <View style={{ paddingHorizontal: space.lg }}>
-        <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: space.md }}>
-          <AppText variant="muted">{t('home.yourPoints')}</AppText>
-          <AppText variant="mono" color={colors.brandInk}>
-            {userPoints} {t('common.points')}
-          </AppText>
-        </Row>
-
-        <Row style={{ gap: space.md, marginBottom: space.xl }}>
-          {categories.map((c, i) => (
-            <Pressable
-              key={c.label}
-              onPress={c.onPress}
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                gap: space.xs,
-                backgroundColor: i === 0 ? colors.brand : colors.surface,
-                borderRadius: radius.lg,
-                borderWidth: i === 0 ? 0 : 1,
-                borderColor: colors.border,
-                paddingVertical: space.md,
-              }}>
-              <Ionicons name={c.icon} size={20} color={i === 0 ? colors.white : colors.brandInk} />
-              <AppText variant="label" color={i === 0 ? colors.white : colors.textMuted} align="center">
-                {c.label}
+        <View
+          style={{
+            backgroundColor: colors.surface,
+            borderRadius: radius.xl,
+            borderWidth: 1,
+            borderColor: colors.border,
+            padding: space.lg,
+            marginBottom: space.xl,
+            ...shadow.card,
+          }}>
+          <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: space.lg }}>
+            <View>
+              <AppText variant="muted">{t('home.yourPoints')}</AppText>
+              <AppText variant="display" color={colors.brandInk}>
+                {userPoints}
               </AppText>
-            </Pressable>
-          ))}
-        </Row>
+            </View>
+            <View style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: colors.brandTint, alignItems: 'center', justifyContent: 'center' }}>
+              <Ionicons name="sparkles" size={21} color={colors.brand} />
+            </View>
+          </Row>
+
+          <Row style={{ gap: space.sm }}>
+            {categories.map((c, i) => (
+              <Pressable
+                key={c.label}
+                onPress={c.onPress}
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  gap: space.xs,
+                  backgroundColor: i === 0 ? colors.brand : colors.surface2,
+                  borderRadius: radius.md,
+                  paddingVertical: space.sm,
+                }}>
+                <Ionicons name={c.icon} size={19} color={i === 0 ? colors.white : colors.brandInk} />
+                <AppText
+                  variant="label"
+                  color={i === 0 ? colors.white : colors.textMuted}
+                  align="center"
+                  style={!isRTL ? { fontSize: 9.5, lineHeight: 12, letterSpacing: 0.3 } : undefined}>
+                  {c.label}
+                </AppText>
+              </Pressable>
+            ))}
+          </Row>
+        </View>
 
         <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: space.md }}>
           <AppText variant="h3">{t('home.popular')}</AppText>
@@ -121,9 +140,7 @@ export default function HomeScreen() {
               onPress={() => router.push(`/rewards/${r.id}`)}
               style={{ backgroundColor: colors.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, padding: space.sm }}>
               <Row style={{ alignItems: 'center', gap: space.md }}>
-                <View style={{ width: 64, height: 64, borderRadius: radius.md, backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center' }}>
-                  <AppText style={{ fontSize: 28, lineHeight: 32 }}>{r.emoji}</AppText>
-                </View>
+                <RewardMedia image={r.image} emoji={r.emoji} emojiSize={28} style={{ width: 64, height: 64, borderRadius: radius.md }} />
                 <View style={{ flex: 1 }}>
                   <AppText variant="bodySemiBold">{lang === 'ar' ? r.nameAr : r.nameEn}</AppText>
                   <AppText variant="muted" numberOfLines={1}>
