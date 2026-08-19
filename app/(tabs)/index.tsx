@@ -74,7 +74,7 @@ export default function HomeScreen() {
               />
             ) : null}
           </View>
-          <CircleButton icon="person" onPress={() => router.push('/account')} tone="brand" />
+          <CircleButton icon="language-outline" onPress={toggle} tone="light" />
         </Row>
       </Row>
 
@@ -162,11 +162,6 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      <Pressable onPress={toggle} style={{ alignSelf: 'center', marginTop: space.xl }}>
-        <AppText variant="label" color={colors.textMuted}>
-          {lang === 'ar' ? 'EN' : 'عربي'}
-        </AppText>
-      </Pressable>
       </ScrollView>
 
       <CheckinPopup visible={showCheckin} onClose={() => setShowCheckin(false)} />
