@@ -7,16 +7,18 @@ import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
+import { useTabBarInset } from '@/lib/useTabBarInset';
 
 const EARNED = 10;
 
 export default function CheckinScreen() {
   const { t } = useLang();
   const insets = useSafeAreaInsets();
+  const tabBarInset = useTabBarInset();
   const [scanned, setScanned] = useState(false);
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.bg, paddingTop: insets.top + space.lg, paddingHorizontal: space.lg, alignItems: 'center' }}>
+    <View style={{ flex: 1, backgroundColor: colors.bg, paddingTop: insets.top + space.lg, paddingHorizontal: space.lg, paddingBottom: tabBarInset, alignItems: 'center' }}>
       <AppText variant="display" style={{ marginBottom: space.sm }}>
         {t('checkin.title')}
       </AppText>

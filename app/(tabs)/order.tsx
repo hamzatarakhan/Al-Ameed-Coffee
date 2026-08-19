@@ -9,6 +9,7 @@ import { Row } from '@/components/Row';
 import { Button } from '@/components/Button';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
+import { useTabBarInset } from '@/lib/useTabBarInset';
 import { branches } from '@/lib/mock-data';
 
 const nearest = branches[0];
@@ -17,10 +18,11 @@ export default function OrderScreen() {
   const { t, lang } = useLang();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const tabBarInset = useTabBarInset();
   const [showError, setShowError] = useState(false);
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.bg, paddingTop: insets.top + space.lg, paddingHorizontal: space.lg }}>
+    <View style={{ flex: 1, backgroundColor: colors.bg, paddingTop: insets.top + space.lg, paddingHorizontal: space.lg, paddingBottom: tabBarInset }}>
       <AppText variant="display" style={{ marginBottom: space.xl }}>
         {t('order.title')}
       </AppText>

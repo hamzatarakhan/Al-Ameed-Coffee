@@ -7,16 +7,18 @@ import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
+import { useTabBarInset } from '@/lib/useTabBarInset';
 
 export default function AccountScreen() {
   const { t, lang, toggle, isRTL } = useLang();
   const insets = useSafeAreaInsets();
+  const tabBarInset = useTabBarInset();
   // ponytail: visual-only for now — a real dark theme needs a second token
   // set threaded through every component; add when the design system grows one.
   const [nightMode, setNightMode] = useState(false);
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingTop: insets.top + space.lg, paddingHorizontal: space.lg, paddingBottom: space.xxxl }}>
+    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingTop: insets.top + space.lg, paddingHorizontal: space.lg, paddingBottom: space.xxxl + tabBarInset }}>
       <AppText variant="display" style={{ marginBottom: space.xl }}>
         {t('account.title')}
       </AppText>

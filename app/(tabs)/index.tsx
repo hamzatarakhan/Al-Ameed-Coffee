@@ -9,6 +9,7 @@ import { Row } from '@/components/Row';
 import { CircleButton } from '@/components/CircleButton';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
+import { useTabBarInset } from '@/lib/useTabBarInset';
 import { rewards, branches, userPoints } from '@/lib/mock-data';
 
 const cheapest = [...rewards].sort((a, b) => a.cost - b.cost);
@@ -18,6 +19,7 @@ export default function HomeScreen() {
   const { t, lang, toggle, isRTL } = useLang();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const tabBarInset = useTabBarInset();
 
   const categories = [
     { icon: 'bag-handle' as const, label: t('home.quickOrder'), onPress: () => router.push('/order') },
@@ -27,7 +29,7 @@ export default function HomeScreen() {
   ];
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingBottom: space.xxxl }}>
+    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingBottom: space.xxxl + tabBarInset }}>
       <Row
         style={{
           justifyContent: 'space-between',

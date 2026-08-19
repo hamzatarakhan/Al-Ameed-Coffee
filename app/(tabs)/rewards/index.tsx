@@ -8,6 +8,7 @@ import { Row } from '@/components/Row';
 import { CircleButton } from '@/components/CircleButton';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
+import { useTabBarInset } from '@/lib/useTabBarInset';
 import { rewards, userPoints } from '@/lib/mock-data';
 
 type Sort = 'affordable' | 'cost';
@@ -16,6 +17,7 @@ export default function RewardsGalleryScreen() {
   const { t, lang, isRTL } = useLang();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const tabBarInset = useTabBarInset();
   const [sort, setSort] = useState<Sort>('affordable');
 
   const sorted = useMemo(() => {
@@ -29,7 +31,7 @@ export default function RewardsGalleryScreen() {
   }, [sort]);
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingTop: insets.top + space.lg, paddingHorizontal: space.lg, paddingBottom: space.xxxl }}>
+    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingTop: insets.top + space.lg, paddingHorizontal: space.lg, paddingBottom: space.xxxl + tabBarInset }}>
       <AppText variant="display" style={{ marginBottom: space.md }}>
         {t('rewards.title')}
       </AppText>

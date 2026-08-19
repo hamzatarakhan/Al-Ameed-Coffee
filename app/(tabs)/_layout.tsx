@@ -1,7 +1,9 @@
+import { Platform } from 'react-native';
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { HapticTab } from '@/components/haptic-tab';
-import { colors, fonts } from '@/lib/theme';
+import TabBarBackground from '@/components/tab-bar-background';
+import { colors } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 
 export default function TabLayout() {
@@ -14,8 +16,13 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
         tabBarActiveTintColor: colors.brand,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
-        tabBarLabelStyle: { fontFamily: fonts.mono, fontSize: 10 },
+        tabBarBackground: TabBarBackground,
+        // iOS: floating translucent bar over content, like the native tab bar.
+        // Android/web keep the normal solid, in-flow bar (their own platform convention).
+        tabBarStyle: Platform.select({
+          ios: { position: 'absolute' },
+          default: { backgroundColor: colors.surface, borderTopColor: colors.border },
+        }),
         // single source of truth for tab order — flipping it per-language
         // would fight the OS's own RTL layout mirroring, so tab order stays fixed.
       }}>
