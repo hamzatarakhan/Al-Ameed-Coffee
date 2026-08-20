@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,24 +6,20 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from './AppText';
 import { Row } from './Row';
-import { Button } from './Button';
 import { BottomSheet } from './BottomSheet';
 import { darkColors, lightColors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useThemeMode } from '@/lib/theme-mode';
-import { branches } from '@/lib/mock-data';
-
-const nearest = branches[0];
+import { useOrderCart, type Fulfillment } from '@/lib/order-cart';
 
 // Home's "Order Now" quick action — picking pickup or delivery right here
-// avoids sending the user to a whole new page just to hit the same "no
-// branch nearby" dead end the dedicated Order tab already shows (no real
-// ordering backend yet), so both steps live in one sheet instead.
+// jumps straight into the menu, tagged with which fulfillment method was
+// picked; order-cart.tsx shows the matching branch/address step from there.
 export function OrderSheet({ visible, onClose }: { visible: boolean; onClose: () => void }) {
-  const { t, lang, isRTL } = useLang();
+  const { t, isRTL } = useLang();
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [step, setStep] = useState<'choose' | 'error'>('choose');
+  const { setFulfillment } = useOrderCart();
   // Reads isDark from context instead of the mutated `colors` singleton —
   // see OptionSheet.tsx for why (this sheet also lives outside the Stack
   // that force-remounts on theme change, so it needs a real reactive
@@ -31,9 +27,11 @@ export function OrderSheet({ visible, onClose }: { visible: boolean; onClose: ()
   const { isDark } = useThemeMode();
   const colors = isDark ? darkColors : lightColors;
 
-  useEffect(() => {
-    if (visible) setStep('choose');
-  }, [visible]);
+  const choose = (f: Fulfillment) => {
+    setFulfillment(f);
+    onClose();
+    router.push('/order-menu');
+  };
 
   return (
     <BottomSheet visible={visible} onClose={onClose}>
@@ -48,48 +46,15 @@ export function OrderSheet({ visible, onClose }: { visible: boolean; onClose: ()
         }}>
         <View style={{ width: 40, height: 4, borderRadius: 2, backgroundColor: colors.border, alignSelf: 'center', marginBottom: space.sm }} />
 
-        {step === 'choose' ? (
-          <>
-            <AppText variant="h2" color={colors.text} style={{ marginBottom: space.xs }}>
-              {t('order.title')}
-            </AppText>
-            <Pressable
-              onPress={() => {
-                onClose();
-                router.push('/order-menu');
-              }}
-              style={{ marginBottom: space.sm }}>
-              <OrderOption icon="storefront" label={t('order.pickup')} isRTL={isRTL} colors={colors} />
-            </Pressable>
-            <Pressable onPress={() => setStep('error')}>
-              <OrderOption icon="bicycle" label={t('order.delivery')} isRTL={isRTL} colors={colors} />
-            </Pressable>
-          </>
-        ) : (
-          <>
-            <AppText variant="h2" color={colors.text}>
-              {t('order.errorTitle')}
-            </AppText>
-            <AppText variant="muted" color={colors.textMuted} style={{ marginBottom: space.md }}>
-              {t('order.errorBody')} — {lang === 'ar' ? nearest.nameAr : nearest.nameEn}
-            </AppText>
-            <Button
-              label={t('order.viewBranch')}
-              onPress={() => {
-                onClose();
-                router.push(`/branches/${nearest.id}`);
-              }}
-            />
-            <Button
-              label={t('order.seeAllBranches')}
-              variant="secondary"
-              onPress={() => {
-                onClose();
-                router.push('/branches');
-              }}
-            />
-          </>
-        )}
+        <AppText variant="h2" color={colors.text} style={{ marginBottom: space.xs }}>
+          {t('order.title')}
+        </AppText>
+        <Pressable onPress={() => choose('pickup')} style={{ marginBottom: space.sm }}>
+          <OrderOption icon="storefront" label={t('order.pickup')} isRTL={isRTL} colors={colors} />
+        </Pressable>
+        <Pressable onPress={() => choose('delivery')}>
+          <OrderOption icon="bicycle" label={t('order.delivery')} isRTL={isRTL} colors={colors} />
+        </Pressable>
       </View>
     </BottomSheet>
   );

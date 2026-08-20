@@ -2,6 +2,18 @@ import React, { createContext, useCallback, useContext, useMemo, useState } from
 import { menuItems } from './mock-data';
 
 export type PaymentMethod = 'cash' | 'card';
+export type Fulfillment = 'pickup' | 'delivery';
+export type AddressType = 'home' | 'work' | 'other';
+
+export type Address = {
+  id: string;
+  type: AddressType;
+  line: string;
+  city: string;
+  area: string;
+  building: string;
+  floor?: string;
+};
 
 interface OrderCartValue {
   quantities: Record<string, number>;
@@ -10,8 +22,14 @@ interface OrderCartValue {
   totalPrice: number;
   paymentMethod: PaymentMethod;
   setPaymentMethod: (m: PaymentMethod) => void;
+  fulfillment: Fulfillment;
+  setFulfillment: (f: Fulfillment) => void;
   branchId: string | null;
   setBranchId: (id: string | null) => void;
+  addresses: Address[];
+  addAddress: (a: Omit<Address, 'id'>) => void;
+  addressId: string | null;
+  setAddressId: (id: string | null) => void;
   clear: () => void;
 }
 
@@ -20,7 +38,10 @@ const OrderCartContext = createContext<OrderCartValue | null>(null);
 export function OrderCartProvider({ children }: { children: React.ReactNode }) {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
+  const [fulfillment, setFulfillment] = useState<Fulfillment>('pickup');
   const [branchId, setBranchId] = useState<string | null>(null);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [addressId, setAddressId] = useState<string | null>(null);
 
   const setQty = useCallback((id: string, qty: number) => {
     setQuantities((prev) => {
@@ -33,10 +54,18 @@ export function OrderCartProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  const addAddress = useCallback((a: Omit<Address, 'id'>) => {
+    const id = `addr-${Date.now()}`;
+    setAddresses((prev) => [...prev, { ...a, id }]);
+    setAddressId(id);
+  }, []);
+
   const clear = useCallback(() => {
     setQuantities({});
     setBranchId(null);
+    setAddressId(null);
     setPaymentMethod('cash');
+    setFulfillment('pickup');
   }, []);
 
   const { totalCount, totalPrice } = useMemo(() => {
@@ -53,7 +82,23 @@ export function OrderCartProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <OrderCartContext.Provider
-      value={{ quantities, setQty, totalCount, totalPrice, paymentMethod, setPaymentMethod, branchId, setBranchId, clear }}>
+      value={{
+        quantities,
+        setQty,
+        totalCount,
+        totalPrice,
+        paymentMethod,
+        setPaymentMethod,
+        fulfillment,
+        setFulfillment,
+        branchId,
+        setBranchId,
+        addresses,
+        addAddress,
+        addressId,
+        setAddressId,
+        clear,
+      }}>
       {children}
     </OrderCartContext.Provider>
   );

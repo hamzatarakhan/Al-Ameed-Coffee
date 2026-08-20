@@ -18,7 +18,7 @@ export default function OrderCartScreen() {
   const { t, lang } = useLang();
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { quantities, setQty, totalPrice, paymentMethod, setPaymentMethod, branchId, clear } = useOrderCart();
+  const { quantities, setQty, totalPrice, paymentMethod, setPaymentMethod, fulfillment, branchId, addresses, addressId, clear } = useOrderCart();
   const [noCallConfirm, setNoCallConfirm] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -26,7 +26,8 @@ export default function OrderCartScreen() {
     .map(([id, qty]) => ({ item: menuItems.find((m) => m.id === id), qty }))
     .filter((x): x is { item: (typeof menuItems)[number]; qty: number } => !!x.item);
   const branch = branches.find((b) => b.id === branchId);
-  const canOrder = items.length > 0 && !!branch;
+  const address = addresses.find((a) => a.id === addressId);
+  const canOrder = items.length > 0 && (fulfillment === 'pickup' ? !!branch : !!address);
 
   const finish = () => {
     clear();
@@ -79,14 +80,25 @@ export default function OrderCartScreen() {
 
         <View style={{ gap: space.sm }}>
           <AppText variant="h3">{t('orderCart.orderMethod')}</AppText>
-          <Pressable onPress={() => router.push('/order-branch')} style={{ backgroundColor: colors.hero, borderRadius: radius.lg, padding: space.lg }}>
-            <AppText variant="label" color="rgba(255,255,255,0.6)">
-              {t('orderCart.branchPickup')}
-            </AppText>
-            <AppText variant="bodySemiBold" color={colors.white} style={{ marginTop: 4 }}>
-              {branch ? (lang === 'ar' ? branch.nameAr : branch.nameEn) : t('home.chooseBranch')}
-            </AppText>
-          </Pressable>
+          {fulfillment === 'pickup' ? (
+            <Pressable onPress={() => router.push('/order-branch')} style={{ backgroundColor: colors.hero, borderRadius: radius.lg, padding: space.lg }}>
+              <AppText variant="label" color="rgba(255,255,255,0.6)">
+                {t('orderCart.branchPickup')}
+              </AppText>
+              <AppText variant="bodySemiBold" color={colors.white} style={{ marginTop: 4 }}>
+                {branch ? (lang === 'ar' ? branch.nameAr : branch.nameEn) : t('home.chooseBranch')}
+              </AppText>
+            </Pressable>
+          ) : (
+            <Pressable onPress={() => router.push('/order-delivery')} style={{ backgroundColor: colors.hero, borderRadius: radius.lg, padding: space.lg }}>
+              <AppText variant="label" color="rgba(255,255,255,0.6)">
+                {t('order.delivery')}
+              </AppText>
+              <AppText variant="bodySemiBold" color={colors.white} style={{ marginTop: 4 }} numberOfLines={1}>
+                {address ? `${address.line}, ${address.building}` : t('orderDelivery.chooseAddress')}
+              </AppText>
+            </Pressable>
+          )}
         </View>
 
         <View style={{ gap: space.sm }}>
@@ -161,7 +173,13 @@ export default function OrderCartScreen() {
             </View>
             <AppText variant="h2">{t('orderBranch.successTitle')}</AppText>
             <AppText variant="muted" align="center">
-              {branch ? t('orderBranch.successBody', { branch: lang === 'ar' ? branch.nameAr : branch.nameEn }) : ''}
+              {fulfillment === 'pickup'
+                ? branch
+                  ? t('orderBranch.successBody', { branch: lang === 'ar' ? branch.nameAr : branch.nameEn })
+                  : ''
+                : address
+                  ? t('orderDelivery.successBody', { address: address.line })
+                  : ''}
             </AppText>
             <Button label={t('orderBranch.done')} onPress={finish} style={{ width: '100%', marginTop: space.sm }} />
           </View>
