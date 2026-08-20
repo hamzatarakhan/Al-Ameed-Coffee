@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Linking, Pressable, ScrollView, Share, Switch, View } from 'react-native';
+import { Alert, Linking, Pressable, ScrollView, Switch, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -13,6 +13,7 @@ import { useThemeMode, type ThemeMode } from '@/lib/theme-mode';
 import { useTabBarInset } from '@/lib/useTabBarInset';
 import { useAuth } from '@/lib/auth-store';
 import { confirmAction } from '@/lib/confirm';
+import { shareInvite } from '@/lib/invite';
 
 const BRANCH_PHONE = '+962 6 581 4300';
 const WEBSITE = 'https://alameedcoffee.com';
@@ -53,14 +54,7 @@ export default function AccountScreen() {
     confirmAction(t('account.signOut'), t('account.signOutConfirm'), t('account.signOut'), () => auth.signOut(), lang === 'ar' ? 'إغلاق' : 'Cancel', true);
   };
 
-  const invite = () => {
-    Share.share({
-      message:
-        lang === 'ar'
-          ? 'حمّل تطبيق بن العميد واستخدم كودي عشان تكسب نقاط: AMEED-HZ20'
-          : 'Download the Al Ameed Coffee app and use my code to earn points: AMEED-HZ20',
-    }).catch(() => {});
-  };
+  const invite = () => shareInvite(lang);
 
   const contactUs = () => {
     confirmAction(t('account.contactUs'), BRANCH_PHONE, t('branchDetail.call'), () => Linking.openURL(`tel:${BRANCH_PHONE}`), lang === 'ar' ? 'إغلاق' : 'Close');

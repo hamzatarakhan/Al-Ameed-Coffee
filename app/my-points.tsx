@@ -1,5 +1,8 @@
 import React from 'react';
-import { ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
@@ -8,47 +11,69 @@ import { StatTile } from '@/components/StatTile';
 import { ProgressBar } from '@/components/ProgressBar';
 import { EmptyState } from '@/components/EmptyState';
 import { ScreenHeader } from '@/components/ScreenHeader';
-import { colors, space } from '@/lib/theme';
+import { colors, radius, shadow, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
-import { rewards, transactions, userPoints } from '@/lib/mock-data';
+import { useOrderCart } from '@/lib/order-cart';
+import { useOrderSheet } from '@/lib/order-sheet';
+import { shareInvite } from '@/lib/invite';
+import { rewards, redemptions, transactions, userPoints } from '@/lib/mock-data';
 
 const cheapest = [...rewards].sort((a, b) => a.cost - b.cost)[0];
 
 export default function MyPointsScreen() {
-  const { t, lang } = useLang();
+  const { t, lang, isRTL } = useLang();
+  const router = useRouter();
+  const { pastOrders } = useOrderCart();
+  const { openSheet } = useOrderSheet();
+  const checkinCount = transactions.filter((tx) => tx.id.startsWith('tx-checkin')).length;
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <ScreenHeader title={t('points.title')} />
       <ScrollView contentContainerStyle={{ padding: space.lg, paddingBottom: space.xxxl }}>
-        <Card style={{ marginBottom: space.lg }}>
-          <AppText variant="muted">{t('points.balance')}</AppText>
-          <AppText variant="mono" style={{ fontSize: 34, lineHeight: 46, marginBottom: space.md }}>
-            {userPoints}
-          </AppText>
-          <ProgressBar value={userPoints} max={cheapest.cost} />
-          <AppText variant="muted" style={{ marginTop: space.sm }}>
-            {t('points.nextReward', { name: lang === 'ar' ? cheapest.nameAr : cheapest.nameEn })}
-          </AppText>
-        </Card>
+        <Pressable onPress={() => router.push(`/rewards/${cheapest.id}`)} style={{ marginBottom: space.lg }}>
+          <LinearGradient
+            colors={[colors.brand, colors.hero]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{ borderRadius: radius.xl, padding: space.lg, overflow: 'hidden', ...shadow.card }}>
+            <Ionicons
+              name="sparkles"
+              size={130}
+              color="rgba(255,255,255,0.08)"
+              style={{ position: 'absolute', top: -20, [isRTL ? 'left' : 'right']: -20 }}
+            />
+            <AppText variant="muted" color="rgba(255,255,255,0.8)">
+              {t('points.balance')}
+            </AppText>
+            <AppText variant="display" color={colors.white} style={{ fontSize: 40, lineHeight: 54, marginBottom: space.md }}>
+              {userPoints}
+            </AppText>
+            <ProgressBar value={userPoints} max={cheapest.cost} />
+            <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: space.sm }}>
+              <AppText variant="muted" color="rgba(255,255,255,0.8)" style={{ flex: 1 }}>
+                {t('points.nextReward', { name: lang === 'ar' ? cheapest.nameAr : cheapest.nameEn })}
+              </AppText>
+              <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={16} color="rgba(255,255,255,0.8)" />
+            </Row>
+          </LinearGradient>
+        </Pressable>
 
         <Card style={{ marginBottom: space.lg }}>
           <Row>
-            <StatTile value={0} label={t('points.redeemedStat')} />
-            <StatTile value={0} label={t('points.visitsStat')} />
-            <StatTile value={0} label={t('points.expiredStat')} />
+            <StatTile icon="gift-outline" value={redemptions.length} label={t('points.redeemedStat')} onPress={() => router.push('/redeemed-rewards')} />
+            <StatTile icon="bag-handle-outline" value={pastOrders.length} label={t('orders.title')} onPress={() => router.push('/order')} />
+            <StatTile icon="qr-code-outline" value={checkinCount} label={t('points.visitsStat')} onPress={() => router.push('/checkin')} />
           </Row>
         </Card>
 
-        <Card style={{ marginBottom: space.lg }}>
-          <AppText variant="bodySemiBold" style={{ marginBottom: space.sm }}>
+        <Card style={{ marginBottom: space.lg, gap: space.xs }}>
+          <AppText variant="bodySemiBold" style={{ marginBottom: space.xs }}>
             {t('points.howToEarn')}
           </AppText>
-          <View style={{ gap: space.xs }}>
-            <AppText variant="muted">• {t('points.earnCheckin')}</AppText>
-            <AppText variant="muted">• {t('points.earnOrder')}</AppText>
-            <AppText variant="muted">• {t('points.earnInvite')}</AppText>
-          </View>
+          <EarnRow icon="qr-code-outline" label={t('points.earnCheckin')} onPress={() => router.push('/checkin')} isRTL={isRTL} />
+          <EarnRow icon="bag-handle-outline" label={t('points.earnOrder')} onPress={openSheet} isRTL={isRTL} />
+          <EarnRow icon="person-add-outline" label={t('points.earnInvite')} onPress={() => shareInvite(lang)} isRTL={isRTL} />
         </Card>
 
         <AppText variant="bodySemiBold" style={{ marginBottom: space.sm }}>
@@ -76,5 +101,21 @@ export default function MyPointsScreen() {
         )}
       </ScrollView>
     </View>
+  );
+}
+
+function EarnRow({ icon, label, onPress, isRTL }: { icon: keyof typeof Ionicons.glyphMap; label: string; onPress: () => void; isRTL: boolean }) {
+  return (
+    <Pressable onPress={onPress}>
+      <Row style={{ alignItems: 'center', gap: space.md, paddingVertical: space.sm }}>
+        <View style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center' }}>
+          <Ionicons name={icon} size={16} color={colors.brandInk} />
+        </View>
+        <AppText variant="muted" style={{ flex: 1 }}>
+          {label}
+        </AppText>
+        <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={14} color={colors.textMuted} />
+      </Row>
+    </Pressable>
   );
 }
