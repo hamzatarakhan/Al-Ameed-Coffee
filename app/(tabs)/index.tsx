@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { CircleButton } from '@/components/CircleButton';
 import { CheckinPopup } from '@/components/CheckinPopup';
+import { Pill } from '@/components/Pill';
 import { PromoCarousel } from '@/components/PromoCarousel';
-import { RewardMedia } from '@/components/RewardMedia';
 import { colors, radius, shadow, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
@@ -81,25 +82,36 @@ export default function HomeScreen() {
       <PromoCarousel slides={promos} />
 
       <View style={{ paddingHorizontal: space.lg }}>
-        <View
-          style={{
-            backgroundColor: colors.surface,
-            borderRadius: radius.xl,
-            borderWidth: 1,
-            borderColor: colors.border,
-            padding: space.lg,
-            marginBottom: space.xl,
-            ...shadow.card,
-          }}>
-          <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: space.lg }}>
+        <LinearGradient
+          colors={[colors.brand, colors.brandInk]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{ borderRadius: radius.xl, padding: space.lg, marginBottom: space.xl, overflow: 'hidden', ...shadow.card }}>
+          {/* Faint oversized cup watermark for texture — purely decorative,
+              clipped by the gradient's own overflow:hidden. */}
+          <Ionicons
+            name="cafe"
+            size={150}
+            color="rgba(255,255,255,0.08)"
+            style={{ position: 'absolute', top: -30, [isRTL ? 'left' : 'right']: -30 }}
+          />
+
+          <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: space.lg }}>
             <View>
-              <AppText variant="muted">{t('home.yourPoints')}</AppText>
-              <AppText variant="display" color={colors.brandInk}>
+              <AppText variant="muted" color="rgba(255,255,255,0.8)">
+                {t('home.yourPoints')}
+              </AppText>
+              <AppText variant="display" color={colors.white} style={{ fontSize: 42, lineHeight: 48 }}>
                 {userPoints}
               </AppText>
+              {cheapest[0] ? (
+                <AppText variant="label" color="rgba(255,255,255,0.8)" style={{ marginTop: 4 }}>
+                  {t('points.nextReward', { name: lang === 'ar' ? cheapest[0].nameAr : cheapest[0].nameEn })}
+                </AppText>
+              ) : null}
             </View>
-            <View style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: colors.brandTint, alignItems: 'center', justifyContent: 'center' }}>
-              <Ionicons name="sparkles" size={21} color={colors.brand} />
+            <View style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: 'rgba(255,255,255,0.18)', alignItems: 'center', justifyContent: 'center' }}>
+              <Ionicons name="sparkles" size={21} color={colors.white} />
             </View>
           </Row>
 
@@ -108,45 +120,36 @@ export default function HomeScreen() {
               <Pressable
                 key={c.label}
                 onPress={c.onPress}
-                // Default press feedback (Android's ripple especially) reads
-                // as a heavy dark flash — swap it for a light wash of the
-                // brand color instead, same tint the rest of the app already
-                // uses for "soft brand" surfaces.
-                android_ripple={{ color: colors.brandTint }}
+                android_ripple={{ color: 'rgba(255,255,255,0.25)' }}
                 style={({ pressed }) => [
                   {
                     flex: 1,
                     alignItems: 'center',
                     gap: space.xs,
-                    backgroundColor: i === 0 ? colors.brand : colors.surface2,
+                    backgroundColor: i === 0 ? colors.white : 'rgba(255,255,255,0.14)',
+                    borderWidth: i === 0 ? 0 : 1,
+                    borderColor: 'rgba(255,255,255,0.3)',
                     borderRadius: radius.md,
                     paddingVertical: space.sm,
                   },
-                  pressed && { backgroundColor: colors.brandTint },
+                  pressed && { opacity: 0.8 },
                 ]}>
-                {({ pressed }) => {
-                  const highlighted = i === 0 && !pressed;
-                  return (
-                    <>
-                      <Ionicons name={c.icon} size={19} color={highlighted ? colors.white : colors.brandInk} />
-                      <AppText
-                        variant="label"
-                        color={highlighted ? colors.white : colors.textMuted}
-                        align="center"
-                        style={!isRTL ? { fontSize: 9.5, lineHeight: 12, letterSpacing: 0.3 } : undefined}>
-                        {c.label}
-                      </AppText>
-                    </>
-                  );
-                }}
+                <Ionicons name={c.icon} size={19} color={i === 0 ? colors.brand : colors.white} />
+                <AppText
+                  variant="label"
+                  color={i === 0 ? colors.brand : colors.white}
+                  align="center"
+                  style={!isRTL ? { fontSize: 9.5, lineHeight: 12, letterSpacing: 0.3 } : undefined}>
+                  {c.label}
+                </AppText>
               </Pressable>
             ))}
           </Row>
-        </View>
+        </LinearGradient>
 
         <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: space.md }}>
-          <AppText variant="h3">{t('home.popular')}</AppText>
-          <Pressable onPress={() => router.push('/rewards')}>
+          <AppText variant="h3">{t('branches.title')}</AppText>
+          <Pressable onPress={() => router.push('/branches')}>
             <AppText variant="bodyMedium" color={colors.brand}>
               {t('common.seeAll')}
             </AppText>
@@ -154,23 +157,21 @@ export default function HomeScreen() {
         </Row>
 
         <View style={{ gap: space.md }}>
-          {cheapest.slice(0, 2).map((r) => (
+          {branches.slice(0, 2).map((b) => (
             <Pressable
-              key={r.id}
-              onPress={() => router.push(`/rewards/${r.id}`)}
-              style={{ backgroundColor: colors.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, padding: space.sm }}>
-              <Row style={{ alignItems: 'center', gap: space.md }}>
-                <RewardMedia image={r.image} emoji={r.emoji} emojiSize={28} style={{ width: 64, height: 64, borderRadius: radius.md }} />
-                <View style={{ flex: 1 }}>
-                  <AppText variant="bodySemiBold">{lang === 'ar' ? r.nameAr : r.nameEn}</AppText>
-                  <AppText variant="muted" numberOfLines={1}>
-                    {lang === 'ar' ? r.descAr : r.descEn}
-                  </AppText>
-                  <AppText variant="mono" color={colors.brandInk} style={{ marginTop: 2 }}>
-                    {r.cost} {t('common.points')}
-                  </AppText>
-                </View>
-                <CircleButton icon={isRTL ? 'chevron-back' : 'chevron-forward'} size={34} tone="light" onPress={() => router.push(`/rewards/${r.id}`)} />
+              key={b.id}
+              onPress={() => router.push(`/branches/${b.id}`)}
+              style={{ backgroundColor: colors.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, padding: space.lg }}>
+              <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: space.xs }}>
+                <AppText variant="bodySemiBold">{lang === 'ar' ? b.nameAr : b.nameEn}</AppText>
+                <Pill tone={b.openNow ? 'good' : 'neutral'} label={b.openNow ? t('branches.openNow') : t('branches.closed')} />
+              </Row>
+              <AppText variant="muted">{lang === 'ar' ? b.addressAr : b.addressEn}</AppText>
+              <Row style={{ alignItems: 'center', gap: 4, marginTop: space.sm }}>
+                <AppText variant="label" color={colors.brandInk}>
+                  {t('common.seeAll')}
+                </AppText>
+                <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={12} color={colors.brandInk} />
               </Row>
             </Pressable>
           ))}
