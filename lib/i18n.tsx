@@ -119,6 +119,9 @@ const dict = {
     sectionPrefs: { ar: 'الإعدادات', en: 'Preferences' },
     language: { ar: 'اللغة', en: 'Language' },
     nightMode: { ar: 'الوضع الليلي', en: 'Night Mode' },
+    themeLight: { ar: 'فاتح', en: 'Light' },
+    themeDark: { ar: 'داكن', en: 'Dark' },
+    themeSystem: { ar: 'تلقائي', en: 'System' },
     notifications: { ar: 'الإشعارات', en: 'Notifications' },
     notifDenied: {
       ar: 'الإشعارات موقوفة من إعدادات الجهاز. لتفعيلها، افتح إعدادات النظام وفعّلها لتطبيق بن العميد.',

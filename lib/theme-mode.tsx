@@ -1,29 +1,36 @@
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import React, { createContext, useCallback, useContext, useRef, useState } from 'react';
+import { useColorScheme } from 'react-native';
 import { applyColorScheme } from './theme';
 
+export type ThemeMode = 'light' | 'dark' | 'system';
+
 interface ThemeModeValue {
+  mode: ThemeMode;
   isDark: boolean;
-  toggle: () => void;
+  setMode: (mode: ThemeMode) => void;
 }
 
 const ThemeModeContext = createContext<ThemeModeValue | null>(null);
 
 export function ThemeModeProvider({ children }: { children: React.ReactNode }) {
-  const [isDark, setIsDark] = useState(false);
+  const systemScheme = useColorScheme();
+  const [mode, setModeState] = useState<ThemeMode>('system');
+  const isDark = mode === 'system' ? systemScheme === 'dark' : mode === 'dark';
 
-  const toggle = useCallback(() => {
-    setIsDark((prev) => {
-      const next = !prev;
-      applyColorScheme(next);
-      return next;
-    });
-  }, []);
+  // Mutating during render (not in an effect) so `colors` is already
+  // up to date by the time descendants — including _layout.tsx's Stack,
+  // which keys off isDark and remounts the whole tree — render in this
+  // same pass. An effect would apply one render too late, leaving the
+  // freshly remounted tree reading the previous (stale) colors.
+  const appliedRef = useRef<boolean | null>(null);
+  if (appliedRef.current !== isDark) {
+    applyColorScheme(isDark);
+    appliedRef.current = isDark;
+  }
 
-  // isDark in the value (not just the colors mutation) is what makes this
-  // provider re-render — and since nothing here is memoized, that re-render
-  // cascades to every descendant screen, which is what actually repaints
-  // them with the colors object's freshly-mutated values.
-  return <ThemeModeContext.Provider value={{ isDark, toggle }}>{children}</ThemeModeContext.Provider>;
+  const setMode = useCallback((next: ThemeMode) => setModeState(next), []);
+
+  return <ThemeModeContext.Provider value={{ mode, isDark, setMode }}>{children}</ThemeModeContext.Provider>;
 }
 
 export function useThemeMode() {

@@ -9,7 +9,8 @@ import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
-import { useThemeMode } from '@/lib/theme-mode';
+import { useThemeMode, type ThemeMode } from '@/lib/theme-mode';
+import { ChoiceChips } from '@/components/ChoiceChips';
 import { useTabBarInset } from '@/lib/useTabBarInset';
 import { useAuth } from '@/lib/auth-store';
 import { confirmAction } from '@/lib/confirm';
@@ -22,7 +23,12 @@ export default function AccountScreen() {
   const insets = useSafeAreaInsets();
   const tabBarInset = useTabBarInset();
   const router = useRouter();
-  const { isDark, toggle: toggleDark } = useThemeMode();
+  const { mode: themeModeValue, setMode: setThemeMode } = useThemeMode();
+  const themeOptions: { value: ThemeMode; label: string }[] = [
+    { value: 'light', label: t('account.themeLight') },
+    { value: 'dark', label: t('account.themeDark') },
+    { value: 'system', label: t('account.themeSystem') },
+  ];
   const auth = useAuth();
   const [notifGranted, setNotifGranted] = useState(false);
 
@@ -80,13 +86,13 @@ export default function AccountScreen() {
 
       <Section title={t('account.sectionPrefs')}>
         <Item icon="language-outline" label={t('account.language')} onPress={toggle} value={lang === 'ar' ? 'العربية' : 'English'} />
-        <Row style={{ alignItems: 'center', justifyContent: 'space-between', paddingVertical: space.md }}>
+        <View style={{ paddingVertical: space.md, gap: space.sm }}>
           <Row style={{ alignItems: 'center', gap: space.md }}>
             <Ionicons name="moon-outline" size={18} color={colors.textMuted} />
             <AppText variant="body">{t('account.nightMode')}</AppText>
           </Row>
-          <Switch value={isDark} onValueChange={toggleDark} trackColor={{ true: colors.brand, false: colors.border }} />
-        </Row>
+          <ChoiceChips options={themeOptions} value={themeModeValue} onChange={setThemeMode} />
+        </View>
         <Row style={{ alignItems: 'center', justifyContent: 'space-between', paddingVertical: space.md }}>
           <Row style={{ alignItems: 'center', gap: space.md }}>
             <Ionicons name="notifications-outline" size={18} color={colors.textMuted} />
