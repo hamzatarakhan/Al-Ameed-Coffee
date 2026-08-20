@@ -120,6 +120,7 @@ function AppShell() {
           <Stack.Screen name="order-branch" options={{ presentation: 'card' }} />
           <Stack.Screen name="order-delivery" options={{ presentation: 'card' }} />
           <Stack.Screen name="order-address-new" options={{ presentation: 'card' }} />
+          <Stack.Screen name="order-status/[id]" options={{ presentation: 'card' }} />
           <Stack.Screen name="my-points" options={{ presentation: 'card' }} />
           <Stack.Screen name="redeemed-rewards" options={{ presentation: 'card' }} />
           <Stack.Screen name="notifications" options={{ presentation: 'card' }} />

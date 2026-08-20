@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -29,6 +29,14 @@ export default function OrdersScreen() {
     router.push('/order-cart');
   };
 
+  const statusLabel = (o: PlacedOrder) => {
+    if (o.status === 'completed') return o.fulfillment === 'pickup' ? t('orderStatus.completedPickup') : t('orderStatus.completedDelivery');
+    if (o.status === 'ready') return o.fulfillment === 'pickup' ? t('orderStatus.readyPickup') : t('orderStatus.readyDelivery');
+    if (o.status === 'preparing') return t('orderStatus.preparing');
+    return t('orderStatus.received');
+  };
+  const statusTone = (o: PlacedOrder) => (o.status === 'completed' ? 'good' : o.status === 'ready' ? 'brand' : 'warn');
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <ScrollView contentContainerStyle={{ padding: space.lg, paddingTop: insets.top + space.lg, paddingBottom: space.xxxl + tabBarInset }}>
@@ -47,26 +55,31 @@ export default function OrdersScreen() {
         ) : (
           <View style={{ gap: space.md }}>
             {pastOrders.map((o) => (
-              <Card key={o.id}>
-                <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: space.xs }}>
-                  <AppText variant="bodySemiBold" style={{ flex: 1 }}>
-                    {lang === 'ar' ? o.itemsAr : o.itemsEn}
+              <Pressable key={o.id} onPress={() => router.push(`/order-status/${o.id}` as Href)}>
+                <Card>
+                  <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: space.xs }}>
+                    <AppText variant="bodySemiBold" style={{ flex: 1 }}>
+                      {lang === 'ar' ? o.itemsAr : o.itemsEn}
+                    </AppText>
+                    <Pill tone={statusTone(o)} label={statusLabel(o)} />
+                  </Row>
+                  <AppText variant="muted">
+                    {o.fulfillment === 'pickup' ? t('orders.pickupFrom', { branch: o.locationAr }) : t('orders.deliverTo', { address: o.locationAr })}
+                    {' · '}
+                    {t('orders.itemsCount', { n: o.itemCount })}
                   </AppText>
-                  <Pill tone="good" label={t('orders.completed')} />
-                </Row>
-                <AppText variant="muted">
-                  {o.fulfillment === 'pickup' ? t('orders.pickupFrom', { branch: o.locationAr }) : t('orders.deliverTo', { address: o.locationAr })}
-                  {' · '}
-                  {t('orders.itemsCount', { n: o.itemCount })}
-                </AppText>
-                <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: space.sm }}>
-                  <AppText variant="muted">{o.date}</AppText>
-                  <AppText variant="mono" color={colors.brandInk}>
-                    {t('menu.price', { price: o.total.toFixed(2) })}
-                  </AppText>
-                </Row>
-                <Button label={t('orders.reorder')} variant="secondary" onPress={() => orderAgain(o)} style={{ marginTop: space.md }} />
-              </Card>
+                  <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: space.sm }}>
+                    <AppText variant="muted">{o.date}</AppText>
+                    <AppText variant="mono" color={colors.brandInk}>
+                      {t('menu.price', { price: o.total.toFixed(2) })}
+                    </AppText>
+                  </Row>
+                  <Row style={{ gap: space.sm, marginTop: space.md }}>
+                    <Button label={t('orders.track')} variant="secondary" onPress={() => router.push(`/order-status/${o.id}` as Href)} style={{ flex: 1 }} />
+                    <Button label={t('orders.reorder')} variant="secondary" onPress={() => orderAgain(o)} style={{ flex: 1 }} />
+                  </Row>
+                </Card>
+              </Pressable>
             ))}
           </View>
         )}

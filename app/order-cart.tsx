@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -25,6 +25,7 @@ export default function OrderCartScreen() {
     useOrderCart();
   const [noCallConfirm, setNoCallConfirm] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
   // Captured at the moment of placing — placeOrder() resets the selection
   // right away, so the success modal needs its own copy to still show the
   // right branch/address after that reset.
@@ -42,13 +43,14 @@ export default function OrderCartScreen() {
       fulfillment,
       location: fulfillment === 'pickup' ? (branch ? (lang === 'ar' ? branch.nameAr : branch.nameEn) : '') : address ? address.line : '',
     });
-    placeOrder();
+    setPlacedOrderId(placeOrder());
     setSuccess(true);
   };
 
   const finish = () => {
     setSuccess(false);
     router.dismissAll();
+    if (placedOrderId) router.push(`/order-status/${placedOrderId}` as Href);
   };
 
   if (items.length === 0) {
@@ -260,7 +262,7 @@ export default function OrderCartScreen() {
               : t('orderDelivery.successBody', { address: placedSummary.location })
             : ''
         }
-        doneLabel={t('orderBranch.done')}
+        doneLabel={t('orderStatus.viewOrder')}
         onDone={finish}
       />
     </View>

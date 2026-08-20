@@ -4,6 +4,8 @@ import { branches, menuItems } from './mock-data';
 export type PaymentMethod = 'cash' | 'card';
 export type Fulfillment = 'pickup' | 'delivery';
 export type AddressType = 'home' | 'work' | 'other';
+export type OrderStatus = 'received' | 'preparing' | 'ready' | 'completed';
+export const ORDER_STATUS_STEPS: OrderStatus[] = ['received', 'preparing', 'ready', 'completed'];
 
 export type Address = {
   id: string;
@@ -33,6 +35,7 @@ export type PlacedOrder = {
   paymentMethod: PaymentMethod;
   branchId: string | null;
   addressId: string | null;
+  status: OrderStatus;
 };
 
 interface OrderCartValue {
@@ -51,7 +54,8 @@ interface OrderCartValue {
   addressId: string | null;
   setAddressId: (id: string | null) => void;
   pastOrders: PlacedOrder[];
-  placeOrder: () => void;
+  placeOrder: () => string;
+  advanceOrderStatus: (orderId: string) => void;
   reorder: (order: PlacedOrder) => void;
   clear: () => void;
 }
@@ -105,14 +109,15 @@ export function OrderCartProvider({ children }: { children: React.ReactNode }) {
   }, [quantities]);
 
   const placeOrder = useCallback(() => {
+    const id = `order-${Date.now()}`;
     setPastOrders((prev) => {
       const entries = Object.entries(quantities);
-      const itemsAr = entries.map(([id, qty]) => `${menuItems.find((m) => m.id === id)?.nameAr ?? ''}${qty > 1 ? ` × ${qty}` : ''}`).join('، ');
-      const itemsEn = entries.map(([id, qty]) => `${menuItems.find((m) => m.id === id)?.nameEn ?? ''}${qty > 1 ? ` × ${qty}` : ''}`).join(', ');
+      const itemsAr = entries.map(([oid, qty]) => `${menuItems.find((m) => m.id === oid)?.nameAr ?? ''}${qty > 1 ? ` × ${qty}` : ''}`).join('، ');
+      const itemsEn = entries.map(([oid, qty]) => `${menuItems.find((m) => m.id === oid)?.nameEn ?? ''}${qty > 1 ? ` × ${qty}` : ''}`).join(', ');
       const branch = branches.find((b) => b.id === branchId);
       const address = addresses.find((a) => a.id === addressId);
       const order: PlacedOrder = {
-        id: `order-${Date.now()}`,
+        id,
         itemsAr,
         itemsEn,
         itemCount: entries.reduce((sum, [, qty]) => sum + qty, 0),
@@ -125,11 +130,23 @@ export function OrderCartProvider({ children }: { children: React.ReactNode }) {
         paymentMethod,
         branchId,
         addressId,
+        status: 'received',
       };
       return [order, ...prev];
     });
     resetSelection();
+    return id;
   }, [quantities, totalPrice, fulfillment, branchId, addressId, addresses, paymentMethod, resetSelection]);
+
+  const advanceOrderStatus = useCallback((orderId: string) => {
+    setPastOrders((prev) =>
+      prev.map((o) => {
+        if (o.id !== orderId) return o;
+        const next = ORDER_STATUS_STEPS[Math.min(ORDER_STATUS_STEPS.indexOf(o.status) + 1, ORDER_STATUS_STEPS.length - 1)];
+        return { ...o, status: next };
+      })
+    );
+  }, []);
 
   const reorder = useCallback((order: PlacedOrder) => {
     setQuantities(order.quantities);
@@ -158,6 +175,7 @@ export function OrderCartProvider({ children }: { children: React.ReactNode }) {
         setAddressId,
         pastOrders,
         placeOrder,
+        advanceOrderStatus,
         reorder,
         clear: resetSelection,
       }}>
