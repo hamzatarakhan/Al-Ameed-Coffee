@@ -1,11 +1,11 @@
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 import { AppText } from './AppText';
 import { Row } from './Row';
 import { colors, radius, space } from '@/lib/theme';
-import { useTabBarInset } from '@/lib/useTabBarInset';
 
 export function OptionSheet<T extends string>({
   visible,
@@ -22,7 +22,7 @@ export function OptionSheet<T extends string>({
   value: T;
   onSelect: (v: T) => void;
 }) {
-  const tabBarInset = useTabBarInset();
+  const insets = useSafeAreaInsets();
   if (!visible) return null;
 
   return (
@@ -33,14 +33,10 @@ export function OptionSheet<T extends string>({
           position: 'absolute',
           left: 0,
           right: 0,
-          bottom: tabBarInset,
+          bottom: 0,
           backgroundColor: colors.surface,
           padding: space.lg,
-          // No insets.bottom here — unlike a full-screen Modal, this sheet
-          // stops above the tab bar (see `bottom: tabBarInset` above), and
-          // on iOS that tab bar already extends through the home-indicator
-          // safe area, so adding it again just left a big empty gap.
-          paddingBottom: space.md,
+          paddingBottom: insets.bottom + space.md,
           borderTopLeftRadius: radius.xl,
           borderTopRightRadius: radius.xl,
           gap: space.xs,

@@ -8,6 +8,9 @@ interface ThemeModeValue {
   mode: ThemeMode;
   isDark: boolean;
   setMode: (mode: ThemeMode) => void;
+  sheetOpen: boolean;
+  openSheet: () => void;
+  closeSheet: () => void;
 }
 
 const ThemeModeContext = createContext<ThemeModeValue | null>(null);
@@ -15,6 +18,7 @@ const ThemeModeContext = createContext<ThemeModeValue | null>(null);
 export function ThemeModeProvider({ children }: { children: React.ReactNode }) {
   const systemScheme = useColorScheme();
   const [mode, setModeState] = useState<ThemeMode>('system');
+  const [sheetOpen, setSheetOpen] = useState(false);
   const isDark = mode === 'system' ? systemScheme === 'dark' : mode === 'dark';
 
   // Mutating during render (not in an effect) so `colors` is already
@@ -29,8 +33,12 @@ export function ThemeModeProvider({ children }: { children: React.ReactNode }) {
   }
 
   const setMode = useCallback((next: ThemeMode) => setModeState(next), []);
+  const openSheet = useCallback(() => setSheetOpen(true), []);
+  const closeSheet = useCallback(() => setSheetOpen(false), []);
 
-  return <ThemeModeContext.Provider value={{ mode, isDark, setMode }}>{children}</ThemeModeContext.Provider>;
+  return (
+    <ThemeModeContext.Provider value={{ mode, isDark, setMode, sheetOpen, openSheet, closeSheet }}>{children}</ThemeModeContext.Provider>
+  );
 }
 
 export function useThemeMode() {

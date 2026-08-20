@@ -8,12 +8,13 @@ import { useFonts as useMulishFonts, Mulish_400Regular, Mulish_500Medium, Mulish
 import { useFonts as useCairoFonts, Cairo_400Regular, Cairo_500Medium, Cairo_600SemiBold, Cairo_700Bold } from '@expo-google-fonts/cairo';
 import { useFonts as usePlexMonoFonts, IBMPlexMono_500Medium } from '@expo-google-fonts/ibm-plex-mono';
 
-import { LanguageProvider } from '@/lib/i18n';
-import { ThemeModeProvider, useThemeMode } from '@/lib/theme-mode';
+import { LanguageProvider, useLang } from '@/lib/i18n';
+import { ThemeModeProvider, useThemeMode, type ThemeMode } from '@/lib/theme-mode';
 import { NotificationsProvider } from '@/lib/notifications-store';
 import { AuthProvider, useAuth } from '@/lib/auth-store';
 import { ProfileProvider } from '@/lib/profile-store';
 import { AnimatedSplash } from '@/components/AnimatedSplash';
+import { OptionSheet } from '@/components/OptionSheet';
 import { colors } from '@/lib/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -58,8 +59,14 @@ export default function RootLayout() {
 }
 
 function AppShell() {
-  const { isDark } = useThemeMode();
+  const { isDark, mode, setMode, sheetOpen, closeSheet } = useThemeMode();
   const { status } = useAuth();
+  const { t } = useLang();
+  const themeOptions: { value: ThemeMode; label: string }[] = [
+    { value: 'light', label: t('account.themeLight') },
+    { value: 'dark', label: t('account.themeDark') },
+    { value: 'system', label: t('account.themeSystem') },
+  ];
 
   // react-native-screens freezes/keeps-alive inactive tab screens for native
   // transition performance — they don't re-render just because an ancestor's
@@ -122,6 +129,12 @@ function AppShell() {
         <Stack.Screen name="legal/delete-data" options={{ presentation: 'card' }} />
       </Stack>
       <StatusBar style={isDark ? 'light' : 'dark'} />
+
+      {/* Rendered here, above the whole Stack (and thus above the tabs'
+          floating iOS tab bar), instead of inside account.tsx where it used
+          to live — a sheet mounted inside one tab screen can't visually
+          cover a tab bar that floats above every screen's own content. */}
+      <OptionSheet visible={sheetOpen} onClose={closeSheet} title={t('account.nightMode')} options={themeOptions} value={mode} onSelect={setMode} />
     </>
   );
 }
