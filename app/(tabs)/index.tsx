@@ -9,7 +9,6 @@ import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { CircleButton } from '@/components/CircleButton';
 import { CheckinPopup } from '@/components/CheckinPopup';
-import { OrderSheet } from '@/components/OrderSheet';
 import { Pill } from '@/components/Pill';
 import { PromoCarousel } from '@/components/PromoCarousel';
 import { colors, radius, shadow, space } from '@/lib/theme';
@@ -17,6 +16,7 @@ import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
 import { useNotifications } from '@/lib/notifications-store';
 import { useBranchDistances } from '@/lib/useBranchDistances';
+import { useOrderSheet } from '@/lib/order-sheet';
 import { rewards, branches, promos, userPoints } from '@/lib/mock-data';
 
 const cheapest = [...rewards].sort((a, b) => a.cost - b.cost);
@@ -29,7 +29,7 @@ export default function HomeScreen() {
   const { notifications } = useNotifications();
   const hasUnreadNotifications = notifications.some((n) => !n.read);
   const [showCheckin, setShowCheckin] = useState(true);
-  const [showOrderSheet, setShowOrderSheet] = useState(false);
+  const { openSheet: openOrderSheet } = useOrderSheet();
   const { nearest, request } = useBranchDistances();
 
   // Attempt silently on load — if the user already granted location
@@ -41,7 +41,7 @@ export default function HomeScreen() {
   }, [request]);
 
   const categories = [
-    { icon: 'bag-handle' as const, label: t('home.quickOrder'), onPress: () => setShowOrderSheet(true) },
+    { icon: 'bag-handle' as const, label: t('home.quickOrder'), onPress: openOrderSheet },
     { icon: 'sparkles' as const, label: t('home.quickPoints'), onPress: () => router.push('/my-points') },
     { icon: 'gift' as const, label: t('home.quickRewards'), onPress: () => router.push('/rewards') },
     { icon: 'ribbon' as const, label: t('home.quickRedeemed'), onPress: () => router.push('/redeemed-rewards') },
@@ -134,7 +134,7 @@ export default function HomeScreen() {
           </Row>
 
           <Row style={{ gap: space.sm }}>
-            {categories.map((c, i) => (
+            {categories.map((c) => (
               <Pressable
                 key={c.label}
                 onPress={c.onPress}
@@ -144,18 +144,18 @@ export default function HomeScreen() {
                     flex: 1,
                     alignItems: 'center',
                     gap: space.xs,
-                    backgroundColor: i === 0 ? colors.white : 'rgba(255,255,255,0.14)',
-                    borderWidth: i === 0 ? 0 : 1,
+                    backgroundColor: 'rgba(255,255,255,0.14)',
+                    borderWidth: 1,
                     borderColor: 'rgba(255,255,255,0.3)',
                     borderRadius: radius.md,
                     paddingVertical: space.sm,
                   },
                   pressed && { opacity: 0.8 },
                 ]}>
-                <Ionicons name={c.icon} size={19} color={i === 0 ? colors.brand : colors.white} />
+                <Ionicons name={c.icon} size={19} color={colors.white} />
                 <AppText
                   variant="label"
-                  color={i === 0 ? colors.brand : colors.white}
+                  color={colors.white}
                   align="center"
                   style={!isRTL ? { fontSize: 9.5, lineHeight: 12, letterSpacing: 0.3 } : undefined}>
                   {c.label}
@@ -204,7 +204,6 @@ export default function HomeScreen() {
       </ScrollView>
 
       <CheckinPopup visible={showCheckin} onClose={() => setShowCheckin(false)} />
-      <OrderSheet visible={showOrderSheet} onClose={() => setShowOrderSheet(false)} />
     </>
   );
 }

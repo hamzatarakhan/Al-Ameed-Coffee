@@ -10,11 +10,13 @@ import { useFonts as usePlexMonoFonts, IBMPlexMono_500Medium } from '@expo-googl
 
 import { LanguageProvider, useLang } from '@/lib/i18n';
 import { ThemeModeProvider, useThemeMode, type ThemeMode } from '@/lib/theme-mode';
+import { OrderSheetProvider, useOrderSheet } from '@/lib/order-sheet';
 import { NotificationsProvider } from '@/lib/notifications-store';
 import { AuthProvider, useAuth } from '@/lib/auth-store';
 import { ProfileProvider } from '@/lib/profile-store';
 import { AnimatedSplash } from '@/components/AnimatedSplash';
 import { OptionSheet } from '@/components/OptionSheet';
+import { OrderSheet } from '@/components/OrderSheet';
 import { colors } from '@/lib/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -47,8 +49,10 @@ export default function RootLayout() {
           <AuthProvider>
             <ProfileProvider>
               <NotificationsProvider>
-                <AppShell />
-                {showSplash ? <AnimatedSplash onFinish={() => setShowSplash(false)} /> : null}
+                <OrderSheetProvider>
+                  <AppShell />
+                  {showSplash ? <AnimatedSplash onFinish={() => setShowSplash(false)} /> : null}
+                </OrderSheetProvider>
               </NotificationsProvider>
             </ProfileProvider>
           </AuthProvider>
@@ -60,6 +64,7 @@ export default function RootLayout() {
 
 function AppShell() {
   const { isDark, mode, setMode, sheetOpen, closeSheet } = useThemeMode();
+  const { open: orderSheetOpen, closeSheet: closeOrderSheet } = useOrderSheet();
   const { status } = useAuth();
   const { t } = useLang();
   const themeOptions: { value: ThemeMode; label: string }[] = [
@@ -145,6 +150,11 @@ function AppShell() {
         value={mode}
         onSelect={setMode}
       />
+
+      {/* Same reasoning as OptionSheet above — Home's "Order Now" quick
+          action used to open this sheet from inside its own screen, which
+          couldn't cover the floating tab bar either. */}
+      <OrderSheet visible={orderSheetOpen} onClose={closeOrderSheet} />
     </>
   );
 }
