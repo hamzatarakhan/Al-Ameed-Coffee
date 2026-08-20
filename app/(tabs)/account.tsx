@@ -10,7 +10,7 @@ import { Row } from '@/components/Row';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useThemeMode, type ThemeMode } from '@/lib/theme-mode';
-import { ChoiceChips } from '@/components/ChoiceChips';
+import { OptionSheet } from '@/components/OptionSheet';
 import { useTabBarInset } from '@/lib/useTabBarInset';
 import { useAuth } from '@/lib/auth-store';
 import { confirmAction } from '@/lib/confirm';
@@ -24,11 +24,13 @@ export default function AccountScreen() {
   const tabBarInset = useTabBarInset();
   const router = useRouter();
   const { mode: themeModeValue, setMode: setThemeMode } = useThemeMode();
+  const [showThemeSheet, setShowThemeSheet] = useState(false);
   const themeOptions: { value: ThemeMode; label: string }[] = [
     { value: 'light', label: t('account.themeLight') },
     { value: 'dark', label: t('account.themeDark') },
     { value: 'system', label: t('account.themeSystem') },
   ];
+  const themeModeLabel = themeOptions.find((o) => o.value === themeModeValue)?.label ?? '';
   const auth = useAuth();
   const [notifGranted, setNotifGranted] = useState(false);
 
@@ -72,6 +74,7 @@ export default function AccountScreen() {
   };
 
   return (
+    <View style={{ flex: 1 }}>
     <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingTop: insets.top + space.lg, paddingHorizontal: space.lg, paddingBottom: space.xxxl + tabBarInset }}>
       <AppText variant="display" style={{ marginBottom: space.xl }}>
         {t('account.title')}
@@ -86,13 +89,7 @@ export default function AccountScreen() {
 
       <Section title={t('account.sectionPrefs')}>
         <Item icon="language-outline" label={t('account.language')} onPress={toggle} value={lang === 'ar' ? 'العربية' : 'English'} />
-        <View style={{ paddingVertical: space.md, gap: space.sm }}>
-          <Row style={{ alignItems: 'center', gap: space.md }}>
-            <Ionicons name="moon-outline" size={18} color={colors.textMuted} />
-            <AppText variant="body">{t('account.nightMode')}</AppText>
-          </Row>
-          <ChoiceChips options={themeOptions} value={themeModeValue} onChange={setThemeMode} />
-        </View>
+        <Item icon="moon-outline" label={t('account.nightMode')} onPress={() => setShowThemeSheet(true)} value={themeModeLabel} />
         <Row style={{ alignItems: 'center', justifyContent: 'space-between', paddingVertical: space.md }}>
           <Row style={{ alignItems: 'center', gap: space.md }}>
             <Ionicons name="notifications-outline" size={18} color={colors.textMuted} />
@@ -132,6 +129,16 @@ export default function AccountScreen() {
         {t('account.devInfo')}
       </AppText>
     </ScrollView>
+
+    <OptionSheet
+      visible={showThemeSheet}
+      onClose={() => setShowThemeSheet(false)}
+      title={t('account.nightMode')}
+      options={themeOptions}
+      value={themeModeValue}
+      onSelect={setThemeMode}
+    />
+    </View>
   );
 
   function Item({ icon, label, onPress, value }: { icon: keyof typeof Ionicons.glyphMap; label: string; onPress?: () => void; value?: string }) {
