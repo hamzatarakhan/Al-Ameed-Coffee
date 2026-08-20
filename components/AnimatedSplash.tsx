@@ -10,7 +10,6 @@ import Animated, {
   withDelay,
   withRepeat,
   withSequence,
-  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 
@@ -66,8 +65,6 @@ function Steam({ delay, left }: { delay: number; left: number }) {
 export function AnimatedSplash({ onFinish }: { onFinish: () => void }) {
   const insets = useSafeAreaInsets();
 
-  const logoScale = useSharedValue(0.55);
-  const logoRotate = useSharedValue(-12);
   const logoOpacity = useSharedValue(0);
   const glow = useSharedValue(0.35);
   const textOpacity = useSharedValue(0);
@@ -78,11 +75,6 @@ export function AnimatedSplash({ onFinish }: { onFinish: () => void }) {
 
   useEffect(() => {
     logoOpacity.value = withTiming(1, { duration: 500, easing: Easing.out(Easing.cubic) });
-    logoScale.value = withSequence(
-      withSpring(1.08, { damping: 9, stiffness: 120, mass: 0.7 }),
-      withSpring(1, { damping: 10, stiffness: 160 }),
-    );
-    logoRotate.value = withSpring(0, { damping: 11, stiffness: 110 });
     glow.value = withDelay(200, withRepeat(withSequence(withTiming(0.7, { duration: 1100 }), withTiming(0.35, { duration: 1100 })), -1, true));
 
     textOpacity.value = withDelay(420, withTiming(1, { duration: 450 }));
@@ -104,10 +96,7 @@ export function AnimatedSplash({ onFinish }: { onFinish: () => void }) {
     opacity: containerOpacity.value,
     transform: [{ scale: containerScale.value }],
   }));
-  const logoStyle = useAnimatedStyle(() => ({
-    opacity: logoOpacity.value,
-    transform: [{ scale: logoScale.value }, { rotate: `${logoRotate.value}deg` }],
-  }));
+  const logoStyle = useAnimatedStyle(() => ({ opacity: logoOpacity.value }));
   const glowStyle = useAnimatedStyle(() => ({ opacity: glow.value }));
   const textStyle = useAnimatedStyle(() => ({ opacity: textOpacity.value, transform: [{ translateY: textY.value }] }));
   const dotsStyle = useAnimatedStyle(() => ({ opacity: dotsOpacity.value }));
