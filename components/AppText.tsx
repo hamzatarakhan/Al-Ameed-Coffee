@@ -65,7 +65,14 @@ export function AppText({ variant = 'body', color, align, style, ...rest }: Prop
           fontFamily: family,
           fontSize: size,
           lineHeight: line,
-          color: color ?? colors.text,
+          // An explicit color prop must always win over the variant's own
+          // default — this used to be a separate `variant === 'muted' &&
+          // {color: ...}` entry later in the array, which unconditionally
+          // clobbered any color the caller passed (found via a card that
+          // needed white-on-gradient "muted" text and silently got dark
+          // grey instead — same bug had already broken a couple of other
+          // screens' color overrides too).
+          color: color ?? (variant === 'muted' ? colors.textMuted : colors.text),
           textAlign: resolvedAlign,
           writingDirection: isRTL ? 'rtl' : 'ltr',
           letterSpacing,
@@ -76,7 +83,6 @@ export function AppText({ variant = 'body', color, align, style, ...rest }: Prop
           // since it's a platform quirk, not a per-screen sizing mistake.
           includeFontPadding: false,
         },
-        variant === 'muted' && { color: colors.textMuted },
         style,
       ]}
     />
