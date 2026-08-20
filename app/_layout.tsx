@@ -112,6 +112,8 @@ function AppShell() {
         <Stack.Protected guard={status === 'signedIn'}>
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="order-menu" options={{ presentation: 'card' }} />
+          <Stack.Screen name="order-item/[id]" options={{ presentation: 'card' }} />
+          <Stack.Screen name="order-cart" options={{ presentation: 'card' }} />
           <Stack.Screen name="order-branch" options={{ presentation: 'card' }} />
           <Stack.Screen name="my-points" options={{ presentation: 'card' }} />
           <Stack.Screen name="redeemed-rewards" options={{ presentation: 'card' }} />

@@ -59,43 +59,44 @@ export default function OrderMenuScreen() {
         {items.map((item) => {
           const qty = quantities[item.id] ?? 0;
           return (
-            <Row
+            <Pressable
               key={item.id}
+              onPress={() => router.push(`/order-item/${item.id}`)}
               style={{
-                gap: space.md,
-                backgroundColor: colors.surface,
                 borderWidth: 1,
                 borderColor: colors.border,
                 borderRadius: radius.lg,
-                padding: space.md,
+                overflow: 'hidden',
               }}>
-              <RewardMedia image={item.image} emoji="☕" style={{ width: 72, height: 72, borderRadius: radius.md }} />
-              <View style={{ flex: 1, gap: 2 }}>
-                <AppText variant="bodySemiBold">{lang === 'ar' ? item.nameAr : item.nameEn}</AppText>
-                <AppText variant="muted" numberOfLines={2}>
-                  {lang === 'ar' ? item.descAr : item.descEn}
-                </AppText>
-                <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: space.xs }}>
-                  <AppText variant="mono" color={colors.brandInk}>
-                    {t('menu.price', { price: item.price.toFixed(2) })}
+              <Row style={{ gap: space.md, backgroundColor: colors.surface, padding: space.md }}>
+                <RewardMedia image={item.image} emoji="☕" style={{ width: 72, height: 72, borderRadius: radius.md }} />
+                <View style={{ flex: 1, gap: 2 }}>
+                  <AppText variant="bodySemiBold">{lang === 'ar' ? item.nameAr : item.nameEn}</AppText>
+                  <AppText variant="muted" numberOfLines={2}>
+                    {lang === 'ar' ? item.descAr : item.descEn}
                   </AppText>
-                  <Row
-                    style={{
-                      alignItems: 'center',
-                      backgroundColor: colors.surface2,
-                      borderWidth: 1,
-                      borderColor: colors.border,
-                      borderRadius: radius.md,
-                    }}>
-                    <QtyButton icon="remove" onPress={() => setQty(item.id, qty - 1)} disabled={qty === 0} />
-                    <AppText variant="mono" style={{ width: 28, textAlign: 'center' }}>
-                      {qty}
+                  <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: space.xs }}>
+                    <AppText variant="mono" color={colors.brandInk}>
+                      {t('menu.price', { price: item.price.toFixed(2) })}
                     </AppText>
-                    <QtyButton icon="add" onPress={() => setQty(item.id, qty + 1)} />
+                    <Row
+                      style={{
+                        alignItems: 'center',
+                        backgroundColor: colors.surface2,
+                        borderWidth: 1,
+                        borderColor: colors.border,
+                        borderRadius: radius.md,
+                      }}>
+                      <QtyButton icon="remove" onPress={() => setQty(item.id, qty - 1)} disabled={qty === 0} />
+                      <AppText variant="mono" style={{ width: 28, textAlign: 'center' }}>
+                        {qty}
+                      </AppText>
+                      <QtyButton icon="add" onPress={() => setQty(item.id, qty + 1)} />
+                    </Row>
                   </Row>
-                </Row>
-              </View>
-            </Row>
+                </View>
+              </Row>
+            </Pressable>
           );
         })}
       </ScrollView>
@@ -113,7 +114,7 @@ export default function OrderMenuScreen() {
           borderTopColor: colors.border,
         }}>
         {totalCount > 0 ? (
-          <Button label={t('menu.continue')} trailing={t('menu.price', { price: totalPrice.toFixed(2) })} onPress={() => router.push('/order-branch')} />
+          <Button label={t('menu.continue')} trailing={t('menu.price', { price: totalPrice.toFixed(2) })} onPress={() => router.push('/order-cart')} />
         ) : (
           <AppText variant="muted" align="center">
             {t('menu.emptyCart')}

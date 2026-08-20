@@ -1,11 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { Modal, Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
-import { Button } from '@/components/Button';
 import { Pill } from '@/components/Pill';
 import { Input } from '@/components/Input';
 import { ScreenHeader } from '@/components/ScreenHeader';
@@ -17,9 +15,8 @@ import { branches, type Branch } from '@/lib/mock-data';
 export default function OrderBranchScreen() {
   const { t, lang } = useLang();
   const router = useRouter();
-  const { totalPrice, clear } = useOrderCart();
+  const { totalPrice, setBranchId } = useOrderCart();
   const [query, setQuery] = useState('');
-  const [confirmed, setConfirmed] = useState<Branch | null>(null);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -29,14 +26,9 @@ export default function OrderBranchScreen() {
     return [...list].sort((a, b) => Number(b.openNow) - Number(a.openNow));
   }, [query]);
 
-  const confirmOrder = (branch: Branch) => {
-    setConfirmed(branch);
-  };
-
-  const finish = () => {
-    clear();
-    setConfirmed(null);
-    router.dismissAll();
+  const selectBranch = (branch: Branch) => {
+    setBranchId(branch.id);
+    router.back();
   };
 
   return (
@@ -51,7 +43,7 @@ export default function OrderBranchScreen() {
         {filtered.map((b) => (
           <Pressable
             key={b.id}
-            onPress={() => b.openNow && confirmOrder(b)}
+            onPress={() => b.openNow && selectBranch(b)}
             disabled={!b.openNow}
             style={{
               backgroundColor: colors.surface,
@@ -69,21 +61,6 @@ export default function OrderBranchScreen() {
           </Pressable>
         ))}
       </ScrollView>
-
-      <Modal visible={!!confirmed} transparent animationType="fade" onRequestClose={() => setConfirmed(null)}>
-        <View style={{ flex: 1, backgroundColor: 'rgba(23,19,16,0.5)', alignItems: 'center', justifyContent: 'center', padding: space.xl }}>
-          <View style={{ backgroundColor: colors.surface, borderRadius: radius.xl, padding: space.xl, alignItems: 'center', gap: space.sm, width: '100%' }}>
-            <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: colors.goodBg, alignItems: 'center', justifyContent: 'center' }}>
-              <Ionicons name="checkmark" size={28} color={colors.good} />
-            </View>
-            <AppText variant="h2">{t('orderBranch.successTitle')}</AppText>
-            <AppText variant="muted" align="center">
-              {confirmed ? t('orderBranch.successBody', { branch: lang === 'ar' ? confirmed.nameAr : confirmed.nameEn }) : ''}
-            </AppText>
-            <Button label={t('orderBranch.done')} onPress={finish} style={{ width: '100%', marginTop: space.sm }} />
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 }
