@@ -11,6 +11,7 @@ import { CircleButton } from '@/components/CircleButton';
 import { CheckinPopup } from '@/components/CheckinPopup';
 import { Pill } from '@/components/Pill';
 import { PromoCarousel } from '@/components/PromoCarousel';
+import { ProgressBar } from '@/components/ProgressBar';
 import { colors, radius, shadow, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
@@ -18,9 +19,9 @@ import { useNotifications } from '@/lib/notifications-store';
 import { useBranchDistances } from '@/lib/useBranchDistances';
 import { useOrderSheet } from '@/lib/order-sheet';
 import { useOrderCart } from '@/lib/order-cart';
-import { rewards, branches, promos, userPoints } from '@/lib/mock-data';
+import { branches, promos, userPoints, getNextReward } from '@/lib/mock-data';
 
-const cheapest = [...rewards].sort((a, b) => a.cost - b.cost);
+const nextReward = getNextReward(userPoints);
 
 export default function HomeScreen() {
   const { t, lang, isRTL } = useLang();
@@ -147,16 +148,18 @@ export default function HomeScreen() {
               <AppText variant="display" color={colors.white} style={{ fontSize: 42, lineHeight: 56 }}>
                 {userPoints}
               </AppText>
-              {cheapest[0] ? (
-                <AppText variant="label" color="rgba(255,255,255,0.8)" style={{ marginTop: 4 }}>
-                  {t('points.nextReward', { name: lang === 'ar' ? cheapest[0].nameAr : cheapest[0].nameEn })}
-                </AppText>
-              ) : null}
             </View>
             <View style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: 'rgba(255,255,255,0.18)', alignItems: 'center', justifyContent: 'center' }}>
               <Ionicons name="sparkles" size={21} color={colors.white} />
             </View>
           </Row>
+
+          <View style={{ marginBottom: space.lg, gap: space.xs }}>
+            <ProgressBar value={userPoints} max={nextReward.cost} />
+            <AppText variant="label" color="rgba(255,255,255,0.8)">
+              {t('points.nextReward', { name: lang === 'ar' ? nextReward.nameAr : nextReward.nameEn })}
+            </AppText>
+          </View>
 
           <Row style={{ gap: space.sm }}>
             {categories.map((c) => (

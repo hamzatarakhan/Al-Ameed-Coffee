@@ -16,9 +16,9 @@ import { useLang } from '@/lib/i18n';
 import { useOrderCart } from '@/lib/order-cart';
 import { useOrderSheet } from '@/lib/order-sheet';
 import { shareInvite } from '@/lib/invite';
-import { rewards, redemptions, transactions, userPoints } from '@/lib/mock-data';
+import { redemptions, transactions, userPoints, getNextReward } from '@/lib/mock-data';
 
-const cheapest = [...rewards].sort((a, b) => a.cost - b.cost)[0];
+const cheapest = getNextReward(userPoints);
 
 export default function MyPointsScreen() {
   const { t, lang, isRTL } = useLang();

@@ -790,6 +790,16 @@ export const transactions: Transaction[] = [
 
 export const userPoints = 265;
 
+// The reward to show progress toward: the cheapest one still out of reach.
+// Using the globally cheapest reward instead would already be affordable
+// once points pass its cost, making the progress bar read as always-full.
+// Once every reward is affordable, progress against the priciest one still
+// reads as meaningful ("almost enough for the top reward") instead of 100%.
+export function getNextReward(points: number): Reward {
+  const sorted = [...rewards].sort((a, b) => a.cost - b.cost);
+  return sorted.find((r) => r.cost > points) ?? sorted[sorted.length - 1];
+}
+
 export type Notification = {
   id: string;
   titleAr: string;
