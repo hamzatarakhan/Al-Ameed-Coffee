@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -15,10 +15,10 @@ import { colors, radius, shadow, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
 import { useNotifications } from '@/lib/notifications-store';
+import { useBranchDistances } from '@/lib/useBranchDistances';
 import { rewards, branches, promos, userPoints } from '@/lib/mock-data';
 
 const cheapest = [...rewards].sort((a, b) => a.cost - b.cost);
-const nearestBranch = branches[0];
 
 export default function HomeScreen() {
   const { t, lang, toggle, isRTL } = useLang();
@@ -28,6 +28,15 @@ export default function HomeScreen() {
   const { notifications } = useNotifications();
   const hasUnreadNotifications = notifications.some((n) => !n.read);
   const [showCheckin, setShowCheckin] = useState(true);
+  const { nearest, request } = useBranchDistances();
+
+  // Attempt silently on load — if the user already granted location
+  // (e.g. from the branches screen) this resolves instantly; if not yet
+  // granted/denied it just falls back to the "choose your branch" label
+  // below instead of claiming a fake nearest branch.
+  useEffect(() => {
+    request();
+  }, [request]);
 
   const categories = [
     { icon: 'bag-handle' as const, label: t('home.quickOrder'), onPress: () => router.push('/order') },
@@ -48,12 +57,14 @@ export default function HomeScreen() {
           paddingBottom: space.lg,
         }}>
         <View style={{ flex: 1, gap: 4 }}>
-          <Row style={{ alignItems: 'center', gap: 4 }}>
-            <Ionicons name="location-sharp" size={14} color={colors.brand} />
-            <AppText variant="bodySemiBold" color={colors.brand}>
-              {lang === 'ar' ? nearestBranch.nameAr : nearestBranch.nameEn}
-            </AppText>
-          </Row>
+          <Pressable onPress={() => router.push('/branches')}>
+            <Row style={{ alignItems: 'center', gap: 4 }}>
+              <Ionicons name="location-sharp" size={14} color={colors.brand} />
+              <AppText variant="bodySemiBold" color={colors.brand}>
+                {nearest ? (lang === 'ar' ? nearest.nameAr : nearest.nameEn) : t('home.chooseBranch')}
+              </AppText>
+            </Row>
+          </Pressable>
           <AppText variant="h2">{t('home.question')}</AppText>
         </View>
         <Row style={{ gap: space.sm }}>
@@ -161,17 +172,22 @@ export default function HomeScreen() {
             <Pressable
               key={b.id}
               onPress={() => router.push(`/branches/${b.id}`)}
-              style={{ backgroundColor: colors.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, padding: space.lg }}>
-              <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: space.xs }}>
-                <AppText variant="bodySemiBold">{lang === 'ar' ? b.nameAr : b.nameEn}</AppText>
-                <Pill tone={b.openNow ? 'good' : 'neutral'} label={b.openNow ? t('branches.openNow') : t('branches.closed')} />
-              </Row>
-              <AppText variant="muted">{lang === 'ar' ? b.addressAr : b.addressEn}</AppText>
-              <Row style={{ alignItems: 'center', gap: 4, marginTop: space.sm }}>
-                <AppText variant="label" color={colors.brandInk}>
-                  {t('common.seeAll')}
-                </AppText>
-                <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={12} color={colors.brandInk} />
+              style={{ backgroundColor: colors.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, padding: space.md }}>
+              <Row style={{ alignItems: 'center', gap: space.md }}>
+                {b.image ? <Image source={b.image} style={{ width: 64, height: 64, borderRadius: radius.md }} resizeMode="cover" /> : null}
+                <View style={{ flex: 1 }}>
+                  <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: space.xs }}>
+                    <AppText variant="bodySemiBold">{lang === 'ar' ? b.nameAr : b.nameEn}</AppText>
+                    <Pill tone={b.openNow ? 'good' : 'neutral'} label={b.openNow ? t('branches.openNow') : t('branches.closed')} />
+                  </Row>
+                  <AppText variant="muted">{lang === 'ar' ? b.addressAr : b.addressEn}</AppText>
+                  <Row style={{ alignItems: 'center', gap: 4, marginTop: space.sm }}>
+                    <AppText variant="label" color={colors.brandInk}>
+                      {t('common.seeAll')}
+                    </AppText>
+                    <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={12} color={colors.brandInk} />
+                  </Row>
+                </View>
               </Row>
             </Pressable>
           ))}

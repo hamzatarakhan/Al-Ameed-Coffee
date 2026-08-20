@@ -618,6 +618,18 @@ export const branchCityById: Record<string, { ar: string; en: string }> = {
   'irbid-city-center': { ar: 'إربد', en: 'Irbid' },
 };
 
+// City-center coordinates, not per-branch — there's no real backend/geocoder
+// yet to place each of the 31 branches precisely, but city-level distance is
+// close enough to sort/label a "nearest branch" from the user's GPS position.
+export const cityCoords: Record<string, { lat: number; lng: number }> = {
+  Amman: { lat: 31.9539, lng: 35.9106 },
+  Irbid: { lat: 32.5556, lng: 35.85 },
+  Zarqa: { lat: 32.0728, lng: 36.0876 },
+  Aqaba: { lat: 29.5321, lng: 35.0063 },
+  Madaba: { lat: 31.7197, lng: 35.7942 },
+  Zizya: { lat: 31.7226, lng: 35.9932 },
+};
+
 export type Transaction = {
   id: string;
   labelAr: string;

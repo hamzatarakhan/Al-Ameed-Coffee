@@ -24,6 +24,7 @@ const dict = {
   },
   home: {
     question: { ar: 'شو حابب تطلب اليوم؟', en: 'What would you like today?' },
+    chooseBranch: { ar: 'اختر فرعك', en: 'Choose your branch' },
     yourPoints: { ar: 'رصيد نقاطك', en: 'Your points' },
     quickOrder: { ar: 'اطلب الآن', en: 'Order Now' },
     quickPoints: { ar: 'نقاطي', en: 'My Points' },
@@ -72,7 +73,10 @@ const dict = {
     openNow: { ar: 'مفتوح الآن', en: 'Open now' },
     closed: { ar: 'مغلق', en: 'Closed' },
     distanceUnknown: { ar: 'فعّل الموقع لترتيب الأقرب', en: 'Enable location to sort by distance' },
-    locationEnabled: { ar: 'الموقع مفعّل', en: 'Location enabled' },
+    locationEnabled: { ar: 'الموقع مفعّل، مرتبة حسب الأقرب', en: 'Location enabled, sorted by distance' },
+    search: { ar: 'دوّر عن فرع...', en: 'Search branches...' },
+    noResults: { ar: 'ما في نتائج', en: 'No branches found' },
+    km: { ar: 'كم', en: 'km' },
   },
   branchDetail: {
     address: { ar: 'العنوان', en: 'Address' },
