@@ -79,7 +79,7 @@ export default function AccountScreen() {
       <Section title={t('account.sectionAccount')}>
         <Item icon="person-outline" label={t('account.profile')} onPress={() => router.push('/profile')} />
         <Item icon="location-outline" label={t('account.branches')} onPress={() => router.push('/branches')} />
-        <Item icon="receipt-outline" label={t('account.myOrders')} onPress={() => router.push('/orders')} />
+        <Item icon="receipt-outline" label={t('account.myOrders')} onPress={() => router.push('/order')} />
         <Item icon="person-add-outline" label={t('account.inviteFriends')} onPress={invite} />
       </Section>
 

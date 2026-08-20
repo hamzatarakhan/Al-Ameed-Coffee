@@ -17,7 +17,7 @@ const dict = {
   },
   tabs: {
     home: { ar: 'الهوم', en: 'Home' },
-    order: { ar: 'اطلب', en: 'Order' },
+    order: { ar: 'طلباتي', en: 'Orders' },
     checkin: { ar: 'Check In', en: 'Check In' },
     rewards: { ar: 'الهدايا', en: 'Rewards' },
     account: { ar: 'حسابي', en: 'Account' },
@@ -248,6 +248,11 @@ const dict = {
     empty: { ar: 'لسا ما طلبت شي', en: "You haven't ordered yet" },
     emptyBody: { ar: 'أول طلب إلك رح يبان هون', en: 'Your first order will show up here' },
     itemsCount: { ar: '{n} أصناف', en: '{n} items' },
+    newOrder: { ar: 'اطلب الآن', en: 'Order now' },
+    reorder: { ar: 'اطلب نفس الطلب', en: 'Order again' },
+    completed: { ar: 'تم التسليم', en: 'Completed' },
+    pickupFrom: { ar: 'استلام من {branch}', en: 'Pickup from {branch}' },
+    deliverTo: { ar: 'توصيل لـ {address}', en: 'Delivery to {address}' },
   },
   auth: {
     welcomeTitle: { ar: 'أهلًا فيك ببن العميد', en: 'Welcome to Al Ameed Coffee' },

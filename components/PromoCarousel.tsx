@@ -12,7 +12,7 @@ import type { Promo } from '@/lib/mock-data';
 
 const AUTO_ADVANCE_MS = 4500;
 const SIDE_PADDING = space.lg;
-const SLIDE_HEIGHT = 210;
+const SLIDE_HEIGHT = 150;
 
 // ponytail: scroll mechanics stay LTR-order regardless of app language —
 // mirroring drag direction + index math for RTL is a real rabbit hole for a

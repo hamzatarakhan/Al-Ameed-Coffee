@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
-import { menuItems } from './mock-data';
+import { branches, menuItems } from './mock-data';
 
 export type PaymentMethod = 'cash' | 'card';
 export type Fulfillment = 'pickup' | 'delivery';
@@ -13,6 +13,26 @@ export type Address = {
   area: string;
   building: string;
   floor?: string;
+};
+
+// A resolved snapshot (names/labels already looked up, not just ids) so
+// order history still displays correctly even if a branch or menu item's
+// data changes later — and carries enough of the original selection
+// (quantities/fulfillment/branch or address) to power "order again".
+export type PlacedOrder = {
+  id: string;
+  itemsAr: string;
+  itemsEn: string;
+  itemCount: number;
+  fulfillment: Fulfillment;
+  locationAr: string;
+  locationEn: string;
+  total: number;
+  date: string;
+  quantities: Record<string, number>;
+  paymentMethod: PaymentMethod;
+  branchId: string | null;
+  addressId: string | null;
 };
 
 interface OrderCartValue {
@@ -30,6 +50,9 @@ interface OrderCartValue {
   addAddress: (a: Omit<Address, 'id'>) => void;
   addressId: string | null;
   setAddressId: (id: string | null) => void;
+  pastOrders: PlacedOrder[];
+  placeOrder: () => void;
+  reorder: (order: PlacedOrder) => void;
   clear: () => void;
 }
 
@@ -42,6 +65,7 @@ export function OrderCartProvider({ children }: { children: React.ReactNode }) {
   const [branchId, setBranchId] = useState<string | null>(null);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [addressId, setAddressId] = useState<string | null>(null);
+  const [pastOrders, setPastOrders] = useState<PlacedOrder[]>([]);
 
   const setQty = useCallback((id: string, qty: number) => {
     setQuantities((prev) => {
@@ -60,7 +84,7 @@ export function OrderCartProvider({ children }: { children: React.ReactNode }) {
     setAddressId(id);
   }, []);
 
-  const clear = useCallback(() => {
+  const resetSelection = useCallback(() => {
     setQuantities({});
     setBranchId(null);
     setAddressId(null);
@@ -80,6 +104,41 @@ export function OrderCartProvider({ children }: { children: React.ReactNode }) {
     return { totalCount: count, totalPrice: price };
   }, [quantities]);
 
+  const placeOrder = useCallback(() => {
+    setPastOrders((prev) => {
+      const entries = Object.entries(quantities);
+      const itemsAr = entries.map(([id, qty]) => `${menuItems.find((m) => m.id === id)?.nameAr ?? ''}${qty > 1 ? ` × ${qty}` : ''}`).join('، ');
+      const itemsEn = entries.map(([id, qty]) => `${menuItems.find((m) => m.id === id)?.nameEn ?? ''}${qty > 1 ? ` × ${qty}` : ''}`).join(', ');
+      const branch = branches.find((b) => b.id === branchId);
+      const address = addresses.find((a) => a.id === addressId);
+      const order: PlacedOrder = {
+        id: `order-${Date.now()}`,
+        itemsAr,
+        itemsEn,
+        itemCount: entries.reduce((sum, [, qty]) => sum + qty, 0),
+        fulfillment,
+        locationAr: fulfillment === 'pickup' ? (branch?.nameAr ?? '') : (address ? `${address.line}, ${address.building}` : ''),
+        locationEn: fulfillment === 'pickup' ? (branch?.nameEn ?? '') : (address ? `${address.line}, ${address.building}` : ''),
+        total: totalPrice,
+        date: new Date().toISOString().slice(0, 10),
+        quantities,
+        paymentMethod,
+        branchId,
+        addressId,
+      };
+      return [order, ...prev];
+    });
+    resetSelection();
+  }, [quantities, totalPrice, fulfillment, branchId, addressId, addresses, paymentMethod, resetSelection]);
+
+  const reorder = useCallback((order: PlacedOrder) => {
+    setQuantities(order.quantities);
+    setFulfillment(order.fulfillment);
+    setPaymentMethod(order.paymentMethod);
+    setBranchId(order.branchId);
+    setAddressId(order.addressId);
+  }, []);
+
   return (
     <OrderCartContext.Provider
       value={{
@@ -97,7 +156,10 @@ export function OrderCartProvider({ children }: { children: React.ReactNode }) {
         addAddress,
         addressId,
         setAddressId,
-        clear,
+        pastOrders,
+        placeOrder,
+        reorder,
+        clear: resetSelection,
       }}>
       {children}
     </OrderCartContext.Provider>

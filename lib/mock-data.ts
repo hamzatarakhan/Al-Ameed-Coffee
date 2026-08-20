@@ -862,58 +862,6 @@ export const redemptions: Redemption[] = [
   { id: 'r2', nameAr: 'هدية التسجيل', nameEn: 'Registration Gift', emoji: '🎁', ref: 'RD-10011', date: '2026-07-13' },
 ];
 
-export type Order = {
-  id: string;
-  itemsAr: string;
-  itemsEn: string;
-  itemCount: number;
-  branchAr: string;
-  branchEn: string;
-  price: string;
-  date: string;
-  statusAr: string;
-  statusEn: string;
-};
-
-export const orders: Order[] = [
-  {
-    id: 'o1',
-    itemsAr: 'كابتشينو، كرواسون',
-    itemsEn: 'Cappuccino, Croissant',
-    itemCount: 2,
-    branchAr: 'الشميساني',
-    branchEn: 'Shmaisani',
-    price: '4.50 د.أ',
-    date: '2026-08-15',
-    statusAr: 'مكتمل',
-    statusEn: 'Completed',
-  },
-  {
-    id: 'o2',
-    itemsAr: 'قهوة تركية × 2',
-    itemsEn: 'Turkish Coffee × 2',
-    itemCount: 2,
-    branchAr: 'تجربة العميد',
-    branchEn: 'AlAmeed Experience',
-    price: '3.00 د.أ',
-    date: '2026-08-06',
-    statusAr: 'مكتمل',
-    statusEn: 'Completed',
-  },
-  {
-    id: 'o3',
-    itemsAr: 'إسبريسو، مافن شوكولاتة',
-    itemsEn: 'Espresso, Chocolate Muffin',
-    itemCount: 2,
-    branchAr: 'قرية الحجرة',
-    branchEn: 'Hujra Village',
-    price: '3.75 د.أ',
-    date: '2026-07-20',
-    statusAr: 'مكتمل',
-    statusEn: 'Completed',
-  },
-];
-
 export type Gender = 'male' | 'female' | '';
 export type MaritalStatus = 'single' | 'married' | '';
 

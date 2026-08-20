@@ -124,7 +124,6 @@ function AppShell() {
           <Stack.Screen name="branches/index" options={{ presentation: 'card' }} />
           <Stack.Screen name="branches/[id]" options={{ presentation: 'card' }} />
           <Stack.Screen name="profile" options={{ presentation: 'card' }} />
-          <Stack.Screen name="orders" options={{ presentation: 'card' }} />
           <Stack.Screen name="account/delete" options={{ presentation: 'card' }} />
         </Stack.Protected>
 

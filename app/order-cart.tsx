@@ -18,9 +18,14 @@ export default function OrderCartScreen() {
   const { t, lang } = useLang();
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { quantities, setQty, totalPrice, paymentMethod, setPaymentMethod, fulfillment, branchId, addresses, addressId, clear } = useOrderCart();
+  const { quantities, setQty, totalPrice, paymentMethod, setPaymentMethod, fulfillment, branchId, addresses, addressId, placeOrder, clear } =
+    useOrderCart();
   const [noCallConfirm, setNoCallConfirm] = useState(false);
   const [success, setSuccess] = useState(false);
+  // Captured at the moment of placing — placeOrder() resets the selection
+  // right away, so the success modal needs its own copy to still show the
+  // right branch/address after that reset.
+  const [placedSummary, setPlacedSummary] = useState<{ fulfillment: string; location: string } | null>(null);
 
   const items = Object.entries(quantities)
     .map(([id, qty]) => ({ item: menuItems.find((m) => m.id === id), qty }))
@@ -29,8 +34,16 @@ export default function OrderCartScreen() {
   const address = addresses.find((a) => a.id === addressId);
   const canOrder = items.length > 0 && (fulfillment === 'pickup' ? !!branch : !!address);
 
+  const submitOrder = () => {
+    setPlacedSummary({
+      fulfillment,
+      location: fulfillment === 'pickup' ? (branch ? (lang === 'ar' ? branch.nameAr : branch.nameEn) : '') : address ? address.line : '',
+    });
+    placeOrder();
+    setSuccess(true);
+  };
+
   const finish = () => {
-    clear();
     setSuccess(false);
     router.dismissAll();
   };
@@ -157,7 +170,7 @@ export default function OrderCartScreen() {
           borderTopWidth: 1,
           borderTopColor: colors.border,
         }}>
-        <Button label={t('orderCart.placeOrder')} onPress={() => setSuccess(true)} disabled={!canOrder} style={{ flex: 1 }} />
+        <Button label={t('orderCart.placeOrder')} onPress={submitOrder} disabled={!canOrder} style={{ flex: 1 }} />
         <Pressable
           onPress={clear}
           style={{ width: 52, height: 52, borderRadius: 26, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' }}>
@@ -173,13 +186,11 @@ export default function OrderCartScreen() {
             </View>
             <AppText variant="h2">{t('orderBranch.successTitle')}</AppText>
             <AppText variant="muted" align="center">
-              {fulfillment === 'pickup'
-                ? branch
-                  ? t('orderBranch.successBody', { branch: lang === 'ar' ? branch.nameAr : branch.nameEn })
-                  : ''
-                : address
-                  ? t('orderDelivery.successBody', { address: address.line })
-                  : ''}
+              {placedSummary
+                ? placedSummary.fulfillment === 'pickup'
+                  ? t('orderBranch.successBody', { branch: placedSummary.location })
+                  : t('orderDelivery.successBody', { address: placedSummary.location })
+                : ''}
             </AppText>
             <Button label={t('orderBranch.done')} onPress={finish} style={{ width: '100%', marginTop: space.sm }} />
           </View>
