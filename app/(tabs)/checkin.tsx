@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -46,7 +46,7 @@ export default function CheckinScreen() {
           marginBottom: space.xxl,
         }}>
         {scanned ? (
-          <Animated.View entering={ZoomIn.springify().damping(12)} style={{ alignItems: 'center', gap: space.sm }}>
+          <Animated.View entering={FadeIn.duration(180)} style={{ alignItems: 'center', gap: space.sm }}>
             <Ionicons name="checkmark-circle" size={56} color={colors.good} />
             <AppText variant="h2">{t('checkin.scanned')}</AppText>
             <AppText variant="muted">{t('checkin.earned', { n: CHECKIN_POINTS })}</AppText>

@@ -109,8 +109,10 @@ export default function OrderCartScreen() {
 
         <View style={{ gap: space.sm }}>
           <SectionTitle icon="wallet-outline" title={t('orderCart.paymentMethod')} />
-          <PaymentRow icon="cash-outline" label={t('orderCart.cash')} selected={paymentMethod === 'cash'} onPress={() => setPaymentMethod('cash')} />
-          <PaymentRow icon="card-outline" label={t('orderCart.card')} selected={paymentMethod === 'card'} onPress={() => setPaymentMethod('card')} />
+          <Row style={{ gap: space.sm }}>
+            <PaymentOption icon="cash-outline" label={t('orderCart.cash')} selected={paymentMethod === 'cash'} onPress={() => setPaymentMethod('cash')} />
+            <PaymentOption icon="card-outline" label={t('orderCart.card')} selected={paymentMethod === 'card'} onPress={() => setPaymentMethod('card')} />
+          </Row>
         </View>
 
         <View style={{ gap: space.sm }}>
@@ -274,37 +276,51 @@ function SectionTitle({ icon, title }: { icon: keyof typeof Ionicons.glyphMap; t
   );
 }
 
-function PaymentRow({ icon, label, selected, onPress }: { icon: keyof typeof Ionicons.glyphMap; label: string; selected: boolean; onPress: () => void }) {
+function PaymentOption({ icon, label, selected, onPress }: { icon: keyof typeof Ionicons.glyphMap; label: string; selected: boolean; onPress: () => void }) {
+  const { isRTL } = useLang();
   return (
-    <Pressable onPress={onPress}>
-      <Row
+    <Pressable onPress={onPress} style={{ flex: 1 }}>
+      <View
         style={{
           alignItems: 'center',
-          justifyContent: 'space-between',
+          gap: space.xs,
           backgroundColor: selected ? colors.brandTint : colors.surface,
-          borderWidth: selected ? 1.5 : 1,
-          borderColor: selected ? colors.brand : colors.border,
+          borderWidth: 1,
+          borderColor: colors.border,
           borderRadius: radius.lg,
-          padding: space.md,
+          paddingVertical: space.md,
         }}>
-        <Row style={{ alignItems: 'center', gap: space.md }}>
+        {selected ? (
           <View
             style={{
-              width: 44,
-              height: 44,
-              borderRadius: 22,
-              backgroundColor: selected ? colors.white : colors.surface2,
+              position: 'absolute',
+              top: space.xs,
+              [isRTL ? 'left' : 'right']: space.xs,
+              width: 18,
+              height: 18,
+              borderRadius: 9,
+              backgroundColor: colors.brand,
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <Ionicons name={icon} size={20} color={selected ? colors.brand : colors.textMuted} />
+            <Ionicons name="checkmark" size={11} color={colors.white} />
           </View>
-          <AppText variant="bodySemiBold" color={selected ? colors.brandInk : colors.text}>
-            {label}
-          </AppText>
-        </Row>
-        <Ionicons name={selected ? 'checkmark-circle' : 'ellipse-outline'} size={24} color={selected ? colors.brand : colors.border} />
-      </Row>
+        ) : null}
+        <View
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            backgroundColor: selected ? colors.white : colors.surface2,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Ionicons name={icon} size={18} color={selected ? colors.brandInk : colors.textMuted} />
+        </View>
+        <AppText variant="bodyMedium" color={selected ? colors.brandInk : colors.text}>
+          {label}
+        </AppText>
+      </View>
     </Pressable>
   );
 }

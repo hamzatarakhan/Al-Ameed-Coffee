@@ -42,7 +42,15 @@ export function BranchRow({
         opacity: disabled ? 0.5 : 1,
       }}>
       <Row style={{ alignItems: 'center', gap: space.md }}>
-        {showImage && branch.image ? <Image source={branch.image} style={{ width: 64, height: 64, borderRadius: radius.md }} resizeMode="cover" /> : null}
+        {showImage ? (
+          branch.image ? (
+            <Image source={branch.image} style={{ width: 64, height: 64, borderRadius: radius.md }} resizeMode="cover" />
+          ) : null
+        ) : (
+          <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center' }}>
+            <Ionicons name="storefront-outline" size={20} color={colors.brandInk} />
+          </View>
+        )}
         <View style={{ flex: 1 }}>
           <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
             <AppText variant="bodySemiBold" style={{ flex: 1 }} numberOfLines={1}>
@@ -63,6 +71,7 @@ export function BranchRow({
             </Row>
           ) : null}
         </View>
+        {!showLink && !disabled ? <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={16} color={colors.textMuted} /> : null}
       </Row>
     </Pressable>
   );
