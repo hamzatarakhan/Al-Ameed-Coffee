@@ -9,6 +9,7 @@ import { Row } from '@/components/Row';
 import { Button } from '@/components/Button';
 import { RewardMedia } from '@/components/RewardMedia';
 import { ScreenHeader } from '@/components/ScreenHeader';
+import { CartButton } from '@/components/CartButton';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useOrderCart } from '@/lib/order-cart';
@@ -25,7 +26,7 @@ export default function OrderMenuScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
-      <ScreenHeader title={t('menu.title')} />
+      <ScreenHeader title={t('menu.title')} right={<CartButton />} />
 
       <View style={{ paddingVertical: space.sm }}>
         <ScrollView

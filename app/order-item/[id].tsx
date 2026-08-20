@@ -9,6 +9,7 @@ import { Row } from '@/components/Row';
 import { Button } from '@/components/Button';
 import { CircleButton } from '@/components/CircleButton';
 import { RewardMedia } from '@/components/RewardMedia';
+import { CartButton } from '@/components/CartButton';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useOrderCart } from '@/lib/order-cart';
@@ -36,6 +37,7 @@ export default function OrderItemScreen() {
           <RewardMedia image={item.image} emoji="☕" emojiSize={120} style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }} />
           <Row style={{ position: 'absolute', top: insets.top + space.sm, left: space.lg, right: space.lg, justifyContent: 'space-between' }}>
             <CircleButton icon={isRTL ? 'chevron-forward' : 'chevron-back'} onPress={() => router.back()} tone="light" />
+            <CartButton color={colors.white} />
           </Row>
         </View>
 

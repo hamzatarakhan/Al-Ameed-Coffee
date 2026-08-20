@@ -178,28 +178,29 @@ function PaymentRow({ icon, label, selected, onPress }: { icon: keyof typeof Ion
         style={{
           alignItems: 'center',
           justifyContent: 'space-between',
-          backgroundColor: colors.surface,
-          borderWidth: 1,
+          backgroundColor: selected ? colors.brandTint : colors.surface,
+          borderWidth: selected ? 1.5 : 1,
           borderColor: selected ? colors.brand : colors.border,
           borderRadius: radius.lg,
-          padding: space.lg,
+          padding: space.md,
         }}>
         <Row style={{ alignItems: 'center', gap: space.md }}>
-          <Ionicons name={icon} size={20} color={colors.textMuted} />
-          <AppText variant="bodySemiBold">{label}</AppText>
+          <View
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 22,
+              backgroundColor: selected ? colors.white : colors.surface2,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Ionicons name={icon} size={20} color={selected ? colors.brand : colors.textMuted} />
+          </View>
+          <AppText variant="bodySemiBold" color={selected ? colors.brandInk : colors.text}>
+            {label}
+          </AppText>
         </Row>
-        <View
-          style={{
-            width: 20,
-            height: 20,
-            borderRadius: 10,
-            borderWidth: 1.5,
-            borderColor: selected ? colors.brand : colors.border,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          {selected ? <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.brand }} /> : null}
-        </View>
+        <Ionicons name={selected ? 'checkmark-circle' : 'ellipse-outline'} size={24} color={selected ? colors.brand : colors.border} />
       </Row>
     </Pressable>
   );
