@@ -134,7 +134,10 @@ const dict = {
   },
   orderCart: {
     title: { ar: 'سلة المشتريات', en: 'Cart' },
+    emptyTitle: { ar: 'سلتك فاضية', en: 'Your cart is empty' },
+    browseMenu: { ar: 'تصفح القائمة', en: 'Browse menu' },
     cartContents: { ar: 'محتويات السلة', en: 'Cart contents' },
+    itemTotal: { ar: '{price} د.أ الإجمالي', en: 'JD {price} total' },
     paymentMethod: { ar: 'طريقة الدفع', en: 'Payment method' },
     cash: { ar: 'كاش', en: 'Cash' },
     card: { ar: 'بطاقة ائتمانية', en: 'Credit card' },

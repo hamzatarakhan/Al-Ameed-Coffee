@@ -7,6 +7,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { Button } from '@/components/Button';
+import { Card } from '@/components/Card';
+import { EmptyState } from '@/components/EmptyState';
 import { RewardMedia } from '@/components/RewardMedia';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { colors, radius, space } from '@/lib/theme';
@@ -48,22 +50,40 @@ export default function OrderCartScreen() {
     router.dismissAll();
   };
 
+  if (items.length === 0) {
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+        <ScreenHeader title={t('orderCart.title')} />
+        <View style={{ flex: 1, justifyContent: 'center' }}>
+          <EmptyState
+            icon="bag-handle-outline"
+            title={t('orderCart.emptyTitle')}
+            body={t('menu.emptyCart')}
+            actionLabel={t('orderCart.browseMenu')}
+            onAction={() => router.push('/order-menu')}
+          />
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <ScreenHeader title={t('orderCart.title')} />
 
       <ScrollView contentContainerStyle={{ padding: space.lg, gap: space.xl, paddingBottom: 150 }}>
         <View style={{ gap: space.md }}>
-          <AppText variant="h3">{t('orderCart.cartContents')}</AppText>
+          <Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+            <AppText variant="h3">{t('orderCart.cartContents')}</AppText>
+            <AppText variant="muted">{t('menu.price', { price: totalPrice.toFixed(2) })}</AppText>
+          </Row>
           {items.map(({ item, qty }) => (
-            <Row
-              key={item.id}
-              style={{ gap: space.md, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, padding: space.md }}>
+            <Card key={item.id} style={{ flexDirection: 'row', gap: space.md, padding: space.md }}>
               <RewardMedia image={item.image} emoji="☕" style={{ width: 64, height: 64, borderRadius: radius.md }} />
               <View style={{ flex: 1, gap: 4 }}>
                 <AppText variant="bodySemiBold">{lang === 'ar' ? item.nameAr : item.nameEn}</AppText>
                 <AppText variant="mono" color={colors.brandInk}>
-                  {t('menu.price', { price: item.price.toFixed(2) })}
+                  {t('orderCart.itemTotal', { price: (item.price * qty).toFixed(2) })}
                 </AppText>
                 <Row
                   style={{
@@ -73,6 +93,7 @@ export default function OrderCartScreen() {
                     borderWidth: 1,
                     borderColor: colors.border,
                     borderRadius: radius.md,
+                    marginTop: 4,
                   }}>
                   <QtyButton icon="remove" onPress={() => setQty(item.id, qty - 1)} />
                   <AppText variant="mono" style={{ width: 28, textAlign: 'center' }}>
@@ -81,41 +102,61 @@ export default function OrderCartScreen() {
                   <QtyButton icon="add" onPress={() => setQty(item.id, qty + 1)} />
                 </Row>
               </View>
-            </Row>
+            </Card>
           ))}
         </View>
 
         <View style={{ gap: space.sm }}>
-          <AppText variant="h3">{t('orderCart.paymentMethod')}</AppText>
+          <SectionTitle icon="wallet-outline" title={t('orderCart.paymentMethod')} />
           <PaymentRow icon="cash-outline" label={t('orderCart.cash')} selected={paymentMethod === 'cash'} onPress={() => setPaymentMethod('cash')} />
           <PaymentRow icon="card-outline" label={t('orderCart.card')} selected={paymentMethod === 'card'} onPress={() => setPaymentMethod('card')} />
         </View>
 
         <View style={{ gap: space.sm }}>
-          <AppText variant="h3">{t('orderCart.orderMethod')}</AppText>
+          <SectionTitle icon="navigate-outline" title={t('orderCart.orderMethod')} />
           {fulfillment === 'pickup' ? (
-            <Pressable onPress={() => router.push('/order-branch')} style={{ backgroundColor: colors.hero, borderRadius: radius.lg, padding: space.lg }}>
-              <AppText variant="label" color="rgba(255,255,255,0.6)">
-                {t('orderCart.branchPickup')}
-              </AppText>
-              <AppText variant="bodySemiBold" color={colors.white} style={{ marginTop: 4 }}>
-                {branch ? (lang === 'ar' ? branch.nameAr : branch.nameEn) : t('home.chooseBranch')}
-              </AppText>
+            <Pressable
+              onPress={() => router.push('/order-branch')}
+              style={({ pressed }) => [
+                { backgroundColor: colors.hero, borderRadius: radius.lg, padding: space.lg },
+                pressed && { opacity: 0.9 },
+              ]}>
+              <Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ flex: 1 }}>
+                  <AppText variant="label" color="rgba(255,255,255,0.6)">
+                    {t('orderCart.branchPickup')}
+                  </AppText>
+                  <AppText variant="bodySemiBold" color={colors.white} style={{ marginTop: 4 }}>
+                    {branch ? (lang === 'ar' ? branch.nameAr : branch.nameEn) : t('home.chooseBranch')}
+                  </AppText>
+                </View>
+                <Ionicons name={lang === 'ar' ? 'chevron-back' : 'chevron-forward'} size={18} color="rgba(255,255,255,0.6)" />
+              </Row>
             </Pressable>
           ) : (
-            <Pressable onPress={() => router.push('/order-delivery')} style={{ backgroundColor: colors.hero, borderRadius: radius.lg, padding: space.lg }}>
-              <AppText variant="label" color="rgba(255,255,255,0.6)">
-                {t('order.delivery')}
-              </AppText>
-              <AppText variant="bodySemiBold" color={colors.white} style={{ marginTop: 4 }} numberOfLines={1}>
-                {address ? `${address.line}, ${address.building}` : t('orderDelivery.chooseAddress')}
-              </AppText>
+            <Pressable
+              onPress={() => router.push('/order-delivery')}
+              style={({ pressed }) => [
+                { backgroundColor: colors.hero, borderRadius: radius.lg, padding: space.lg },
+                pressed && { opacity: 0.9 },
+              ]}>
+              <Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ flex: 1 }}>
+                  <AppText variant="label" color="rgba(255,255,255,0.6)">
+                    {t('order.delivery')}
+                  </AppText>
+                  <AppText variant="bodySemiBold" color={colors.white} style={{ marginTop: 4 }} numberOfLines={1}>
+                    {address ? `${address.line}, ${address.building}` : t('orderDelivery.chooseAddress')}
+                  </AppText>
+                </View>
+                <Ionicons name={lang === 'ar' ? 'chevron-back' : 'chevron-forward'} size={18} color="rgba(255,255,255,0.6)" />
+              </Row>
             </Pressable>
           )}
         </View>
 
         <View style={{ gap: space.sm }}>
-          <AppText variant="h3">{t('orderCart.orderSummary')}</AppText>
+          <SectionTitle icon="receipt-outline" title={t('orderCart.orderSummary')} />
           <View style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, padding: space.lg, gap: space.md }}>
             <Row style={{ justifyContent: 'space-between' }}>
               <AppText variant="body">{t('orderCart.subtotal')}</AppText>
@@ -197,6 +238,15 @@ export default function OrderCartScreen() {
         </View>
       </Modal>
     </View>
+  );
+}
+
+function SectionTitle({ icon, title }: { icon: keyof typeof Ionicons.glyphMap; title: string }) {
+  return (
+    <Row style={{ alignItems: 'center', gap: space.xs }}>
+      <Ionicons name={icon} size={16} color={colors.brandInk} />
+      <AppText variant="h3">{title}</AppText>
+    </Row>
   );
 }
 
