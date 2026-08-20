@@ -157,7 +157,7 @@ export default function HomeScreen() {
           <View style={{ marginBottom: space.lg, gap: space.xs }}>
             <ProgressBar value={userPoints} max={nextReward.cost} />
             <AppText variant="label" color="rgba(255,255,255,0.8)">
-              {t('points.nextReward', { name: lang === 'ar' ? nextReward.nameAr : nextReward.nameEn })}
+              {t('rewards.pointsToGo', { n: Math.max(0, nextReward.cost - userPoints) })} · {t('points.nextReward', { name: lang === 'ar' ? nextReward.nameAr : nextReward.nameEn })}
             </AppText>
           </View>
 

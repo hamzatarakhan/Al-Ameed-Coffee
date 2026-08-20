@@ -8,7 +8,7 @@ import { Row } from './Row';
 import { colors, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 
-export function ScreenHeader({ title, right }: { title: string; right?: React.ReactNode }) {
+export function ScreenHeader({ title, right, onBack }: { title: string; right?: React.ReactNode; onBack?: () => void }) {
   const router = useRouter();
   const { isRTL } = useLang();
   const insets = useSafeAreaInsets();
@@ -25,7 +25,7 @@ export function ScreenHeader({ title, right }: { title: string; right?: React.Re
         borderBottomWidth: 1,
         borderBottomColor: colors.border,
       }}>
-      <Pressable onPress={() => router.back()} hitSlop={12} style={{ width: 32 }}>
+      <Pressable onPress={onBack ?? (() => router.back())} hitSlop={12} style={{ width: 32 }}>
         <Ionicons name={isRTL ? 'chevron-forward' : 'chevron-back'} size={24} color={colors.text} />
       </Pressable>
       <AppText variant="h2" style={{ flex: 1 }} align="center">

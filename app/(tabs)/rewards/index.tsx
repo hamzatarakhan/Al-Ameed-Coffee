@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { CircleButton } from '@/components/CircleButton';
 import { RewardMedia } from '@/components/RewardMedia';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
@@ -17,7 +17,6 @@ type Sort = 'affordable' | 'cost';
 export default function RewardsGalleryScreen() {
   const { t, lang, isRTL } = useLang();
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const tabBarInset = useTabBarInset();
   const [sort, setSort] = useState<Sort>('affordable');
 
@@ -32,11 +31,13 @@ export default function RewardsGalleryScreen() {
   }, [sort]);
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingTop: insets.top + space.lg, paddingHorizontal: space.lg, paddingBottom: space.xxxl + tabBarInset }}>
-      <AppText variant="display" style={{ marginBottom: space.md }}>
-        {t('rewards.title')}
-      </AppText>
-
+    <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      {/* Reached via a push from Home's "Rewards" quick action, not just by
+          tapping the tab — router.back() there would exit the tabs group
+          instead of returning to Home, since the tab switch itself never
+          pushed a stack entry. So this back explicitly targets Home. */}
+      <ScreenHeader title={t('rewards.title')} onBack={() => router.push('/')} />
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: space.lg, paddingHorizontal: space.lg, paddingBottom: space.xxxl + tabBarInset }}>
       <Row style={{ gap: space.sm, marginBottom: space.lg }}>
         <SortChip active={sort === 'affordable'} label={t('rewards.sortAffordable')} onPress={() => setSort('affordable')} />
         <SortChip active={sort === 'cost'} label={t('rewards.sortCost')} onPress={() => setSort('cost')} />
@@ -79,7 +80,8 @@ export default function RewardsGalleryScreen() {
           );
         })}
       </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 

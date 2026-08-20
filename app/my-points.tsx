@@ -50,6 +50,9 @@ export default function MyPointsScreen() {
               {userPoints}
             </AppText>
             <ProgressBar value={userPoints} max={cheapest.cost} />
+            <AppText variant="label" color="rgba(255,255,255,0.8)" style={{ marginTop: space.xs }}>
+              {t('rewards.pointsToGo', { n: Math.max(0, cheapest.cost - userPoints) })}
+            </AppText>
             <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: space.sm }}>
               <AppText variant="muted" color="rgba(255,255,255,0.8)" style={{ flex: 1 }}>
                 {t('points.nextReward', { name: lang === 'ar' ? cheapest.nameAr : cheapest.nameEn })}
