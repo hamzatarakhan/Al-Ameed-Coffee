@@ -94,6 +94,19 @@ const dict = {
     viewBranch: { ar: 'عرض هالفرع', en: 'View this branch' },
     seeAllBranches: { ar: 'شوف كل الفروع', en: 'See all branches' },
   },
+  menu: {
+    title: { ar: 'القائمة', en: 'Menu' },
+    continue: { ar: 'متابعة', en: 'Continue' },
+    emptyCart: { ar: 'اختر أغراضك عشان تكمّل', en: 'Choose your items to continue' },
+    price: { ar: '{price} د.أ', en: 'JD {price}' },
+  },
+  orderBranch: {
+    title: { ar: 'اختر فرع الاستلام', en: 'Choose a pickup branch' },
+    confirm: { ar: 'تأكيد الطلب', en: 'Confirm order' },
+    successTitle: { ar: 'تم إرسال طلبك', en: 'Order sent' },
+    successBody: { ar: 'استلمه من {branch} خلال 15-20 دقيقة', en: 'Pick it up from {branch} in 15-20 minutes' },
+    done: { ar: 'تم', en: 'Done' },
+  },
   checkin: {
     title: { ar: 'Check In', en: 'Check In' },
     instruction: { ar: 'وريّ الكود للكاشير لتجمع نقاطك', en: 'Show this code to the cashier to collect points' },

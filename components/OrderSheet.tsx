@@ -53,7 +53,12 @@ export function OrderSheet({ visible, onClose }: { visible: boolean; onClose: ()
             <AppText variant="h2" color={colors.text} style={{ marginBottom: space.xs }}>
               {t('order.title')}
             </AppText>
-            <Pressable onPress={() => setStep('error')} style={{ marginBottom: space.sm }}>
+            <Pressable
+              onPress={() => {
+                onClose();
+                router.push('/order-menu');
+              }}
+              style={{ marginBottom: space.sm }}>
               <OrderOption icon="storefront" label={t('order.pickup')} isRTL={isRTL} colors={colors} />
             </Pressable>
             <Pressable onPress={() => setStep('error')}>

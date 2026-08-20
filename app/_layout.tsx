@@ -11,6 +11,7 @@ import { useFonts as usePlexMonoFonts, IBMPlexMono_500Medium } from '@expo-googl
 import { LanguageProvider, useLang } from '@/lib/i18n';
 import { ThemeModeProvider, useThemeMode, type ThemeMode } from '@/lib/theme-mode';
 import { OrderSheetProvider, useOrderSheet } from '@/lib/order-sheet';
+import { OrderCartProvider } from '@/lib/order-cart';
 import { NotificationsProvider } from '@/lib/notifications-store';
 import { AuthProvider, useAuth } from '@/lib/auth-store';
 import { ProfileProvider } from '@/lib/profile-store';
@@ -50,8 +51,10 @@ export default function RootLayout() {
             <ProfileProvider>
               <NotificationsProvider>
                 <OrderSheetProvider>
-                  <AppShell />
-                  {showSplash ? <AnimatedSplash onFinish={() => setShowSplash(false)} /> : null}
+                  <OrderCartProvider>
+                    <AppShell />
+                    {showSplash ? <AnimatedSplash onFinish={() => setShowSplash(false)} /> : null}
+                  </OrderCartProvider>
                 </OrderSheetProvider>
               </NotificationsProvider>
             </ProfileProvider>
@@ -108,6 +111,8 @@ function AppShell() {
 
         <Stack.Protected guard={status === 'signedIn'}>
           <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="order-menu" options={{ presentation: 'card' }} />
+          <Stack.Screen name="order-branch" options={{ presentation: 'card' }} />
           <Stack.Screen name="my-points" options={{ presentation: 'card' }} />
           <Stack.Screen name="redeemed-rewards" options={{ presentation: 'card' }} />
           <Stack.Screen name="notifications" options={{ presentation: 'card' }} />

@@ -119,6 +119,141 @@ export const rewards: Reward[] = [
   },
 ];
 
+export type MenuCategory = { id: string; nameAr: string; nameEn: string };
+
+export type MenuItem = {
+  id: string;
+  category: string;
+  nameAr: string;
+  nameEn: string;
+  descAr: string;
+  descEn: string;
+  price: number; // JOD
+  image?: ImageSourcePropType;
+};
+
+export const menuCategories: MenuCategory[] = [
+  { id: 'hot', nameAr: 'مشروبات ساخنة', nameEn: 'Hot Drinks' },
+  { id: 'cold', nameAr: 'مشروبات باردة', nameEn: 'Cold Drinks' },
+  { id: 'food', nameAr: 'مأكولات', nameEn: 'Food' },
+  { id: 'beans', nameAr: 'بن وحبوب', nameEn: 'Beans & Grounds' },
+];
+
+const menuPhotos = [require('../assets/images/slide-1.jpg'), require('../assets/images/slide-2.jpg'), require('../assets/images/slide-3.jpg')];
+
+export const menuItems: MenuItem[] = [
+  {
+    id: 'turkish-coffee',
+    category: 'hot',
+    nameAr: 'قهوة تركية',
+    nameEn: 'Turkish Coffee',
+    descAr: 'قهوة تركية أصيلة محضّرة على الطريقة التقليدية.',
+    descEn: 'Traditionally prepared authentic Turkish coffee.',
+    price: 1.5,
+    image: menuPhotos[0],
+  },
+  {
+    id: 'cappuccino',
+    category: 'hot',
+    nameAr: 'كابتشينو العميد',
+    nameEn: 'Al Ameed Cappuccino',
+    descAr: 'إسبريسو غني مع رغوة حليب كريمية، وصفتنا المميزة.',
+    descEn: 'Rich espresso with creamy milk foam, our signature recipe.',
+    price: 2.5,
+    image: menuPhotos[1],
+  },
+  {
+    id: 'espresso',
+    category: 'hot',
+    nameAr: 'إسبريسو',
+    nameEn: 'Espresso',
+    descAr: 'جرعة إسبريسو مركّزة من حبوب عربيكا 100%.',
+    descEn: 'A concentrated shot from 100% Arabica beans.',
+    price: 2.0,
+    image: menuPhotos[2],
+  },
+  {
+    id: 'latte',
+    category: 'hot',
+    nameAr: 'لاتيه',
+    nameEn: 'Latte',
+    descAr: 'إسبريسو مع حليب مبخّر ورغوة خفيفة.',
+    descEn: 'Espresso with steamed milk and a light foam top.',
+    price: 2.75,
+    image: menuPhotos[0],
+  },
+  {
+    id: 'iced-latte',
+    category: 'cold',
+    nameAr: 'آيس لاتيه',
+    nameEn: 'Iced Latte',
+    descAr: 'لاتيه بارد منعش مع مكعبات ثلج.',
+    descEn: 'A refreshing cold latte served over ice.',
+    price: 3.0,
+    image: menuPhotos[1],
+  },
+  {
+    id: 'cold-brew',
+    category: 'cold',
+    nameAr: 'كولد برو',
+    nameEn: 'Cold Brew',
+    descAr: 'قهوة منقوعة ببرودة لساعات طويلة، نكهة ناعمة وقليلة الحموضة.',
+    descEn: 'Slow-steeped cold coffee, smooth and low in acidity.',
+    price: 3.25,
+    image: menuPhotos[2],
+  },
+  {
+    id: 'iced-americano',
+    category: 'cold',
+    nameAr: 'أيس أمريكانو',
+    nameEn: 'Iced Americano',
+    descAr: 'إسبريسو مع ماء بارد وثلج.',
+    descEn: 'Espresso with cold water over ice.',
+    price: 2.5,
+    image: menuPhotos[0],
+  },
+  {
+    id: 'croissant',
+    category: 'food',
+    nameAr: 'كرواسون بالزبدة',
+    nameEn: 'Butter Croissant',
+    descAr: 'كرواسون فرنسي طازج مقرمش من الخارج وطري من الداخل.',
+    descEn: 'Fresh French croissant, crisp outside and soft inside.',
+    price: 1.75,
+    image: menuPhotos[1],
+  },
+  {
+    id: 'chocolate-cake',
+    category: 'food',
+    nameAr: 'كيكة الشوكولاتة',
+    nameEn: 'Chocolate Cake',
+    descAr: 'قطعة كيكة شوكولاتة غنية بطبقة كريمة.',
+    descEn: 'A rich slice of chocolate cake with a cream layer.',
+    price: 2.5,
+    image: menuPhotos[2],
+  },
+  {
+    id: 'ground-coffee-250',
+    category: 'beans',
+    nameAr: 'بن عربيكا مطحون 250غ',
+    nameEn: 'Ground Arabica 250g',
+    descAr: 'كيس بن عربيكا 100% مطحون طازج، وزن 250 غرام.',
+    descEn: '100% Arabica, freshly ground, 250g bag.',
+    price: 4.5,
+    image: require('../assets/images/reward-beans.jpg'),
+  },
+  {
+    id: 'roasted-beans-500',
+    category: 'beans',
+    nameAr: 'حبوب بن محمّص 500غ',
+    nameEn: 'Roasted Beans 500g',
+    descAr: 'حبوب بن كاملة محمّصة طازجة، وزن 500 غرام.',
+    descEn: 'Whole freshly roasted beans, 500g bag.',
+    price: 8.0,
+    image: require('../assets/images/reward-beans.jpg'),
+  },
+];
+
 export type Branch = {
   id: string;
   nameAr: string;
