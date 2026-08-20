@@ -3,7 +3,7 @@
 // free substitutes — Avenir LT Std itself isn't available on Google Fonts).
 export type Colors = typeof lightColors;
 
-const lightColors = {
+export const lightColors = {
   bg: '#FFFFFF',
   surface: '#FFFFFF',
   surface2: '#F5F3F2',
@@ -24,7 +24,7 @@ const lightColors = {
   white: '#FFFFFF',
 };
 
-const darkColors: Colors = {
+export const darkColors: Colors = {
   bg: '#121012',
   surface: '#1C1A1C',
   surface2: '#262326',

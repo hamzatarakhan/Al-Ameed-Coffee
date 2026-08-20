@@ -9,6 +9,7 @@ import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { CircleButton } from '@/components/CircleButton';
 import { CheckinPopup } from '@/components/CheckinPopup';
+import { OrderSheet } from '@/components/OrderSheet';
 import { Pill } from '@/components/Pill';
 import { PromoCarousel } from '@/components/PromoCarousel';
 import { colors, radius, shadow, space } from '@/lib/theme';
@@ -28,6 +29,7 @@ export default function HomeScreen() {
   const { notifications } = useNotifications();
   const hasUnreadNotifications = notifications.some((n) => !n.read);
   const [showCheckin, setShowCheckin] = useState(true);
+  const [showOrderSheet, setShowOrderSheet] = useState(false);
   const { nearest, request } = useBranchDistances();
 
   // Attempt silently on load — if the user already granted location
@@ -39,7 +41,7 @@ export default function HomeScreen() {
   }, [request]);
 
   const categories = [
-    { icon: 'bag-handle' as const, label: t('home.quickOrder'), onPress: () => router.push('/order') },
+    { icon: 'bag-handle' as const, label: t('home.quickOrder'), onPress: () => setShowOrderSheet(true) },
     { icon: 'sparkles' as const, label: t('home.quickPoints'), onPress: () => router.push('/my-points') },
     { icon: 'gift' as const, label: t('home.quickRewards'), onPress: () => router.push('/rewards') },
     { icon: 'ribbon' as const, label: t('home.quickRedeemed'), onPress: () => router.push('/redeemed-rewards') },
@@ -202,6 +204,7 @@ export default function HomeScreen() {
       </ScrollView>
 
       <CheckinPopup visible={showCheckin} onClose={() => setShowCheckin(false)} />
+      <OrderSheet visible={showOrderSheet} onClose={() => setShowOrderSheet(false)} />
     </>
   );
 }

@@ -133,8 +133,18 @@ function AppShell() {
       {/* Rendered here, above the whole Stack (and thus above the tabs'
           floating iOS tab bar), instead of inside account.tsx where it used
           to live — a sheet mounted inside one tab screen can't visually
-          cover a tab bar that floats above every screen's own content. */}
-      <OptionSheet visible={sheetOpen} onClose={closeSheet} title={t('account.nightMode')} options={themeOptions} value={mode} onSelect={setMode} />
+          cover a tab bar that floats above every screen's own content.
+          Unlike the Stack, this sheet isn't inside the keyed-remount
+          subtree (see OptionSheet.tsx for why it reads colors via
+          useThemeMode() instead of the mutated `colors` singleton). */}
+      <OptionSheet
+        visible={sheetOpen}
+        onClose={closeSheet}
+        title={t('account.nightMode')}
+        options={themeOptions}
+        value={mode}
+        onSelect={setMode}
+      />
     </>
   );
 }
