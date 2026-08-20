@@ -16,15 +16,16 @@ import { useLang } from '@/lib/i18n';
 import { useOrderCart } from '@/lib/order-cart';
 import { useOrderSheet } from '@/lib/order-sheet';
 import { shareInvite } from '@/lib/invite';
-import { redemptions, transactions, userPoints, getNextReward } from '@/lib/mock-data';
-
-const cheapest = getNextReward(userPoints);
+import { usePoints } from '@/lib/points-store';
+import { getNextReward } from '@/lib/mock-data';
 
 export default function MyPointsScreen() {
   const { t, lang, isRTL } = useLang();
   const router = useRouter();
   const { pastOrders } = useOrderCart();
   const { openSheet } = useOrderSheet();
+  const { userPoints, transactions, redemptions } = usePoints();
+  const cheapest = getNextReward(userPoints);
   const checkinCount = transactions.filter((tx) => tx.id.startsWith('tx-checkin')).length;
 
   return (

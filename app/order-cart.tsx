@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,6 +11,7 @@ import { Card } from '@/components/Card';
 import { EmptyState } from '@/components/EmptyState';
 import { RewardMedia } from '@/components/RewardMedia';
 import { ScreenHeader } from '@/components/ScreenHeader';
+import { SuccessModal } from '@/components/SuccessModal';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useOrderCart } from '@/lib/order-cart';
@@ -156,6 +157,39 @@ export default function OrderCartScreen() {
         </View>
 
         <View style={{ gap: space.sm }}>
+          <SectionTitle icon="call-outline" title={t('orderCart.preferences')} />
+          <Pressable onPress={() => setNoCallConfirm((v) => !v)}>
+            <Row
+              style={{
+                alignItems: 'center',
+                gap: space.md,
+                backgroundColor: colors.surface,
+                borderWidth: 1,
+                borderColor: colors.border,
+                borderRadius: radius.lg,
+                padding: space.md,
+              }}>
+              <View
+                style={{
+                  width: 22,
+                  height: 22,
+                  borderRadius: 6,
+                  borderWidth: 1.5,
+                  borderColor: noCallConfirm ? colors.brand : colors.border,
+                  backgroundColor: noCallConfirm ? colors.brand : 'transparent',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                {noCallConfirm ? <Ionicons name="checkmark" size={14} color={colors.white} /> : null}
+              </View>
+              <AppText variant="body" style={{ flex: 1 }}>
+                {t('order.noCallConfirm')}
+              </AppText>
+            </Row>
+          </Pressable>
+        </View>
+
+        <View style={{ gap: space.sm }}>
           <SectionTitle icon="receipt-outline" title={t('orderCart.orderSummary')} />
           <View style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, padding: space.lg, gap: space.md }}>
             <Row style={{ justifyContent: 'space-between' }}>
@@ -163,37 +197,26 @@ export default function OrderCartScreen() {
               <AppText variant="mono">{t('menu.price', { price: totalPrice.toFixed(2) })}</AppText>
             </Row>
             <View style={{ height: 1, backgroundColor: colors.border }} />
-            <AppText variant="muted" color={colors.brandInk} align="center">
-              {t('orderCart.thanks')}
-            </AppText>
-            <Pressable onPress={() => setNoCallConfirm((v) => !v)}>
-              <Row style={{ alignItems: 'center', gap: space.xs }}>
-                <View
-                  style={{
-                    width: 18,
-                    height: 18,
-                    borderRadius: 4,
-                    borderWidth: 1,
-                    borderColor: colors.border,
-                    backgroundColor: noCallConfirm ? colors.brand : 'transparent',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  {noCallConfirm ? <Ionicons name="checkmark" size={13} color={colors.white} /> : null}
-                </View>
-                <AppText variant="muted" style={{ flex: 1 }}>
-                  {t('order.noCallConfirm')}
-                </AppText>
-              </Row>
-            </Pressable>
-            <View style={{ height: 1, backgroundColor: colors.border }} />
-            <Row style={{ justifyContent: 'space-between' }}>
-              <AppText variant="bodySemiBold">{t('orderCart.total')}</AppText>
-              <AppText variant="mono" color={colors.brandInk}>
+            <Row
+              style={{
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                backgroundColor: colors.brandTint,
+                borderRadius: radius.md,
+                paddingHorizontal: space.md,
+                paddingVertical: space.sm,
+              }}>
+              <AppText variant="bodySemiBold" color={colors.brandInk}>
+                {t('orderCart.total')}
+              </AppText>
+              <AppText variant="mono" color={colors.brandInk} style={{ fontSize: 17, lineHeight: 22 }}>
                 {t('menu.price', { price: totalPrice.toFixed(2) })}
               </AppText>
             </Row>
           </View>
+          <AppText variant="muted" color={colors.brandInk} align="center">
+            {t('orderCart.thanks')}
+          </AppText>
         </View>
       </ScrollView>
 
@@ -211,7 +234,13 @@ export default function OrderCartScreen() {
           borderTopWidth: 1,
           borderTopColor: colors.border,
         }}>
-        <Button label={t('orderCart.placeOrder')} onPress={submitOrder} disabled={!canOrder} style={{ flex: 1 }} />
+        <Button
+          label={t('orderCart.placeOrder')}
+          trailing={t('menu.price', { price: totalPrice.toFixed(2) })}
+          onPress={submitOrder}
+          disabled={!canOrder}
+          style={{ flex: 1 }}
+        />
         <Pressable
           onPress={clear}
           style={{ width: 52, height: 52, borderRadius: 26, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' }}>
@@ -219,24 +248,19 @@ export default function OrderCartScreen() {
         </Pressable>
       </Row>
 
-      <Modal visible={success} transparent animationType="fade" onRequestClose={() => setSuccess(false)}>
-        <View style={{ flex: 1, backgroundColor: 'rgba(23,19,16,0.5)', alignItems: 'center', justifyContent: 'center', padding: space.xl }}>
-          <View style={{ backgroundColor: colors.surface, borderRadius: radius.xl, padding: space.xl, alignItems: 'center', gap: space.sm, width: '100%' }}>
-            <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: colors.goodBg, alignItems: 'center', justifyContent: 'center' }}>
-              <Ionicons name="checkmark" size={28} color={colors.good} />
-            </View>
-            <AppText variant="h2">{t('orderBranch.successTitle')}</AppText>
-            <AppText variant="muted" align="center">
-              {placedSummary
-                ? placedSummary.fulfillment === 'pickup'
-                  ? t('orderBranch.successBody', { branch: placedSummary.location })
-                  : t('orderDelivery.successBody', { address: placedSummary.location })
-                : ''}
-            </AppText>
-            <Button label={t('orderBranch.done')} onPress={finish} style={{ width: '100%', marginTop: space.sm }} />
-          </View>
-        </View>
-      </Modal>
+      <SuccessModal
+        visible={success}
+        title={t('orderBranch.successTitle')}
+        body={
+          placedSummary
+            ? placedSummary.fulfillment === 'pickup'
+              ? t('orderBranch.successBody', { branch: placedSummary.location })
+              : t('orderDelivery.successBody', { address: placedSummary.location })
+            : ''
+        }
+        doneLabel={t('orderBranch.done')}
+        onDone={finish}
+      />
     </View>
   );
 }

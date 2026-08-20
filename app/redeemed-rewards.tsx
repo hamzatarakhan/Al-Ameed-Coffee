@@ -8,10 +8,11 @@ import { EmptyState } from '@/components/EmptyState';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { colors, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
-import { redemptions } from '@/lib/mock-data';
+import { usePoints } from '@/lib/points-store';
 
 export default function RedeemedRewardsScreen() {
   const { t, lang } = useLang();
+  const { redemptions } = usePoints();
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>

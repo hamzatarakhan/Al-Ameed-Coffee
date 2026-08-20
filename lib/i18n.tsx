@@ -17,7 +17,7 @@ const dict = {
   },
   tabs: {
     home: { ar: 'الهوم', en: 'Home' },
-    order: { ar: 'طلباتي', en: 'Orders' },
+    order: { ar: 'طلباتي', en: 'My Orders' },
     checkin: { ar: 'Check In', en: 'Check In' },
     rewards: { ar: 'الهدايا', en: 'Rewards' },
     account: { ar: 'حسابي', en: 'Account' },
@@ -25,6 +25,7 @@ const dict = {
   home: {
     question: { ar: 'شو حابب تطلب اليوم؟', en: 'What would you like today?' },
     chooseBranch: { ar: 'اختر فرعك', en: 'Choose your branch' },
+    browseBranches: { ar: 'تصفح الفروع', en: 'Browse branches' },
     yourPoints: { ar: 'رصيد نقاطك', en: 'Your points' },
     quickOrder: { ar: 'اطلب الآن', en: 'Order Now' },
     quickPoints: { ar: 'نقاطي', en: 'My Points' },
@@ -142,6 +143,7 @@ const dict = {
     cash: { ar: 'كاش', en: 'Cash' },
     card: { ar: 'بطاقة ائتمانية', en: 'Credit card' },
     orderMethod: { ar: 'طريقة الطلب', en: 'Order method' },
+    preferences: { ar: 'تفضيلات الطلب', en: 'Order preferences' },
     branchPickup: { ar: 'استلام من الفرع', en: 'Branch pickup' },
     orderSummary: { ar: 'ملخص الطلب', en: 'Order summary' },
     subtotal: { ar: 'المجموع الفرعي', en: 'Subtotal' },

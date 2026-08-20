@@ -10,6 +10,7 @@ import { ScreenHeader } from '@/components/ScreenHeader';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useAuth } from '@/lib/auth-store';
+import { confirmAction } from '@/lib/confirm';
 
 export default function DeleteAccountScreen() {
   const { t } = useLang();
@@ -18,6 +19,17 @@ export default function DeleteAccountScreen() {
 
   const expected = t('deleteAccount.confirmWord');
   const canDelete = confirmText.trim().toLocaleUpperCase() === expected.toLocaleUpperCase();
+
+  const requestDelete = () => {
+    confirmAction(
+      t('deleteAccount.title'),
+      t('deleteAccount.warningBody'),
+      t('deleteAccount.confirmButton'),
+      () => auth.deleteAccount(),
+      t('deleteAccount.cancel'),
+      true
+    );
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
@@ -51,7 +63,7 @@ export default function DeleteAccountScreen() {
 
         <Button
           label={t('deleteAccount.confirmButton')}
-          onPress={() => auth.deleteAccount()}
+          onPress={requestDelete}
           disabled={!canDelete}
           style={{ marginTop: space.lg, backgroundColor: canDelete ? colors.critical : undefined }}
         />

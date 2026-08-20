@@ -1,53 +1,21 @@
 import React, { useMemo, useState } from 'react';
-import { Image, Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
-import { Pill } from '@/components/Pill';
 import { Input } from '@/components/Input';
 import { ScreenHeader } from '@/components/ScreenHeader';
-import { colors, radius, space } from '@/lib/theme';
+import { BranchRow } from '@/components/BranchRow';
+import { colors, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { branches, branchCityById, type Branch } from '@/lib/mock-data';
 import { useBranchDistances } from '@/lib/useBranchDistances';
 
-function BranchCard({ branch, distanceKm }: { branch: Branch; distanceKm?: number | null }) {
-  const { t, lang, isRTL } = useLang();
-  const router = useRouter();
-
-  return (
-    <Pressable
-      onPress={() => router.push(`/branches/${branch.id}`)}
-      style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, padding: space.md }}>
-      <Row style={{ alignItems: 'center', gap: space.md }}>
-        {branch.image ? <Image source={branch.image} style={{ width: 64, height: 64, borderRadius: radius.md }} resizeMode="cover" /> : null}
-        <View style={{ flex: 1 }}>
-          <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
-            <AppText variant="bodySemiBold" style={{ flex: 1 }} numberOfLines={1}>
-              {lang === 'ar' ? branch.nameAr : branch.nameEn}
-            </AppText>
-            <Pill tone={branch.openNow ? 'good' : 'neutral'} label={branch.openNow ? t('branches.openNow') : t('branches.closed')} />
-          </Row>
-          <AppText variant="muted" numberOfLines={1}>
-            {lang === 'ar' ? branch.addressAr : branch.addressEn}
-            {distanceKm != null ? ` · ${distanceKm.toFixed(1)} ${t('branches.km')}` : ''}
-          </AppText>
-          <Row style={{ alignItems: 'center', gap: 4, marginTop: space.xs }}>
-            <AppText variant="label" color={colors.brandInk}>
-              {t('common.seeAll')}
-            </AppText>
-            <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={12} color={colors.brandInk} />
-          </Row>
-        </View>
-      </Row>
-    </Pressable>
-  );
-}
-
 export default function BranchesListScreen() {
   const { t, lang } = useLang();
+  const router = useRouter();
   const { status, distanceTo, request } = useBranchDistances();
   const [query, setQuery] = useState('');
 
@@ -115,7 +83,7 @@ export default function BranchesListScreen() {
         ) : sortedByDistance ? (
           <View style={{ gap: space.md }}>
             {sortedByDistance.map((b) => (
-              <BranchCard key={b.id} branch={b} distanceKm={distanceTo(b.id)} />
+              <BranchRow key={b.id} branch={b} distanceKm={distanceTo(b.id)} onPress={() => router.push(`/branches/${b.id}`)} />
             ))}
           </View>
         ) : (
@@ -129,7 +97,7 @@ export default function BranchesListScreen() {
               </Row>
               <View style={{ gap: space.md }}>
                 {group.items.map((b) => (
-                  <BranchCard key={b.id} branch={b} />
+                  <BranchRow key={b.id} branch={b} onPress={() => router.push(`/branches/${b.id}`)} />
                 ))}
               </View>
             </View>

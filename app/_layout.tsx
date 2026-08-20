@@ -12,6 +12,7 @@ import { LanguageProvider, useLang } from '@/lib/i18n';
 import { ThemeModeProvider, useThemeMode, type ThemeMode } from '@/lib/theme-mode';
 import { OrderSheetProvider, useOrderSheet } from '@/lib/order-sheet';
 import { OrderCartProvider } from '@/lib/order-cart';
+import { PointsProvider } from '@/lib/points-store';
 import { NotificationsProvider } from '@/lib/notifications-store';
 import { AuthProvider, useAuth } from '@/lib/auth-store';
 import { ProfileProvider } from '@/lib/profile-store';
@@ -50,12 +51,14 @@ export default function RootLayout() {
           <AuthProvider>
             <ProfileProvider>
               <NotificationsProvider>
-                <OrderSheetProvider>
-                  <OrderCartProvider>
-                    <AppShell />
-                    {showSplash ? <AnimatedSplash onFinish={() => setShowSplash(false)} /> : null}
-                  </OrderCartProvider>
-                </OrderSheetProvider>
+                <PointsProvider>
+                  <OrderSheetProvider>
+                    <OrderCartProvider>
+                      <AppShell />
+                      {showSplash ? <AnimatedSplash onFinish={() => setShowSplash(false)} /> : null}
+                    </OrderCartProvider>
+                  </OrderSheetProvider>
+                </PointsProvider>
               </NotificationsProvider>
             </ProfileProvider>
           </AuthProvider>

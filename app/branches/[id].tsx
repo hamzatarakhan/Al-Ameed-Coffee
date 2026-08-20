@@ -36,7 +36,7 @@ export default function BranchDetailScreen() {
           />
         </View>
 
-        <View style={{ backgroundColor: colors.bg, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, marginTop: -20, padding: space.xl, gap: space.lg }}>
+        <View style={{ backgroundColor: colors.bg, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, marginTop: -24, padding: space.xl, gap: space.lg }}>
           <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
             <AppText variant="h2">{lang === 'ar' ? branch.nameAr : branch.nameEn}</AppText>
             <Pill tone={branch.openNow ? 'good' : 'neutral'} label={branch.openNow ? t('branches.openNow') : t('branches.closed')} />

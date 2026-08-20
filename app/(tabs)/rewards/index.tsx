@@ -10,7 +10,8 @@ import { ScreenHeader } from '@/components/ScreenHeader';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
-import { rewards, userPoints } from '@/lib/mock-data';
+import { usePoints } from '@/lib/points-store';
+import { rewards } from '@/lib/mock-data';
 
 type Sort = 'affordable' | 'cost';
 
@@ -18,6 +19,7 @@ export default function RewardsGalleryScreen() {
   const { t, lang, isRTL } = useLang();
   const router = useRouter();
   const tabBarInset = useTabBarInset();
+  const { userPoints } = usePoints();
   const [sort, setSort] = useState<Sort>('affordable');
 
   const sorted = useMemo(() => {
@@ -28,7 +30,7 @@ export default function RewardsGalleryScreen() {
       const bAfford = b.cost <= userPoints ? 0 : 1;
       return aAfford - bAfford || a.cost - b.cost;
     });
-  }, [sort]);
+  }, [sort, userPoints]);
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>

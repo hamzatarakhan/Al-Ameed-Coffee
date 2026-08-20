@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,7 +9,7 @@ import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { CircleButton } from '@/components/CircleButton';
 import { CheckinPopup } from '@/components/CheckinPopup';
-import { Pill } from '@/components/Pill';
+import { BranchRow } from '@/components/BranchRow';
 import { PromoCarousel } from '@/components/PromoCarousel';
 import { ProgressBar } from '@/components/ProgressBar';
 import { colors, radius, shadow, space } from '@/lib/theme';
@@ -19,9 +19,8 @@ import { useNotifications } from '@/lib/notifications-store';
 import { useBranchDistances } from '@/lib/useBranchDistances';
 import { useOrderSheet } from '@/lib/order-sheet';
 import { useOrderCart } from '@/lib/order-cart';
-import { branches, promos, userPoints, getNextReward } from '@/lib/mock-data';
-
-const nextReward = getNextReward(userPoints);
+import { usePoints } from '@/lib/points-store';
+import { branches, promos, getNextReward } from '@/lib/mock-data';
 
 export default function HomeScreen() {
   const { t, lang, isRTL } = useLang();
@@ -34,6 +33,8 @@ export default function HomeScreen() {
   const { openSheet: openOrderSheet } = useOrderSheet();
   const { totalCount: cartCount } = useOrderCart();
   const { nearest, request } = useBranchDistances();
+  const { userPoints } = usePoints();
+  const nextReward = getNextReward(userPoints);
 
   // Attempt silently on load — if the user already granted location
   // (e.g. from the branches screen) this resolves instantly; if not yet
@@ -66,7 +67,7 @@ export default function HomeScreen() {
             <Row style={{ alignItems: 'center', gap: 4 }}>
               <Ionicons name="location-sharp" size={14} color={colors.brand} />
               <AppText variant="bodySemiBold" color={colors.brand}>
-                {nearest ? (lang === 'ar' ? nearest.nameAr : nearest.nameEn) : t('home.chooseBranch')}
+                {nearest ? (lang === 'ar' ? nearest.nameAr : nearest.nameEn) : t('home.browseBranches')}
               </AppText>
             </Row>
           </Pressable>
@@ -204,27 +205,7 @@ export default function HomeScreen() {
 
         <View style={{ gap: space.md }}>
           {branches.slice(0, 2).map((b) => (
-            <Pressable
-              key={b.id}
-              onPress={() => router.push(`/branches/${b.id}`)}
-              style={{ backgroundColor: colors.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, padding: space.md }}>
-              <Row style={{ alignItems: 'center', gap: space.md }}>
-                {b.image ? <Image source={b.image} style={{ width: 64, height: 64, borderRadius: radius.md }} resizeMode="cover" /> : null}
-                <View style={{ flex: 1 }}>
-                  <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: space.xs }}>
-                    <AppText variant="bodySemiBold">{lang === 'ar' ? b.nameAr : b.nameEn}</AppText>
-                    <Pill tone={b.openNow ? 'good' : 'neutral'} label={b.openNow ? t('branches.openNow') : t('branches.closed')} />
-                  </Row>
-                  <AppText variant="muted">{lang === 'ar' ? b.addressAr : b.addressEn}</AppText>
-                  <Row style={{ alignItems: 'center', gap: 4, marginTop: space.sm }}>
-                    <AppText variant="label" color={colors.brandInk}>
-                      {t('common.seeAll')}
-                    </AppText>
-                    <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={12} color={colors.brandInk} />
-                  </Row>
-                </View>
-              </Row>
-            </Pressable>
+            <BranchRow key={b.id} branch={b} onPress={() => router.push(`/branches/${b.id}`)} />
           ))}
         </View>
       </View>

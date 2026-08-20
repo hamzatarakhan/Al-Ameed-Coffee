@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,10 +9,12 @@ import { Row } from '@/components/Row';
 import { Button } from '@/components/Button';
 import { CircleButton } from '@/components/CircleButton';
 import { RewardMedia } from '@/components/RewardMedia';
+import { SuccessModal } from '@/components/SuccessModal';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
-import { rewards, userPoints } from '@/lib/mock-data';
+import { usePoints } from '@/lib/points-store';
+import { rewards } from '@/lib/mock-data';
 
 export default function RewardDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -20,6 +22,7 @@ export default function RewardDetailScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const tabBarInset = useTabBarInset();
+  const { userPoints, redeem } = usePoints();
   const [qty, setQty] = useState(1);
   const [success, setSuccess] = useState(false);
 
@@ -45,7 +48,18 @@ export default function RewardDetailScreen() {
               justifyContent: 'space-between',
             }}>
             <CircleButton icon={isRTL ? 'chevron-forward' : 'chevron-back'} onPress={() => router.back()} tone="light" />
-            <CircleButton icon={locked ? 'lock-closed' : 'checkmark'} tone="dark" />
+            {/* Static status badge, not a button — was a CircleButton (a
+                Pressable) with no onPress, which silently absorbed taps
+                users expected to do something. */}
+            {locked ? (
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.2)', alignItems: 'center', justifyContent: 'center' }}>
+                <Ionicons name="lock-closed" size={18} color={colors.white} />
+              </View>
+            ) : (
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.brand, alignItems: 'center', justifyContent: 'center' }}>
+                <Ionicons name="checkmark" size={18} color={colors.white} />
+              </View>
+            )}
           </Row>
         </View>
 
@@ -115,24 +129,23 @@ export default function RewardDetailScreen() {
           label={locked ? t('rewardDetail.locked') : t('rewardDetail.redeem')}
           trailing={locked ? undefined : `${reward.cost * qty} ${t('common.points')}`}
           disabled={locked}
-          onPress={() => setSuccess(true)}
+          onPress={() => {
+            redeem(reward, qty);
+            setSuccess(true);
+          }}
         />
       </View>
 
-      <Modal visible={success} transparent animationType="fade" onRequestClose={() => setSuccess(false)}>
-        <View style={{ flex: 1, backgroundColor: 'rgba(23,19,16,0.5)', alignItems: 'center', justifyContent: 'center', padding: space.xl }}>
-          <View style={{ backgroundColor: colors.surface, borderRadius: radius.xl, padding: space.xl, alignItems: 'center', gap: space.sm, width: '100%' }}>
-            <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: colors.goodBg, alignItems: 'center', justifyContent: 'center' }}>
-              <Ionicons name="checkmark" size={28} color={colors.good} />
-            </View>
-            <AppText variant="h2">{t('rewardDetail.successTitle')}</AppText>
-            <AppText variant="muted" align="center">
-              {t('rewardDetail.successBody')}
-            </AppText>
-            <Button label={t('rewardDetail.done')} onPress={() => setSuccess(false)} style={{ width: '100%', marginTop: space.sm }} />
-          </View>
-        </View>
-      </Modal>
+      <SuccessModal
+        visible={success}
+        title={t('rewardDetail.successTitle')}
+        body={t('rewardDetail.successBody')}
+        doneLabel={t('rewardDetail.done')}
+        onDone={() => {
+          setSuccess(false);
+          router.back();
+        }}
+      />
     </View>
   );
 }
