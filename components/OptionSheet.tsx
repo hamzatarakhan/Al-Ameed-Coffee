@@ -28,7 +28,7 @@ export function OptionSheet<T extends string>({
   if (!visible) return null;
 
   return (
-    <Pressable style={StyleSheet.absoluteFillObject} onPress={onClose}>
+    <Pressable style={[StyleSheet.absoluteFillObject, { backgroundColor: 'rgba(0,0,0,0.3)' }]} onPress={onClose}>
       <Pressable
         onPress={(e) => e.stopPropagation()}
         style={{
@@ -38,7 +38,7 @@ export function OptionSheet<T extends string>({
           bottom: tabBarInset,
           backgroundColor: colors.surface,
           padding: space.lg,
-          paddingBottom: insets.bottom + space.lg,
+          paddingBottom: insets.bottom + space.sm,
           borderTopLeftRadius: radius.xl,
           borderTopRightRadius: radius.xl,
           gap: space.xs,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextInput, View } from 'react-native';
+import { Platform, TextInput, View } from 'react-native';
 import { AppText } from './AppText';
 import { colors, fonts, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
@@ -69,7 +69,8 @@ export function PhoneInput({ label, value, onChangeText, error }: Props) {
             flex: 1,
             paddingHorizontal: space.md,
             paddingVertical: focused ? 12.5 : 13,
-            fontSize: 15,
+            // See Input.tsx — iOS Safari auto-zooms on focus below 16px.
+            fontSize: Platform.OS === 'web' ? 16 : 15,
             fontFamily: fonts.mono,
             color: colors.text,
             textAlign: 'left',

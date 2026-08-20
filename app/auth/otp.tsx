@@ -125,7 +125,9 @@ export default function OtpScreen() {
             // Visually hidden but still a real, focusable, typeable input —
             // 0 size + opacity is the standard way to keep a TextInput
             // functional while the 4 boxes above do the actual display.
-            style={{ position: 'absolute', width: 1, height: 1, opacity: 0 }}
+            // fontSize 16 avoids iOS Safari's auto-zoom-on-focus below 16px
+            // (invisible either way, so no visual effect).
+            style={{ position: 'absolute', width: 1, height: 1, opacity: 0, fontSize: 16 }}
           />
           {error ? (
             <AppText variant="label" color={colors.critical} align="center" style={{ marginTop: space.sm }}>

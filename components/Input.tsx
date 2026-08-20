@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextInput, TextInputProps, View } from 'react-native';
+import { Platform, TextInput, TextInputProps, View } from 'react-native';
 import { AppText } from './AppText';
 import { colors, fonts, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
@@ -38,7 +38,10 @@ export function Input({ label, error, style, onFocus, onBlur, ...rest }: Props) 
             borderRadius: radius.md,
             paddingHorizontal: space.md,
             paddingVertical: focused ? 12.5 : 13,
-            fontSize: 15,
+            // iOS Safari auto-zooms the whole page in when a focused input's
+            // font-size is under 16px, and never zooms back out on blur —
+            // 16px on web sidesteps that trigger entirely.
+            fontSize: Platform.OS === 'web' ? 16 : 15,
             fontFamily: isRTL ? fonts.bodyAr : fonts.bodyEn,
             color: colors.text,
             textAlign: isRTL ? 'right' : 'left',

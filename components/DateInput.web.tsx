@@ -31,7 +31,8 @@ export function DateInput({ label, value, onChange }: Props) {
           border: `1px solid ${colors.border}`,
           borderRadius: radius.md,
           padding: `13px ${space.md}px`,
-          fontSize: 15,
+          // 16px avoids iOS Safari's auto-zoom-on-focus below 16px.
+          fontSize: 16,
           color: colors.text,
           width: '100%',
           boxSizing: 'border-box',
