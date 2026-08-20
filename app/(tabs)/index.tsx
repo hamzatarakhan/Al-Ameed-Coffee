@@ -17,12 +17,13 @@ import { useTabBarInset } from '@/lib/useTabBarInset';
 import { useNotifications } from '@/lib/notifications-store';
 import { useBranchDistances } from '@/lib/useBranchDistances';
 import { useOrderSheet } from '@/lib/order-sheet';
+import { useOrderCart } from '@/lib/order-cart';
 import { rewards, branches, promos, userPoints } from '@/lib/mock-data';
 
 const cheapest = [...rewards].sort((a, b) => a.cost - b.cost);
 
 export default function HomeScreen() {
-  const { t, lang, toggle, isRTL } = useLang();
+  const { t, lang, isRTL } = useLang();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const tabBarInset = useTabBarInset();
@@ -30,6 +31,7 @@ export default function HomeScreen() {
   const hasUnreadNotifications = notifications.some((n) => !n.read);
   const [showCheckin, setShowCheckin] = useState(true);
   const { openSheet: openOrderSheet } = useOrderSheet();
+  const { totalCount: cartCount } = useOrderCart();
   const { nearest, request } = useBranchDistances();
 
   // Attempt silently on load — if the user already granted location
@@ -88,7 +90,30 @@ export default function HomeScreen() {
               />
             ) : null}
           </View>
-          <CircleButton icon="language-outline" onPress={toggle} tone="light" />
+          <View>
+            <CircleButton icon="bag-handle-outline" onPress={() => router.push('/order-cart')} tone="light" />
+            {cartCount > 0 ? (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  [isRTL ? 'left' : 'right']: 0,
+                  minWidth: 16,
+                  height: 16,
+                  borderRadius: 8,
+                  paddingHorizontal: 3,
+                  backgroundColor: colors.brand,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderWidth: 1.5,
+                  borderColor: colors.bg,
+                }}>
+                <AppText variant="label" color={colors.white} style={{ fontSize: 9, lineHeight: 11, letterSpacing: 0 }}>
+                  {cartCount}
+                </AppText>
+              </View>
+            ) : null}
+          </View>
         </Row>
       </Row>
 

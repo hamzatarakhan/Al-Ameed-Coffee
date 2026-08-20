@@ -145,7 +145,12 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <AppText variant="label" color={colors.gold} style={{ marginBottom: space.sm }}>
         {title}
       </AppText>
-      <View style={{ backgroundColor: colors.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, paddingHorizontal: space.lg }}>
+      {/* surface2, not surface — in light mode surface === bg (both pure
+          white), so the card had zero visible background against the page,
+          just a thin border. surface2 is a soft off-white in light mode
+          (and a distinct dark tone in dark mode too) so it reads as a
+          raised card in both themes instead of only in dark mode. */}
+      <View style={{ backgroundColor: colors.surface2, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, paddingHorizontal: space.lg }}>
         {React.Children.map(children, (child, i) => (
           <View style={{ borderBottomWidth: i < React.Children.count(children) - 1 ? 1 : 0, borderBottomColor: colors.border }}>{child}</View>
         ))}
