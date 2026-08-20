@@ -94,7 +94,12 @@ export default function HomeScreen() {
 
       <View style={{ paddingHorizontal: space.lg }}>
         <LinearGradient
-          colors={[colors.brand, colors.brandInk]}
+          // brandInk lightens in dark mode (it's tuned for text-on-dark
+          // legibility, not backgrounds), which made the white text on this
+          // card nearly unreadable there — hero is a fixed black in both
+          // themes, so the far end of the gradient always stays dark enough
+          // for white text regardless of theme.
+          colors={[colors.brand, colors.hero]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{ borderRadius: radius.xl, padding: space.lg, marginBottom: space.xl, overflow: 'hidden', ...shadow.card }}>
