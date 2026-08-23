@@ -258,6 +258,11 @@ export const menuItems: MenuItem[] = [
 
 export type Branch = {
   id: string;
+  // Neighborhood-level coordinates (Al Ameed doesn't publish exact
+  // storefront geo-coordinates) — accurate enough to rank branches by real
+  // distance instead of only by city, which is what "nearest branch" needs.
+  lat: number;
+  lng: number;
   nameAr: string;
   nameEn: string;
   addressAr: string;
@@ -284,6 +289,8 @@ const branchPhotos = [require('../assets/images/slide-1.jpg'), require('../asset
 export const branches: Branch[] = [
   {
     id: 'shmaisani',
+    lat: 31.9701,
+    lng: 35.904,
     nameAr: 'الشميساني',
     nameEn: 'Shmeisani',
     addressAr: 'الشميساني، عمّان',
@@ -298,6 +305,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'alameed-experience',
+    lat: 31.965,
+    lng: 35.905,
     nameAr: 'تجربة العميد',
     nameEn: 'Al Ameed Experience',
     addressAr: 'عمّان',
@@ -312,6 +321,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'hujra-village',
+    lat: 31.88,
+    lng: 35.95,
     nameAr: 'قرية الحجرة',
     nameEn: 'Al Hajra Village',
     addressAr: 'الحجرة، عمّان',
@@ -326,6 +337,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'khilda',
+    lat: 31.9744,
+    lng: 35.8494,
     nameAr: 'خلدا',
     nameEn: 'Khilda',
     addressAr: 'خلدا، عمّان',
@@ -340,6 +353,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'city-mall',
+    lat: 31.9585,
+    lng: 35.8654,
     nameAr: 'سيتي مول',
     nameEn: 'City Mall',
     addressAr: 'سيتي مول، عمّان',
@@ -354,6 +369,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'zarqa',
+    lat: 32.0728,
+    lng: 36.0876,
     nameAr: 'الزرقاء',
     nameEn: 'Al Zarqa',
     addressAr: 'الزرقاء',
@@ -368,6 +385,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'irbid',
+    lat: 32.5556,
+    lng: 35.85,
     nameAr: 'إربد',
     nameEn: 'Irbid',
     addressAr: 'إربد',
@@ -382,6 +401,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'aqaba',
+    lat: 29.5321,
+    lng: 35.0063,
     nameAr: 'العقبة',
     nameEn: 'Aqaba',
     addressAr: 'العقبة',
@@ -396,6 +417,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'madaba',
+    lat: 31.7197,
+    lng: 35.7942,
     nameAr: 'مادبا',
     nameEn: 'Madaba',
     addressAr: 'مادبا',
@@ -410,6 +433,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'airport',
+    lat: 31.7226,
+    lng: 35.9932,
     nameAr: 'مطار الملكة علياء الدولي',
     nameEn: 'Queen Alia International Airport',
     addressAr: 'الزيزياء',
@@ -424,6 +449,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'gardens',
+    lat: 31.9622,
+    lng: 35.8778,
     nameAr: 'الجاردنز',
     nameEn: 'Gardens',
     addressAr: 'الجاردنز، عمّان',
@@ -438,6 +465,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'swefieh',
+    lat: 31.9509,
+    lng: 35.859,
     nameAr: 'الصويفية',
     nameEn: 'Swefieh',
     addressAr: 'الصويفية، عمّان',
@@ -452,6 +481,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'ithaa',
+    lat: 31.9791,
+    lng: 35.8848,
     nameAr: 'شارع الإذاعة',
     nameEn: "Ithaa' St.",
     addressAr: 'شارع الإذاعة، عمّان',
@@ -466,6 +497,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'marka',
+    lat: 31.9885,
+    lng: 35.9895,
     nameAr: 'ماركا',
     nameEn: 'Marka',
     addressAr: 'ماركا، عمّان',
@@ -480,6 +513,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'jubeiha',
+    lat: 32.0177,
+    lng: 35.873,
     nameAr: 'الجبيهة',
     nameEn: 'Jubeiha',
     addressAr: 'الجبيهة، عمّان',
@@ -494,6 +529,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'sameh-airport-road',
+    lat: 31.9068,
+    lng: 35.9622,
     nameAr: 'سامح مول - طريق المطار',
     nameEn: 'Sameh Mall Airport Road',
     addressAr: 'طريق المطار، عمّان',
@@ -508,6 +545,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'sameh-tabarbour',
+    lat: 32.0089,
+    lng: 35.9436,
     nameAr: 'سامح مول - طبربور',
     nameEn: 'Sameh Mall Tabarbour',
     addressAr: 'طبربور، عمّان',
@@ -522,6 +561,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'ctown-abdali',
+    lat: 31.9633,
+    lng: 35.9028,
     nameAr: 'سي تاون - العبدلي مول',
     nameEn: 'C Town Abdali Mall',
     addressAr: 'العبدلي مول، عمّان',
@@ -536,6 +577,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'souk-bab-madina-zarqa',
+    lat: 32.077,
+    lng: 36.088,
     nameAr: 'سوق باب المدينة - الزرقاء',
     nameEn: 'Souk Bab Al Madina, Zarqa',
     addressAr: 'سوق باب المدينة، الزرقاء',
@@ -550,6 +593,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'madina-munawara',
+    lat: 31.9836,
+    lng: 35.8747,
     nameAr: 'شارع المدينة المنورة',
     nameEn: 'Al Madina Al Munawara St.',
     addressAr: 'شارع المدينة المنورة، عمّان',
@@ -564,6 +609,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'cozmo-7th-circle',
+    lat: 31.9502,
+    lng: 35.8721,
     nameAr: 'كوزمو - الدوار السابع',
     nameEn: 'Cozmo, 7th Circle',
     addressAr: 'الدوار السابع، عمّان',
@@ -578,6 +625,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'ctown-jabal-hussein',
+    lat: 31.9614,
+    lng: 35.9188,
     nameAr: 'سي تاون - جبل الحسين',
     nameEn: 'C Town Jabal Al Hussein',
     addressAr: 'جبل الحسين، عمّان',
@@ -592,6 +641,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'middle-east-university',
+    lat: 31.9908,
+    lng: 36.0243,
     nameAr: 'جامعة الشرق الأوسط',
     nameEn: 'Middle East University',
     addressAr: 'جامعة الشرق الأوسط، عمّان',
@@ -606,6 +657,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'weibdeh',
+    lat: 31.9553,
+    lng: 35.928,
     nameAr: 'اللويبدة',
     nameEn: 'Weibdeh',
     addressAr: 'اللويبدة، عمّان',
@@ -620,6 +673,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'sameh-jabal-shamali',
+    lat: 32.5606,
+    lng: 35.8467,
     nameAr: 'سامح مول - الجبل الشمالي',
     nameEn: 'Sameh Mall, Al Jabal Al Shamali',
     addressAr: 'الجبل الشمالي، إربد',
@@ -634,6 +689,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'sameh-shafa-badran',
+    lat: 32.0217,
+    lng: 35.9095,
     nameAr: 'سامح مول - شفا بدران',
     nameEn: 'Sameh Mall, Shafa Badran',
     addressAr: 'شفا بدران، عمّان',
@@ -648,6 +705,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'irbid-community-garden',
+    lat: 32.557,
+    lng: 35.852,
     nameAr: 'حديقة إربد المجتمعية',
     nameEn: 'Irbid Community Garden',
     addressAr: 'إربد',
@@ -662,6 +721,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'seventy-three',
+    lat: 31.9515,
+    lng: 35.9239,
     nameAr: '٧٣ باي بن العميد',
     nameEn: 'Seventy Three by Al Ameed',
     addressAr: 'عمّان',
@@ -676,6 +737,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'mecca-mall',
+    lat: 31.9629,
+    lng: 35.8564,
     nameAr: 'مكة مول',
     nameEn: 'Mecca Mall',
     addressAr: 'مكة مول، عمّان',
@@ -690,6 +753,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'madina-munawara-2',
+    lat: 31.982,
+    lng: 35.876,
     nameAr: 'شارع المدينة المنورة ٢',
     nameEn: 'Al Madina Al Munawara St. 2',
     addressAr: 'شارع المدينة المنورة، عمّان',
@@ -704,6 +769,8 @@ export const branches: Branch[] = [
   },
   {
     id: 'irbid-city-center',
+    lat: 32.5486,
+    lng: 35.8544,
     nameAr: 'إربد سيتي سنتر',
     nameEn: 'Irbid City Center',
     addressAr: 'إربد',
@@ -753,18 +820,6 @@ export const branchCityById: Record<string, { ar: string; en: string }> = {
   'mecca-mall': { ar: 'عمّان', en: 'Amman' },
   'madina-munawara-2': { ar: 'عمّان', en: 'Amman' },
   'irbid-city-center': { ar: 'إربد', en: 'Irbid' },
-};
-
-// City-center coordinates, not per-branch — there's no real backend/geocoder
-// yet to place each of the 31 branches precisely, but city-level distance is
-// close enough to sort/label a "nearest branch" from the user's GPS position.
-export const cityCoords: Record<string, { lat: number; lng: number }> = {
-  Amman: { lat: 31.9539, lng: 35.9106 },
-  Irbid: { lat: 32.5556, lng: 35.85 },
-  Zarqa: { lat: 32.0728, lng: 36.0876 },
-  Aqaba: { lat: 29.5321, lng: 35.0063 },
-  Madaba: { lat: 31.7197, lng: 35.7942 },
-  Zizya: { lat: 31.7226, lng: 35.9932 },
 };
 
 export type Transaction = {

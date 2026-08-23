@@ -32,7 +32,8 @@ export default function HomeScreen() {
   const [showCheckin, setShowCheckin] = useState(true);
   const { openSheet: openOrderSheet } = useOrderSheet();
   const { totalCount: cartCount } = useOrderCart();
-  const { nearest, request } = useBranchDistances();
+  const { nearest, sortedByDistance, distanceTo, request } = useBranchDistances();
+  const nearbyBranches = sortedByDistance ?? branches;
   const { userPoints } = usePoints();
   const nextReward = getNextReward(userPoints);
 
@@ -194,8 +195,13 @@ export default function HomeScreen() {
           </Row>
         </LinearGradient>
 
-        <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: space.md }}>
-          <AppText variant="h3">{t('branches.title')}</AppText>
+        <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
+          <View>
+            <AppText variant="h3">{t('branches.title')}</AppText>
+            <AppText variant="label" color={sortedByDistance ? colors.good : colors.textMuted}>
+              {sortedByDistance ? t('branches.locationEnabled') : t('branches.distanceUnknown')}
+            </AppText>
+          </View>
           <Pressable onPress={() => router.push('/branches')}>
             <AppText variant="bodyMedium" color={colors.brand}>
               {t('common.seeAll')}
@@ -203,9 +209,15 @@ export default function HomeScreen() {
           </Pressable>
         </Row>
 
-        <View style={{ gap: space.md }}>
-          {branches.slice(0, 2).map((b) => (
-            <BranchRow key={b.id} branch={b} onPress={() => router.push(`/branches/${b.id}`)} />
+        <View style={{ gap: space.md, marginTop: space.md }}>
+          {nearbyBranches.slice(0, 2).map((b, i) => (
+            <BranchRow
+              key={b.id}
+              branch={b}
+              distanceKm={distanceTo(b.id)}
+              badge={sortedByDistance && i === 0 ? t('branches.nearest') : undefined}
+              onPress={() => router.push(`/branches/${b.id}`)}
+            />
           ))}
         </View>
       </View>

@@ -76,6 +76,7 @@ const dict = {
     closed: { ar: 'مغلق', en: 'Closed' },
     distanceUnknown: { ar: 'فعّل الموقع لترتيب الأقرب', en: 'Enable location to sort by distance' },
     locationEnabled: { ar: 'الموقع مفعّل، مرتبة حسب الأقرب', en: 'Location enabled, sorted by distance' },
+    nearest: { ar: 'الأقرب لك', en: 'Nearest to you' },
     search: { ar: 'دوّر عن فرع...', en: 'Search branches...' },
     noResults: { ar: 'ما في نتائج', en: 'No branches found' },
     km: { ar: 'كم', en: 'km' },

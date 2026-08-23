@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import * as Location from 'expo-location';
 
-import { branches, branchCityById, cityCoords, type Branch } from './mock-data';
+import { branches, type Branch } from './mock-data';
 import { haversineKm } from './geo';
 
 export function useBranchDistances() {
@@ -27,27 +27,21 @@ export function useBranchDistances() {
   const distanceTo = useCallback(
     (branchId: string) => {
       if (!coords) return null;
-      const city = branchCityById[branchId];
-      const cc = city && cityCoords[city.en];
-      if (!cc) return null;
-      return haversineKm(coords, cc);
+      const branch = branches.find((b) => b.id === branchId);
+      if (!branch) return null;
+      return haversineKm(coords, { lat: branch.lat, lng: branch.lng });
     },
     [coords]
   );
 
-  const nearest: Branch | null = useMemo(() => {
+  // All 31 branches ranked by real distance from the user's own coordinates
+  // (each branch's own lat/lng, not just its city) — nearest first.
+  const sortedByDistance: Branch[] | null = useMemo(() => {
     if (!coords) return null;
-    let best: Branch | null = null;
-    let bestDist = Infinity;
-    for (const b of branches) {
-      const d = distanceTo(b.id);
-      if (d != null && d < bestDist) {
-        bestDist = d;
-        best = b;
-      }
-    }
-    return best;
+    return [...branches].sort((a, b) => (distanceTo(a.id) ?? Infinity) - (distanceTo(b.id) ?? Infinity));
   }, [coords, distanceTo]);
 
-  return { status, coords, request, distanceTo, nearest };
+  const nearest: Branch | null = sortedByDistance?.[0] ?? null;
+
+  return { status, coords, request, distanceTo, nearest, sortedByDistance };
 }

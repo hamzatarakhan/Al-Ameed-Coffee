@@ -19,6 +19,7 @@ export function BranchRow({
   disabled,
   showImage = true,
   showLink = true,
+  badge,
 }: {
   branch: Branch;
   distanceKm?: number | null;
@@ -26,6 +27,7 @@ export function BranchRow({
   disabled?: boolean;
   showImage?: boolean;
   showLink?: boolean;
+  badge?: string;
 }) {
   const { t, lang, isRTL } = useLang();
 
@@ -44,7 +46,25 @@ export function BranchRow({
       <Row style={{ alignItems: 'center', gap: space.md }}>
         {showImage ? (
           branch.image ? (
-            <Image source={branch.image} style={{ width: 64, height: 64, borderRadius: radius.md }} resizeMode="cover" />
+            <View>
+              <Image source={branch.image} style={{ width: 64, height: 64, borderRadius: radius.md }} resizeMode="cover" />
+              {badge ? (
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: -6,
+                    [isRTL ? 'right' : 'left']: -6,
+                    backgroundColor: colors.brand,
+                    borderRadius: radius.pill,
+                    paddingHorizontal: 6,
+                    paddingVertical: 2,
+                  }}>
+                  <AppText variant="label" color={colors.white} style={{ fontSize: 9, lineHeight: 11 }}>
+                    {badge}
+                  </AppText>
+                </View>
+              ) : null}
+            </View>
           ) : null
         ) : (
           <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center' }}>
