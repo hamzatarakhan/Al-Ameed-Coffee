@@ -7,7 +7,7 @@ import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { RewardMedia } from '@/components/RewardMedia';
 import { ScreenHeader } from '@/components/ScreenHeader';
-import { colors, radius, shadow, space } from '@/lib/theme';
+import { colors, lightColors, radius, shadow, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
 import { usePoints } from '@/lib/points-store';
@@ -81,7 +81,10 @@ export default function RewardsGalleryScreen() {
                     {locked ? (
                       <View style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.3)', alignItems: 'center', justifyContent: 'center' }}>
                         <View style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: 'rgba(255,255,255,0.9)', alignItems: 'center', justifyContent: 'center' }}>
-                          <Ionicons name="lock-closed" size={15} color={colors.text} />
+                          {/* Badge circle is fixed near-white regardless of theme, so the
+                              icon must stay a fixed dark color too — colors.text turns
+                              near-white in dark mode and disappears against it. */}
+                          <Ionicons name="lock-closed" size={15} color={lightColors.text} />
                         </View>
                       </View>
                     ) : null}
