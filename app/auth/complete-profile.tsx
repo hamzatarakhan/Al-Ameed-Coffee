@@ -12,8 +12,7 @@ import { useLang } from '@/lib/i18n';
 import { useAuth } from '@/lib/auth-store';
 import { useProfile } from '@/lib/profile-store';
 import { jordanCities, type Gender, type MaritalStatus } from '@/lib/mock-data';
-
-const LOGO = require('../../assets/images/logo.png');
+import { brand } from '@/lib/brand';
 
 export default function CompleteProfileScreen() {
   const { t } = useLang();
@@ -56,7 +55,7 @@ export default function CompleteProfileScreen() {
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={{ padding: space.lg, paddingTop: insets.top + space.xl, paddingBottom: space.xl }} keyboardShouldPersistTaps="handled">
         <View style={{ alignItems: 'center', marginBottom: space.xl }}>
-          <Image source={LOGO} style={{ width: 84, height: 47 }} resizeMode="contain" />
+          <Image source={brand.logo} style={{ width: 84, height: 47 }} resizeMode="contain" />
           <AppText variant="h2" align="center" style={{ marginTop: space.md }}>
             {t('auth.completeProfileTitle')}
           </AppText>

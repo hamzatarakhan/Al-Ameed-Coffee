@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
+import { brand } from './brand';
 
 export type Lang = 'ar' | 'en';
 
@@ -188,8 +189,8 @@ const dict = {
     themeSystem: { ar: 'تلقائي', en: 'System' },
     notifications: { ar: 'الإشعارات', en: 'Notifications' },
     notifDenied: {
-      ar: 'الإشعارات موقوفة من إعدادات الجهاز. لتفعيلها، افتح إعدادات النظام وفعّلها لتطبيق بن العميد.',
-      en: 'Notifications are off at the device level. To enable them, open system settings and turn them on for Al Ameed Coffee.',
+      ar: `الإشعارات موقوفة من إعدادات الجهاز. لتفعيلها، افتح إعدادات النظام وفعّلها لتطبيق ${brand.nameAr}.`,
+      en: `Notifications are off at the device level. To enable them, open system settings and turn them on for ${brand.nameEn}.`,
     },
     sectionSupport: { ar: 'الدعم', en: 'Support' },
     contactUs: { ar: 'تواصل معنا', en: 'Contact Us' },
@@ -202,7 +203,7 @@ const dict = {
     signOut: { ar: 'تسجيل الخروج', en: 'Sign Out' },
     signOutConfirm: { ar: 'رح تحتاج تسجّل دخول تاني عشان تستخدم التطبيق.', en: "You'll need to sign in again to use the app." },
     deleteAccount: { ar: 'حذف الحساب', en: 'Delete Account' },
-    devInfo: { ar: 'الإصدار 1.0.0 · Al Ameed Coffee', en: 'Version 1.0.0 · Al Ameed Coffee' },
+    devInfo: { ar: `الإصدار 1.0.0 · ${brand.nameEn}`, en: `Version 1.0.0 · ${brand.nameEn}` },
   },
   profile: {
     title: { ar: 'ملفي الشخصي', en: 'My Profile' },
@@ -234,8 +235,8 @@ const dict = {
   deleteData: {
     title: { ar: 'حذف بياناتك', en: 'Delete Your Data' },
     intro: {
-      ar: 'تقدر تطلب حذف حسابك وكل بياناتك من بن العميد بأي وقت، سواء كان عندك التطبيق أو لأ.',
-      en: 'You can request deletion of your account and all your data from Al Ameed Coffee at any time, whether or not you still have the app.',
+      ar: `تقدر تطلب حذف حسابك وكل بياناتك من ${brand.nameAr} بأي وقت، سواء كان عندك التطبيق أو لأ.`,
+      en: `You can request deletion of your account and all your data from ${brand.nameEn} at any time, whether or not you still have the app.`,
     },
     whatWeStoreTitle: { ar: 'شو البيانات اللي نخزّنها', en: 'What data we store' },
     whatWeStoreBody: {
@@ -252,7 +253,7 @@ const dict = {
       ar: 'راسلنا من بريدك المسجّل أو اتصل فينا وحدد رقم هاتفك المسجّل بالتطبيق، ورح نحذف بياناتك يدويًا.',
       en: "Email us from your registered address or call us with the phone number you signed up with, and we'll delete your data manually.",
     },
-    emailSubject: { ar: 'طلب حذف بياناتي - بن العميد', en: 'Data deletion request - Al Ameed Coffee' },
+    emailSubject: { ar: `طلب حذف بياناتي - ${brand.nameAr}`, en: `Data deletion request - ${brand.nameEn}` },
     timeline: { ar: 'بنعالج طلبات الحذف اليدوية خلال ٧ أيام عمل كحد أقصى.', en: 'Manual deletion requests are processed within 7 business days.' },
   },
   orders: {
@@ -283,7 +284,7 @@ const dict = {
     backHome: { ar: 'العودة للرئيسية', en: 'Back to Home' },
   },
   auth: {
-    welcomeTitle: { ar: 'أهلًا فيك ببن العميد', en: 'Welcome to Al Ameed Coffee' },
+    welcomeTitle: { ar: `أهلًا فيك ب${brand.nameAr}`, en: `Welcome to ${brand.nameEn}` },
     welcomeBody: { ar: 'سجّل دخولك تجمع نقاط وتفتح هدايا كل ما تطلب أو تزورنا', en: 'Sign in to start earning points and unlocking rewards' },
     phoneLabel: { ar: 'رقم الهاتف', en: 'Phone number' },
     phonePlaceholder: { ar: '7X XXX XXXX', en: '7X XXX XXXX' },
@@ -310,7 +311,7 @@ const dict = {
     wrongNumber: { ar: 'رقم الهاتف غير صحيح؟', en: 'Wrong phone number?' },
     needHelp: { ar: 'تحتاج مساعدة؟ يرجى الاتصال بنا.', en: 'Need help? Please contact us.' },
     agreePrefix: { ar: 'بالتسجيل، فإنك توافق على', en: 'By signing up, you agree to the' },
-    agreeTerms: { ar: 'شروط وأحكام بن العميد', en: "Al Ameed Coffee Terms & Conditions" },
+    agreeTerms: { ar: `شروط وأحكام ${brand.nameAr}`, en: `${brand.nameEn} Terms & Conditions` },
     termsRequired: { ar: 'لازم توافق على الشروط والأحكام أول', en: 'You must agree to the Terms & Conditions first' },
     completeProfileTitle: { ar: 'قم بإكمال بياناتك', en: 'Complete your profile' },
     firstName: { ar: 'الاسم الأول', en: 'First name' },

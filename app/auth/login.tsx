@@ -12,8 +12,7 @@ import { colors, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useAuth } from '@/lib/auth-store';
 import { isValidJordanPhone } from '@/lib/phone';
-
-const LOGO = require('../../assets/images/logo.png');
+import { brand } from '@/lib/brand';
 
 export default function LoginScreen() {
   const { t } = useLang();
@@ -59,7 +58,7 @@ export default function LoginScreen() {
         contentContainerStyle={{ flexGrow: 1, padding: space.lg, paddingTop: insets.top + space.xxl, justifyContent: 'center' }}
         keyboardShouldPersistTaps="handled">
         <View style={{ alignItems: 'center', marginBottom: space.xxl }}>
-          <Image source={LOGO} style={{ width: 96, height: 54 }} resizeMode="contain" />
+          <Image source={brand.logo} style={{ width: 96, height: 54 }} resizeMode="contain" />
           <AppText variant="display" align="center" style={{ marginTop: space.lg, marginBottom: space.xs }}>
             {t('auth.welcomeTitle')}
           </AppText>

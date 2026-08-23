@@ -14,8 +14,8 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { fonts } from '@/lib/theme';
+import { brand } from '@/lib/brand';
 
-const LOGO = require('../assets/images/logo.png');
 const VISIBLE_MS = 2000;
 const EXIT_MS = 480;
 
@@ -116,11 +116,11 @@ export function AnimatedSplash({ onFinish }: { onFinish: () => void }) {
         <Steam delay={1650} left={32} />
 
         <Animated.View pointerEvents="none" style={[styles.glow, glowStyle]} />
-        <Animated.Image source={LOGO} style={[styles.logo, logoStyle]} resizeMode="contain" />
+        <Animated.Image source={brand.logo} style={[styles.logo, logoStyle]} resizeMode="contain" />
 
         <Animated.View style={textStyle}>
-          <Animated.Text style={styles.titleAr}>بن العميد</Animated.Text>
-          <Animated.Text style={styles.titleEn}>AL AMEED COFFEE</Animated.Text>
+          <Animated.Text style={styles.titleAr}>{brand.nameAr}</Animated.Text>
+          <Animated.Text style={styles.titleEn}>{brand.nameEnUpper}</Animated.Text>
         </Animated.View>
       </View>
 

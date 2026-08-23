@@ -14,9 +14,7 @@ import { useTabBarInset } from '@/lib/useTabBarInset';
 import { useAuth } from '@/lib/auth-store';
 import { confirmAction } from '@/lib/confirm';
 import { shareInvite } from '@/lib/invite';
-
-const BRANCH_PHONE = '+962 6 581 4300';
-const WEBSITE = 'https://alameedcoffee.com';
+import { brand } from '@/lib/brand';
 
 export default function AccountScreen() {
   const { t, lang, toggle, isRTL } = useLang();
@@ -57,7 +55,7 @@ export default function AccountScreen() {
   const invite = () => shareInvite(lang);
 
   const contactUs = () => {
-    confirmAction(t('account.contactUs'), BRANCH_PHONE, t('branchDetail.call'), () => Linking.openURL(`tel:${BRANCH_PHONE}`), lang === 'ar' ? 'إغلاق' : 'Close');
+    confirmAction(t('account.contactUs'), brand.supportPhone, t('branchDetail.call'), () => Linking.openURL(`tel:${brand.supportPhone}`), lang === 'ar' ? 'إغلاق' : 'Close');
   };
 
   const rateApp = () => {
@@ -91,7 +89,7 @@ export default function AccountScreen() {
 
       <Section title={t('account.sectionSupport')}>
         <Item icon="call-outline" label={t('account.contactUs')} onPress={contactUs} />
-        <Item icon="link-outline" label={t('account.connectWithUs')} onPress={() => Linking.openURL(WEBSITE)} />
+        <Item icon="link-outline" label={t('account.connectWithUs')} onPress={() => Linking.openURL(brand.website)} />
         <Item icon="heart-outline" label={t('account.rateApp')} onPress={rateApp} />
       </Section>
 

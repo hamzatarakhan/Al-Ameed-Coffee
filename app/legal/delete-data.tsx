@@ -7,9 +7,7 @@ import { Card } from '@/components/Card';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { colors, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
-
-const SUPPORT_EMAIL = 'privacy@alameedcoffee.com';
-const SUPPORT_PHONE = '+962 6 581 4300';
+import { brand } from '@/lib/brand';
 
 // Reachable without being signed in (see app/_layout.tsx) — Google Play in
 // particular requires a data-deletion path that works even for someone who
@@ -46,11 +44,11 @@ export default function DeleteDataScreen() {
               {t('deleteData.contactBody')}
             </AppText>
           </View>
-          <Button label={lang === 'ar' ? `راسلنا: ${SUPPORT_EMAIL}` : `Email us: ${SUPPORT_EMAIL}`} onPress={() => Linking.openURL(`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(t('deleteData.emailSubject'))}`)} />
+          <Button label={lang === 'ar' ? `راسلنا: ${brand.supportEmail}` : `Email us: ${brand.supportEmail}`} onPress={() => Linking.openURL(`mailto:${brand.supportEmail}?subject=${encodeURIComponent(t('deleteData.emailSubject'))}`)} />
           <Button
             label={t('branchDetail.call')}
             variant="secondary"
-            onPress={() => Linking.openURL(`tel:${SUPPORT_PHONE}`)}
+            onPress={() => Linking.openURL(`tel:${brand.supportPhone}`)}
           />
         </Card>
 

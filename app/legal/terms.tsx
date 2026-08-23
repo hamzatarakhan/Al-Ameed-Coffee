@@ -1,22 +1,20 @@
 import React from 'react';
 import { LegalPage, type LegalSection } from '@/components/LegalPage';
 import { useLang } from '@/lib/i18n';
+import { brand } from '@/lib/brand';
 
 const sections: LegalSection[] = [
   {
     titleAr: '١. القبول بالشروط',
     titleEn: '1. Acceptance of Terms',
-    bodyAr:
-      'باستخدامك تطبيق بن العميد، إنت موافق على هالشروط والأحكام. إذا ما وافقت عليها، فضلًا لا تستخدم التطبيق.',
-    bodyEn: 'By using the Al Ameed Coffee app, you agree to these terms. If you don\'t agree, please don\'t use the app.',
+    bodyAr: `باستخدامك تطبيق ${brand.nameAr}، إنت موافق على هالشروط والأحكام. إذا ما وافقت عليها، فضلًا لا تستخدم التطبيق.`,
+    bodyEn: `By using the ${brand.nameEn} app, you agree to these terms. If you don't agree, please don't use the app.`,
   },
   {
     titleAr: '٢. برنامج الولاء والنقاط',
     titleEn: '2. Loyalty Program & Points',
-    bodyAr:
-      'تكسب نقاط عند تسجيل الحضور بأي فرع، الطلب عبر التطبيق، أو دعوة أصدقاء. النقاط ملك لحسابك الشخصي فقط، غير قابلة للتحويل أو الاستبدال بنقود، وممكن تنتهي صلاحيتها إذا ضل الحساب غير نشط لفترة طويلة. بن العميد محتفظ بحق تعديل قيمة النقاط أو طريقة كسبها بإشعار مسبق.',
-    bodyEn:
-      'You earn points by checking in at any branch, ordering through the app, or inviting friends. Points belong solely to your account, are non-transferable and cannot be exchanged for cash, and may expire if your account stays inactive for an extended period. Al Ameed Coffee reserves the right to change point values or earning rules with prior notice.',
+    bodyAr: `تكسب نقاط عند تسجيل الحضور بأي فرع، الطلب عبر التطبيق، أو دعوة أصدقاء. النقاط ملك لحسابك الشخصي فقط، غير قابلة للتحويل أو الاستبدال بنقود، وممكن تنتهي صلاحيتها إذا ضل الحساب غير نشط لفترة طويلة. ${brand.nameAr} محتفظ بحق تعديل قيمة النقاط أو طريقة كسبها بإشعار مسبق.`,
+    bodyEn: `You earn points by checking in at any branch, ordering through the app, or inviting friends. Points belong solely to your account, are non-transferable and cannot be exchanged for cash, and may expire if your account stays inactive for an extended period. ${brand.nameEn} reserves the right to change point values or earning rules with prior notice.`,
   },
   {
     titleAr: '٣. إنشاء الحساب',
@@ -29,10 +27,8 @@ const sections: LegalSection[] = [
   {
     titleAr: '٤. الطلبات والدفع',
     titleEn: '4. Orders & Payment',
-    bodyAr:
-      'الأسعار المعروضة بالتطبيق قابلة للتغيير بدون إشعار مسبق. الطلبات تخضع لتوفر المنتج بالفرع المختار، وبن العميد مش مسؤول عن التأخير الناتج عن ظروف خارجة عن إرادته.',
-    bodyEn:
-      'Prices shown in the app may change without prior notice. Orders are subject to product availability at the selected branch, and Al Ameed Coffee is not liable for delays caused by circumstances beyond its control.',
+    bodyAr: `الأسعار المعروضة بالتطبيق قابلة للتغيير بدون إشعار مسبق. الطلبات تخضع لتوفر المنتج بالفرع المختار، و${brand.nameAr} مش مسؤول عن التأخير الناتج عن ظروف خارجة عن إرادته.`,
+    bodyEn: `Prices shown in the app may change without prior notice. Orders are subject to product availability at the selected branch, and ${brand.nameEn} is not liable for delays caused by circumstances beyond its control.`,
   },
   {
     titleAr: '٥. الاستخدام المقبول',
