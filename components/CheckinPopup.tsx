@@ -4,7 +4,8 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 import { AppText } from './AppText';
-import { QrGlyph } from './QrGlyph';
+import { Button } from './Button';
+import { QrScannerCard } from './QrScannerCard';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 
@@ -24,7 +25,7 @@ export function CheckinPopup({ visible, onClose }: { visible: boolean; onClose: 
         <Pressable
           onPress={(e) => e.stopPropagation()}
           style={{ width: '100%', maxWidth: 340, backgroundColor: colors.surface, borderRadius: radius.xl, padding: space.xl, alignItems: 'center' }}>
-          <Pressable onPress={onClose} hitSlop={10} style={{ position: 'absolute', top: space.md, [isRTL ? 'left' : 'right']: space.md }}>
+          <Pressable onPress={onClose} hitSlop={10} style={{ position: 'absolute', top: space.md, [isRTL ? 'left' : 'right']: space.md, zIndex: 1 }}>
             <Ionicons name="close" size={22} color={colors.textMuted} />
           </Pressable>
 
@@ -35,31 +36,19 @@ export function CheckinPopup({ visible, onClose }: { visible: boolean; onClose: 
             {t('checkin.instruction')}
           </AppText>
 
-          <View
-            style={{
-              width: 180,
-              height: 180,
-              borderRadius: radius.lg,
-              backgroundColor: colors.surface2,
-              borderWidth: 1,
-              borderColor: colors.border,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: space.lg,
-            }}>
-            <QrGlyph size={120} />
+          <View style={{ marginBottom: space.lg }}>
+            <QrScannerCard size={180} />
           </View>
 
-          <Pressable
+          <Button
+            label={t('checkin.openFull')}
+            variant="secondary"
             onPress={() => {
               onClose();
               router.push('/checkin');
             }}
-            hitSlop={8}>
-            <AppText variant="bodySemiBold" color={colors.brandInk}>
-              {t('checkin.openFull')}
-            </AppText>
-          </Pressable>
+            style={{ width: '100%' }}
+          />
         </Pressable>
       </Pressable>
     </Modal>

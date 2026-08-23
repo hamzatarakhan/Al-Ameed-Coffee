@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -36,37 +36,39 @@ export default function OrderAddressNewScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <ScreenHeader title={t('orderAddress.title')} />
-      <View style={{ flex: 1, padding: space.lg, gap: space.lg }}>
-        <ChoiceChips<AddressType>
-          value={type}
-          onChange={setType}
-          options={[
-            { value: 'home', label: t('orderAddress.home') },
-            { value: 'work', label: t('orderAddress.work') },
-            { value: 'other', label: t('orderAddress.other') },
-          ]}
-        />
-        <Input label={t('orderAddress.addressLine')} value={line} onChangeText={setLine} placeholder={t('orderAddress.addressLinePlaceholder')} />
-        <View style={{ gap: 6 }}>
-          <AppText variant="label" color={colors.textMuted}>
-            {t('orderAddress.city')}
-          </AppText>
-          <ChoiceChips value={city} onChange={setCity} options={jordanCities.map((c) => ({ value: c, label: c }))} />
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView contentContainerStyle={{ padding: space.lg, gap: space.lg }} keyboardShouldPersistTaps="handled">
+          <ChoiceChips<AddressType>
+            value={type}
+            onChange={setType}
+            options={[
+              { value: 'home', label: t('orderAddress.home') },
+              { value: 'work', label: t('orderAddress.work') },
+              { value: 'other', label: t('orderAddress.other') },
+            ]}
+          />
+          <Input label={t('orderAddress.addressLine')} value={line} onChangeText={setLine} placeholder={t('orderAddress.addressLinePlaceholder')} />
+          <View style={{ gap: 6 }}>
+            <AppText variant="label" color={colors.textMuted}>
+              {t('orderAddress.city')}
+            </AppText>
+            <ChoiceChips value={city} onChange={setCity} options={jordanCities.map((c) => ({ value: c, label: c }))} />
+          </View>
+          <Input label={t('orderAddress.area')} value={area} onChangeText={setArea} placeholder={t('orderAddress.areaPlaceholder')} />
+          <Input label={t('orderAddress.building')} value={building} onChangeText={setBuilding} placeholder={t('orderAddress.buildingPlaceholder')} />
+          <Input label={t('orderAddress.floor')} value={floor} onChangeText={setFloor} keyboardType="number-pad" />
+        </ScrollView>
+        <View
+          style={{
+            padding: space.lg,
+            paddingBottom: insets.bottom + space.md,
+            backgroundColor: colors.bg,
+            borderTopWidth: 1,
+            borderTopColor: colors.border,
+          }}>
+          <Button label={t('orderAddress.save')} onPress={save} disabled={!canSave} />
         </View>
-        <Input label={t('orderAddress.area')} value={area} onChangeText={setArea} placeholder={t('orderAddress.areaPlaceholder')} />
-        <Input label={t('orderAddress.building')} value={building} onChangeText={setBuilding} placeholder={t('orderAddress.buildingPlaceholder')} />
-        <Input label={t('orderAddress.floor')} value={floor} onChangeText={setFloor} keyboardType="number-pad" />
-      </View>
-      <View
-        style={{
-          padding: space.lg,
-          paddingBottom: insets.bottom + space.md,
-          backgroundColor: colors.bg,
-          borderTopWidth: 1,
-          borderTopColor: colors.border,
-        }}>
-        <Button label={t('orderAddress.save')} onPress={save} disabled={!canSave} />
-      </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }

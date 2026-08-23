@@ -47,7 +47,7 @@ export default function MyPointsScreen() {
             <AppText variant="muted" color="rgba(255,255,255,0.8)">
               {t('points.balance')}
             </AppText>
-            <AppText variant="display" color={colors.white} style={{ fontSize: 40, lineHeight: 54, marginBottom: space.md }}>
+            <AppText variant="display" color={colors.white} style={{ fontSize: 40, lineHeight: 44, marginBottom: space.sm }}>
               {userPoints}
             </AppText>
             <ProgressBar value={userPoints} max={cheapest.cost} />

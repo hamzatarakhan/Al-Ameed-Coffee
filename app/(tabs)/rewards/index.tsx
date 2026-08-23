@@ -1,26 +1,30 @@
 import React, { useMemo, useState } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
-import { CircleButton } from '@/components/CircleButton';
 import { RewardMedia } from '@/components/RewardMedia';
 import { ScreenHeader } from '@/components/ScreenHeader';
-import { colors, radius, space } from '@/lib/theme';
+import { colors, radius, shadow, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
 import { usePoints } from '@/lib/points-store';
 import { rewards } from '@/lib/mock-data';
 
 type Sort = 'affordable' | 'cost';
+const GRID_GAP = space.md;
 
 export default function RewardsGalleryScreen() {
   const { t, lang, isRTL } = useLang();
   const router = useRouter();
   const tabBarInset = useTabBarInset();
   const { userPoints } = usePoints();
+  const { width } = useWindowDimensions();
   const [sort, setSort] = useState<Sort>('affordable');
+
+  const cardWidth = (width - space.lg * 2 - GRID_GAP) / 2;
 
   const sorted = useMemo(() => {
     const list = [...rewards];
@@ -40,48 +44,61 @@ export default function RewardsGalleryScreen() {
           pushed a stack entry. So this back explicitly targets Home. */}
       <ScreenHeader title={t('rewards.title')} onBack={() => router.push('/')} />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: space.lg, paddingHorizontal: space.lg, paddingBottom: space.xxxl + tabBarInset }}>
-      <Row style={{ gap: space.sm, marginBottom: space.lg }}>
-        <SortChip active={sort === 'affordable'} label={t('rewards.sortAffordable')} onPress={() => setSort('affordable')} />
-        <SortChip active={sort === 'cost'} label={t('rewards.sortCost')} onPress={() => setSort('cost')} />
-      </Row>
+        <Row style={{ gap: space.sm, marginBottom: space.lg }}>
+          <SortChip active={sort === 'affordable'} label={t('rewards.sortAffordable')} onPress={() => setSort('affordable')} />
+          <SortChip active={sort === 'cost'} label={t('rewards.sortCost')} onPress={() => setSort('cost')} />
+        </Row>
 
-      <View style={{ gap: space.md }}>
-        {sorted.map((r) => {
-          const locked = r.cost > userPoints;
-          return (
-            <Pressable
-              key={r.id}
-              onPress={() => router.push(`/rewards/${r.id}`)}
-              style={{
-                backgroundColor: colors.surface,
-                borderRadius: radius.lg,
-                borderWidth: 1,
-                borderColor: colors.border,
-                padding: space.sm,
-                opacity: locked ? 0.75 : 1,
-              }}>
-              <Row style={{ alignItems: 'center', gap: space.md }}>
-                <RewardMedia image={r.image} emoji={r.emoji} emojiSize={30} style={{ width: 68, height: 68, borderRadius: radius.md }} />
-                <View style={{ flex: 1 }}>
-                  <AppText variant="bodySemiBold">{lang === 'ar' ? r.nameAr : r.nameEn}</AppText>
-                  <AppText variant="muted" numberOfLines={1} style={{ marginBottom: 3 }}>
-                    {lang === 'ar' ? r.descAr : r.descEn}
-                  </AppText>
-                  <AppText variant="mono" color={locked ? colors.warn : colors.brandInk}>
-                    {locked ? t('rewards.pointsToGo', { n: r.cost - userPoints }) : `${r.cost} ${t('common.points')}`}
-                  </AppText>
+        <Row style={{ flexWrap: 'wrap', gap: GRID_GAP }}>
+          {sorted.map((r) => {
+            const locked = r.cost > userPoints;
+            return (
+              <Pressable
+                key={r.id}
+                onPress={() => router.push(`/rewards/${r.id}`)}
+                style={({ pressed }) => [{ width: cardWidth }, pressed && { opacity: 0.9 }]}>
+                <View style={{ borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, ...shadow.card }}>
+                  <View style={{ width: '100%', aspectRatio: 1 }}>
+                    <RewardMedia image={r.image} emoji={r.emoji} emojiSize={54} style={{ width: '100%', height: '100%' }} />
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: space.xs,
+                        [isRTL ? 'right' : 'left']: space.xs,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 3,
+                        backgroundColor: 'rgba(0,0,0,0.55)',
+                        borderRadius: radius.pill,
+                        paddingHorizontal: 8,
+                        paddingVertical: 4,
+                      }}>
+                      {locked ? <Ionicons name="lock-closed" size={10} color={colors.white} /> : <Ionicons name="sparkles" size={10} color={colors.white} />}
+                      <AppText variant="label" color={colors.white} style={{ fontSize: 10, lineHeight: 12 }}>
+                        {r.cost}
+                      </AppText>
+                    </View>
+                    {locked ? (
+                      <View style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.3)', alignItems: 'center', justifyContent: 'center' }}>
+                        <View style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: 'rgba(255,255,255,0.9)', alignItems: 'center', justifyContent: 'center' }}>
+                          <Ionicons name="lock-closed" size={15} color={colors.text} />
+                        </View>
+                      </View>
+                    ) : null}
+                  </View>
+                  <View style={{ padding: space.sm, gap: 2 }}>
+                    <AppText variant="bodySemiBold" numberOfLines={1}>
+                      {lang === 'ar' ? r.nameAr : r.nameEn}
+                    </AppText>
+                    <AppText variant="label" color={locked ? colors.warn : colors.brandInk} numberOfLines={1}>
+                      {locked ? t('rewards.pointsToGo', { n: r.cost - userPoints }) : `${r.cost} ${t('common.points')}`}
+                    </AppText>
+                  </View>
                 </View>
-                <CircleButton
-                  icon={locked ? 'lock-closed' : isRTL ? 'chevron-back' : 'chevron-forward'}
-                  size={38}
-                  tone="light"
-                  onPress={() => router.push(`/rewards/${r.id}`)}
-                />
-              </Row>
-            </Pressable>
-          );
-        })}
-      </View>
+              </Pressable>
+            );
+          })}
+        </Row>
       </ScrollView>
     </View>
   );

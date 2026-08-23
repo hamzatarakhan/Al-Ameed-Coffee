@@ -14,6 +14,7 @@ const dict = {
     seeAll: { ar: 'عرض الكل', en: 'See all' },
     points: { ar: 'نقطة', en: 'points' },
     done: { ar: 'تم', en: 'Done' },
+    cancel: { ar: 'إلغاء', en: 'Cancel' },
   },
   tabs: {
     home: { ar: 'الهوم', en: 'Home' },
@@ -150,6 +151,8 @@ const dict = {
     thanks: { ar: 'نشكر تسوقكم معنا.', en: 'Thanks for shopping with us.' },
     total: { ar: 'المبلغ النهائي', en: 'Total' },
     placeOrder: { ar: 'أطلب الآن', en: 'Place order' },
+    confirmTitle: { ar: 'تأكيد الدفع', en: 'Confirm payment' },
+    confirmPay: { ar: 'تأكيد ودفع {price} د.أ', en: 'Confirm & pay JD {price}' },
   },
   checkin: {
     title: { ar: 'Check In', en: 'Check In' },

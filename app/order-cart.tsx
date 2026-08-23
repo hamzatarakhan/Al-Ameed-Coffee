@@ -12,6 +12,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { RewardMedia } from '@/components/RewardMedia';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { SuccessModal } from '@/components/SuccessModal';
+import { BottomSheet } from '@/components/BottomSheet';
 import { colors, radius, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useOrderCart } from '@/lib/order-cart';
@@ -24,6 +25,7 @@ export default function OrderCartScreen() {
   const { quantities, setQty, totalPrice, paymentMethod, setPaymentMethod, fulfillment, branchId, addresses, addressId, placeOrder, clear } =
     useOrderCart();
   const [noCallConfirm, setNoCallConfirm] = useState(false);
+  const [confirmVisible, setConfirmVisible] = useState(false);
   const [success, setSuccess] = useState(false);
   const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
   // Captured at the moment of placing — placeOrder() resets the selection
@@ -39,6 +41,7 @@ export default function OrderCartScreen() {
   const canOrder = items.length > 0 && (fulfillment === 'pickup' ? !!branch : !!address);
 
   const submitOrder = () => {
+    setConfirmVisible(false);
     setPlacedSummary({
       fulfillment,
       location: fulfillment === 'pickup' ? (branch ? (lang === 'ar' ? branch.nameAr : branch.nameEn) : '') : address ? address.line : '',
@@ -241,7 +244,7 @@ export default function OrderCartScreen() {
         <Button
           label={t('orderCart.placeOrder')}
           trailing={t('menu.price', { price: totalPrice.toFixed(2) })}
-          onPress={submitOrder}
+          onPress={() => setConfirmVisible(true)}
           disabled={!canOrder}
           style={{ flex: 1 }}
         />
@@ -251,6 +254,52 @@ export default function OrderCartScreen() {
           <Ionicons name="trash-outline" size={20} color={colors.critical} />
         </Pressable>
       </Row>
+
+      <BottomSheet visible={confirmVisible} onClose={() => setConfirmVisible(false)}>
+        <View
+          style={{
+            backgroundColor: colors.surface,
+            padding: space.lg,
+            paddingBottom: insets.bottom + space.md,
+            borderTopLeftRadius: radius.xl,
+            borderTopRightRadius: radius.xl,
+            gap: space.md,
+          }}>
+          <View style={{ width: 40, height: 4, borderRadius: 2, backgroundColor: colors.border, alignSelf: 'center' }} />
+          <AppText variant="h2">{t('orderCart.confirmTitle')}</AppText>
+
+          <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+            <AppText variant="muted">{t('orderCart.paymentMethod')}</AppText>
+            <Row style={{ alignItems: 'center', gap: space.xs }}>
+              <Ionicons name={paymentMethod === 'cash' ? 'cash-outline' : 'card-outline'} size={16} color={colors.brandInk} />
+              <AppText variant="bodySemiBold">{paymentMethod === 'cash' ? t('orderCart.cash') : t('orderCart.card')}</AppText>
+            </Row>
+          </Row>
+
+          <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+            <AppText variant="muted">{fulfillment === 'pickup' ? t('orderCart.branchPickup') : t('order.delivery')}</AppText>
+            <AppText variant="bodySemiBold" numberOfLines={1} style={{ maxWidth: '60%' }}>
+              {fulfillment === 'pickup' ? (branch ? (lang === 'ar' ? branch.nameAr : branch.nameEn) : '') : address ? address.line : ''}
+            </AppText>
+          </Row>
+
+          <View style={{ height: 1, backgroundColor: colors.border }} />
+
+          <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+            <AppText variant="bodySemiBold">{t('orderCart.total')}</AppText>
+            <AppText variant="mono" color={colors.brandInk} style={{ fontSize: 20, lineHeight: 26 }}>
+              {t('menu.price', { price: totalPrice.toFixed(2) })}
+            </AppText>
+          </Row>
+
+          <Button
+            label={t('orderCart.confirmPay', { price: totalPrice.toFixed(2) })}
+            onPress={submitOrder}
+            style={{ marginTop: space.sm }}
+          />
+          <Button label={t('common.cancel')} variant="ghost" onPress={() => setConfirmVisible(false)} />
+        </View>
+      </BottomSheet>
 
       <SuccessModal
         visible={success}

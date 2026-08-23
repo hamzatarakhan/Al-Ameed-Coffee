@@ -141,12 +141,12 @@ export default function HomeScreen() {
             style={{ position: 'absolute', top: -30, [isRTL ? 'left' : 'right']: -30 }}
           />
 
-          <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: space.lg }}>
+          <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: space.sm }}>
             <View>
               <AppText variant="muted" color="rgba(255,255,255,0.8)">
                 {t('home.yourPoints')}
               </AppText>
-              <AppText variant="display" color={colors.white} style={{ fontSize: 42, lineHeight: 56 }}>
+              <AppText variant="display" color={colors.white} style={{ fontSize: 42, lineHeight: 46 }}>
                 {userPoints}
               </AppText>
             </View>

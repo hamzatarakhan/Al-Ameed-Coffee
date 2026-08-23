@@ -6,8 +6,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
-import { QrGlyph } from '@/components/QrGlyph';
-import { colors, radius, space } from '@/lib/theme';
+import { QrScannerCard } from '@/components/QrScannerCard';
+import { colors, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
 import { usePoints, CHECKIN_POINTS } from '@/lib/points-store';
@@ -33,27 +33,24 @@ export default function CheckinScreen() {
         {t('checkin.instruction')}
       </AppText>
 
-      <View
-        style={{
-          width: 220,
-          height: 220,
-          borderRadius: radius.lg,
-          backgroundColor: colors.surface,
-          borderWidth: 1,
-          borderColor: colors.border,
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: space.xxl,
-        }}>
-        {scanned ? (
-          <Animated.View entering={FadeIn.duration(180)} style={{ alignItems: 'center', gap: space.sm }}>
-            <Ionicons name="checkmark-circle" size={56} color={colors.good} />
-            <AppText variant="h2">{t('checkin.scanned')}</AppText>
-            <AppText variant="muted">{t('checkin.earned', { n: CHECKIN_POINTS })}</AppText>
-          </Animated.View>
-        ) : (
-          <QrGlyph />
-        )}
+      <View style={{ marginBottom: space.xxl }}>
+        <QrScannerCard
+          size={220}
+          scanned={scanned}
+          scannedContent={
+            <Animated.View entering={FadeIn.duration(180)} style={{ alignItems: 'center', gap: space.sm }}>
+              <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center' }}>
+                <Ionicons name="checkmark" size={28} color={colors.good} />
+              </View>
+              <AppText variant="h2" color={colors.white}>
+                {t('checkin.scanned')}
+              </AppText>
+              <AppText variant="muted" color="rgba(255,255,255,0.8)">
+                {t('checkin.earned', { n: CHECKIN_POINTS })}
+              </AppText>
+            </Animated.View>
+          }
+        />
       </View>
 
       <Button
