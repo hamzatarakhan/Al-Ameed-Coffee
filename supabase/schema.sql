@@ -206,11 +206,13 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.profiles (id, phone, email, referral_code)
+  -- Not new.email: when phone auth is simulated via a synthetic
+  -- email+password (see lib/auth-store.tsx), auth.users.email is an
+  -- internal placeholder, not a real address to show anywhere.
+  insert into public.profiles (id, phone, referral_code)
   values (
     new.id,
     new.phone,
-    new.email,
     'AMEED-' || upper(substring(new.id::text, 1, 6))
   );
 
