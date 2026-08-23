@@ -39,8 +39,8 @@ export default function OtpScreen() {
     return () => clearTimeout(timer);
   }, [secondsLeft]);
 
-  const verify = (value: string) => {
-    if (auth.verifyOtp(value)) {
+  const verify = async (value: string) => {
+    if (await auth.verifyOtp(value)) {
       setError(undefined);
       // No explicit navigation needed — AppShell swaps stacks the moment
       // auth.status changes.

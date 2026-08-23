@@ -1,18 +1,12 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import type { Session } from '@supabase/supabase-js';
+import { supabase } from './supabase';
+import { phoneAuthCredentials } from './phone-auth';
 
-// ponytail: no real backend/SMS provider yet, so this is a working demo auth
-// flow (any 4-digit code passes) instead of a real one. Swap
-// startAuth/verifyOtp's bodies for real API calls once the backend exists —
-// every screen already calls through this hook, not fetch directly.
-
-// signedOut -> needsProfile (first successful OTP only) -> signedIn.
-// There's no backend to say whether a phone number is already
-// registered, so "new vs. returning" isn't a real signal here — the
-// login/signup screens are functionally identical either way. What
-// actually gates the profile-completion step is whether it's ever been
-// finished before (profileCompleted), not which screen you tapped
-// through. Apple sign-in skips straight to signedIn since its own
-// sheet is the verification step.
+// signedOut -> needsProfile (first successful "OTP" only) -> signedIn.
+// profiles.profile_completed (not "is name_ar set") is what gates the
+// needsProfile step, so a user who taps "Skip for now" doesn't get
+// bounced back to complete-profile on every future launch.
 export type AuthStatus = 'signedOut' | 'needsProfile' | 'signedIn';
 
 interface AuthValue {
@@ -20,50 +14,97 @@ interface AuthValue {
   pendingPhone: string | null;
   pendingName: string | null;
   startAuth: (phone: string, isNewAccount?: boolean, name?: string) => void;
-  verifyOtp: (code: string) => boolean;
-  completeProfile: () => void;
+  verifyOtp: (code: string) => Promise<boolean>;
+  completeProfile: () => Promise<void>;
   signInWithApple: () => void;
   signOut: () => void;
-  deleteAccount: () => void;
+  deleteAccount: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthValue | null>(null);
+
+async function statusForSession(session: Session): Promise<AuthStatus> {
+  const { data } = await supabase.from('profiles').select('profile_completed').eq('id', session.user.id).maybeSingle();
+  return data?.profile_completed ? 'signedIn' : 'needsProfile';
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<AuthStatus>('signedOut');
   const [pendingPhone, setPendingPhone] = useState<string | null>(null);
   const [pendingName, setPendingName] = useState<string | null>(null);
-  const [profileCompleted, setProfileCompleted] = useState(false);
+
+  // Restores a real returning session (Supabase persists it in
+  // AsyncStorage) instead of always starting at the login screen —
+  // the whole point of moving off local-only mock state.
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) statusForSession(session).then(setStatus);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') setStatus('signedOut');
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   const startAuth = (phone: string, _isNewAccount = false, name?: string) => {
     setPendingPhone(phone);
     setPendingName(name ?? null);
   };
 
-  const verifyOtp = (code: string) => {
-    const ok = /^\d{4}$/.test(code);
-    if (ok) setStatus(profileCompleted ? 'signedIn' : 'needsProfile');
-    return ok;
+  const verifyOtp = async (code: string) => {
+    if (!/^\d{4}$/.test(code) || !pendingPhone) return false;
+
+    const { email, password, canonicalPhone } = phoneAuthCredentials(pendingPhone);
+    let session = (await supabase.auth.signInWithPassword({ email, password })).data.session;
+
+    if (!session) {
+      // No account for this phone yet — the "OTP" just verified it well
+      // enough to create one.
+      const signUp = await supabase.auth.signUp({ email, password });
+      if (signUp.error || !signUp.data.session) return false;
+      session = signUp.data.session;
+      await supabase.from('profiles').update({ phone: canonicalPhone }).eq('id', session.user.id);
+    }
+
+    setStatus(await statusForSession(session));
+    return true;
   };
 
-  const completeProfile = () => {
-    setProfileCompleted(true);
+  const completeProfile = async () => {
+    const { data } = await supabase.auth.getUser();
+    if (data.user) await supabase.from('profiles').update({ profile_completed: true }).eq('id', data.user.id);
     setStatus('signedIn');
   };
 
-  // Apple's own sign-in sheet is the verification step — no separate OTP
-  // needed once it resolves successfully.
+  // Real Sign in with Apple needs the Apple provider configured in the
+  // Supabase dashboard (Services ID, Team ID, key) — a one-time setup
+  // step separate from anything in this file. Until then this mirrors
+  // the old mock behavior: Apple's own sheet resolving successfully is
+  // treated as "signed in," with no backend session behind it yet.
   const signInWithApple = () => setStatus('signedIn');
 
   const signOut = () => {
-    setStatus('signedOut');
+    supabase.auth.signOut();
     setPendingPhone(null);
   };
 
-  const deleteAccount = () => {
-    setStatus('signedOut');
+  const deleteAccount = async () => {
+    const { data } = await supabase.auth.getUser();
+    const userId = data.user?.id;
+    if (userId) {
+      // Row-level security only lets the anon-key client delete rows it
+      // owns, which covers everything except the auth.users row itself —
+      // that needs the service-role key (never shipped in the app), so a
+      // server-side function is the follow-up for full account deletion.
+      await Promise.all([
+        supabase.from('orders').delete().eq('user_id', userId),
+        supabase.from('addresses').delete().eq('user_id', userId),
+        supabase.from('redemptions').delete().eq('user_id', userId),
+        supabase.from('notifications').delete().eq('user_id', userId),
+      ]);
+    }
+    await supabase.auth.signOut();
     setPendingPhone(null);
-    setProfileCompleted(false);
   };
 
   return (

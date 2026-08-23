@@ -91,6 +91,11 @@ create table if not exists profiles (
   marital_status text check (marital_status in ('single', 'married', '')) default '',
   city text default '',
   area text default '',
+  -- Explicit flag, not derived from name_ar being non-empty — "Skip for
+  -- now" on the complete-profile screen leaves every field blank but
+  -- still counts as done, so a derived signal would keep bouncing a
+  -- skipped user back to that screen on every app launch.
+  profile_completed boolean not null default false,
   created_at timestamptz not null default now()
 );
 
