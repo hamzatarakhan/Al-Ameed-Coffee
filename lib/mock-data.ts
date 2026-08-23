@@ -81,6 +81,7 @@ export const rewards: Reward[] = [
     emoji: '☕',
     categoryAr: 'أدوات قهوة',
     categoryEn: 'Coffeeware',
+    image: require('../assets/images/reward-coasters.jpg'),
   },
   {
     id: 'backpack',
@@ -92,6 +93,7 @@ export const rewards: Reward[] = [
     emoji: '🎒',
     categoryAr: 'إكسسوارات',
     categoryEn: 'Accessories',
+    image: require('../assets/images/reward-backpack.jpg'),
   },
   {
     id: 'mug',
