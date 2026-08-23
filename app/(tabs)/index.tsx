@@ -146,7 +146,7 @@ export default function HomeScreen() {
               <AppText variant="muted" color="rgba(255,255,255,0.8)">
                 {t('home.yourPoints')}
               </AppText>
-              <AppText variant="display" color={colors.white} style={{ fontSize: 42, lineHeight: 46 }}>
+              <AppText variant="display" color={colors.white} style={{ fontSize: 42, lineHeight: 56 }}>
                 {userPoints}
               </AppText>
             </View>

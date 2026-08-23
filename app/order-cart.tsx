@@ -26,6 +26,7 @@ export default function OrderCartScreen() {
     useOrderCart();
   const [noCallConfirm, setNoCallConfirm] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
+  const [locationError, setLocationError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
   // Captured at the moment of placing — placeOrder() resets the selection
@@ -38,7 +39,16 @@ export default function OrderCartScreen() {
     .filter((x): x is { item: (typeof menuItems)[number]; qty: number } => !!x.item);
   const branch = branches.find((b) => b.id === branchId);
   const address = addresses.find((a) => a.id === addressId);
-  const canOrder = items.length > 0 && (fulfillment === 'pickup' ? !!branch : !!address);
+  const hasLocation = fulfillment === 'pickup' ? !!branch : !!address;
+
+  const attemptOrder = () => {
+    if (!hasLocation) {
+      setLocationError(true);
+      return;
+    }
+    setLocationError(false);
+    setConfirmVisible(true);
+  };
 
   const submitOrder = () => {
     setConfirmVisible(false);
@@ -56,6 +66,28 @@ export default function OrderCartScreen() {
     if (placedOrderId) router.push(`/order-status/${placedOrderId}` as Href);
   };
 
+  // Rendered regardless of the empty-cart branch below — placeOrder()
+  // clears the cart immediately, so by the time this re-renders with
+  // success=true, items.length is already back to 0. Gating the modal
+  // behind the non-empty branch meant it would set visible=true and then
+  // instantly get swapped out for the empty-cart screen before ever
+  // painting — the bug that made "no success message after paying" happen.
+  const successModal = (
+    <SuccessModal
+      visible={success}
+      title={t('orderBranch.successTitle')}
+      body={
+        placedSummary
+          ? placedSummary.fulfillment === 'pickup'
+            ? t('orderBranch.successBody', { branch: placedSummary.location })
+            : t('orderDelivery.successBody', { address: placedSummary.location })
+          : ''
+      }
+      doneLabel={t('orderStatus.viewOrder')}
+      onDone={finish}
+    />
+  );
+
   if (items.length === 0) {
     return (
       <View style={{ flex: 1, backgroundColor: colors.bg }}>
@@ -69,6 +101,7 @@ export default function OrderCartScreen() {
             onAction={() => router.push('/order-menu')}
           />
         </View>
+        {successModal}
       </View>
     );
   }
@@ -127,6 +160,7 @@ export default function OrderCartScreen() {
               onPress={() => router.push('/order-branch')}
               style={({ pressed }) => [
                 { backgroundColor: colors.hero, borderRadius: radius.lg, padding: space.lg },
+                locationError && !hasLocation && { borderWidth: 1.5, borderColor: colors.critical },
                 pressed && { opacity: 0.9 },
               ]}>
               <Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
@@ -146,6 +180,7 @@ export default function OrderCartScreen() {
               onPress={() => router.push('/order-delivery')}
               style={({ pressed }) => [
                 { backgroundColor: colors.hero, borderRadius: radius.lg, padding: space.lg },
+                locationError && !hasLocation && { borderWidth: 1.5, borderColor: colors.critical },
                 pressed && { opacity: 0.9 },
               ]}>
               <Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
@@ -161,6 +196,11 @@ export default function OrderCartScreen() {
               </Row>
             </Pressable>
           )}
+          {locationError && !hasLocation ? (
+            <AppText variant="label" color={colors.critical}>
+              {fulfillment === 'pickup' ? t('orderCart.branchRequired') : t('orderCart.addressRequired')}
+            </AppText>
+          ) : null}
         </View>
 
         <View style={{ gap: space.sm }}>
@@ -244,8 +284,7 @@ export default function OrderCartScreen() {
         <Button
           label={t('orderCart.placeOrder')}
           trailing={t('menu.price', { price: totalPrice.toFixed(2) })}
-          onPress={() => setConfirmVisible(true)}
-          disabled={!canOrder}
+          onPress={attemptOrder}
           style={{ flex: 1 }}
         />
         <Pressable
@@ -301,19 +340,7 @@ export default function OrderCartScreen() {
         </View>
       </BottomSheet>
 
-      <SuccessModal
-        visible={success}
-        title={t('orderBranch.successTitle')}
-        body={
-          placedSummary
-            ? placedSummary.fulfillment === 'pickup'
-              ? t('orderBranch.successBody', { branch: placedSummary.location })
-              : t('orderDelivery.successBody', { address: placedSummary.location })
-            : ''
-        }
-        doneLabel={t('orderStatus.viewOrder')}
-        onDone={finish}
-      />
+      {successModal}
     </View>
   );
 }

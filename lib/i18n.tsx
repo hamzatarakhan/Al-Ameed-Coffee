@@ -132,6 +132,7 @@ const dict = {
     building: { ar: 'رقم البناية', en: 'Building number' },
     buildingPlaceholder: { ar: 'مثال: 12أ، 96ب، إلخ', en: 'e.g. 12A, 96B, etc.' },
     floor: { ar: 'رقم الطابق', en: 'Floor number' },
+    required: { ar: 'هذا الحقل مطلوب', en: 'This field is required' },
     save: { ar: 'حفظ', en: 'Save' },
   },
   orderCart: {
@@ -153,6 +154,8 @@ const dict = {
     placeOrder: { ar: 'أطلب الآن', en: 'Place order' },
     confirmTitle: { ar: 'تأكيد الدفع', en: 'Confirm payment' },
     confirmPay: { ar: 'تأكيد ودفع {price} د.أ', en: 'Confirm & pay JD {price}' },
+    branchRequired: { ar: 'اختر فرع الاستلام للمتابعة', en: 'Choose a pickup branch to continue' },
+    addressRequired: { ar: 'اختر عنوان التوصيل للمتابعة', en: 'Choose a delivery address to continue' },
   },
   checkin: {
     title: { ar: 'Check In', en: 'Check In' },

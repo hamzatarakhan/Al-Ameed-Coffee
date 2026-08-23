@@ -25,10 +25,14 @@ export default function OrderAddressNewScreen() {
   const [area, setArea] = useState('');
   const [building, setBuilding] = useState('');
   const [floor, setFloor] = useState('');
+  const [attempted, setAttempted] = useState(false);
 
   const canSave = line.trim() && city && area.trim() && building.trim();
+  const requiredMsg = t('orderAddress.required');
 
   const save = () => {
+    setAttempted(true);
+    if (!canSave) return;
     addAddress({ type, line: line.trim(), city, area: area.trim(), building: building.trim(), floor: floor.trim() || undefined });
     router.back();
   };
@@ -47,15 +51,42 @@ export default function OrderAddressNewScreen() {
               { value: 'other', label: t('orderAddress.other') },
             ]}
           />
-          <Input label={t('orderAddress.addressLine')} value={line} onChangeText={setLine} placeholder={t('orderAddress.addressLinePlaceholder')} />
+          <Input
+            label={t('orderAddress.addressLine')}
+            required
+            value={line}
+            onChangeText={setLine}
+            placeholder={t('orderAddress.addressLinePlaceholder')}
+            error={attempted && !line.trim() ? requiredMsg : undefined}
+          />
           <View style={{ gap: 6 }}>
             <AppText variant="label" color={colors.textMuted}>
               {t('orderAddress.city')}
+              <AppText variant="label" color={colors.critical}> *</AppText>
             </AppText>
             <ChoiceChips value={city} onChange={setCity} options={jordanCities.map((c) => ({ value: c, label: c }))} />
+            {attempted && !city ? (
+              <AppText variant="label" color={colors.critical}>
+                {requiredMsg}
+              </AppText>
+            ) : null}
           </View>
-          <Input label={t('orderAddress.area')} value={area} onChangeText={setArea} placeholder={t('orderAddress.areaPlaceholder')} />
-          <Input label={t('orderAddress.building')} value={building} onChangeText={setBuilding} placeholder={t('orderAddress.buildingPlaceholder')} />
+          <Input
+            label={t('orderAddress.area')}
+            required
+            value={area}
+            onChangeText={setArea}
+            placeholder={t('orderAddress.areaPlaceholder')}
+            error={attempted && !area.trim() ? requiredMsg : undefined}
+          />
+          <Input
+            label={t('orderAddress.building')}
+            required
+            value={building}
+            onChangeText={setBuilding}
+            placeholder={t('orderAddress.buildingPlaceholder')}
+            error={attempted && !building.trim() ? requiredMsg : undefined}
+          />
           <Input label={t('orderAddress.floor')} value={floor} onChangeText={setFloor} keyboardType="number-pad" />
         </ScrollView>
         <View
@@ -66,7 +97,7 @@ export default function OrderAddressNewScreen() {
             borderTopWidth: 1,
             borderTopColor: colors.border,
           }}>
-          <Button label={t('orderAddress.save')} onPress={save} disabled={!canSave} />
+          <Button label={t('orderAddress.save')} onPress={save} />
         </View>
       </KeyboardAvoidingView>
     </View>

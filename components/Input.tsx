@@ -7,9 +7,10 @@ import { useLang } from '@/lib/i18n';
 interface Props extends TextInputProps {
   label?: string;
   error?: string;
+  required?: boolean;
 }
 
-export function Input({ label, error, style, onFocus, onBlur, ...rest }: Props) {
+export function Input({ label, error, required, style, onFocus, onBlur, ...rest }: Props) {
   const { isRTL } = useLang();
   const [focused, setFocused] = useState(false);
 
@@ -18,6 +19,7 @@ export function Input({ label, error, style, onFocus, onBlur, ...rest }: Props) 
       {label ? (
         <AppText variant="label" color={colors.textMuted}>
           {label}
+          {required ? <AppText variant="label" color={colors.critical}> *</AppText> : null}
         </AppText>
       ) : null}
       <TextInput
