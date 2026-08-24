@@ -228,7 +228,7 @@ begin
   );
 
   insert into public.points_transactions (user_id, label_ar, label_en, points)
-  values (new.id, 'هدية التسجيل', 'Registration Gift', 20);
+  values (new.id, 'هدية التسجيل', 'Registration Gift', 300);
 
   return new;
 end;

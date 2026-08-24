@@ -5,13 +5,15 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
+import { Card } from '@/components/Card';
+import { ProgressBar } from '@/components/ProgressBar';
 import { RewardMedia } from '@/components/RewardMedia';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { colors, lightColors, radius, shadow, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
 import { usePoints } from '@/lib/points-store';
-import { rewards } from '@/lib/mock-data';
+import { rewards, getNextReward } from '@/lib/mock-data';
 
 type Sort = 'affordable' | 'cost';
 const GRID_GAP = space.md;
@@ -25,6 +27,7 @@ export default function RewardsGalleryScreen() {
   const [sort, setSort] = useState<Sort>('affordable');
 
   const cardWidth = (width - space.lg * 2 - GRID_GAP) / 2;
+  const nextReward = getNextReward(userPoints);
 
   const sorted = useMemo(() => {
     const list = [...rewards];
@@ -44,6 +47,19 @@ export default function RewardsGalleryScreen() {
           pushed a stack entry. So this back explicitly targets Home. */}
       <ScreenHeader title={t('rewards.title')} onBack={() => router.push('/')} />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: space.lg, paddingHorizontal: space.lg, paddingBottom: space.xxxl + tabBarInset }}>
+        <Card style={{ marginBottom: space.lg, gap: space.sm }}>
+          <Row style={{ justifyContent: 'space-between', alignItems: 'flex-end' }}>
+            <AppText variant="muted">{t('points.balance')}</AppText>
+            <AppText variant="display" style={{ fontSize: 28, lineHeight: 34 }}>
+              {userPoints}
+            </AppText>
+          </Row>
+          <ProgressBar value={userPoints} max={nextReward.cost} />
+          <AppText variant="label" color={colors.textMuted}>
+            {t('rewards.pointsToGo', { n: Math.max(0, nextReward.cost - userPoints) })} · {t('points.nextReward', { name: lang === 'ar' ? nextReward.nameAr : nextReward.nameEn })}
+          </AppText>
+        </Card>
+
         <Row style={{ gap: space.sm, marginBottom: space.lg }}>
           <SortChip active={sort === 'affordable'} label={t('rewards.sortAffordable')} onPress={() => setSort('affordable')} />
           <SortChip active={sort === 'cost'} label={t('rewards.sortCost')} onPress={() => setSort('cost')} />
