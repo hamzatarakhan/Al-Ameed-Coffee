@@ -43,8 +43,18 @@ export function PointsProvider({ children }: { children: React.ReactNode }) {
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
 
   const refresh = useCallback(async () => {
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData.user?.id;
+    if (!userId) return;
+
+    // Filtered explicitly, not just trusting RLS through the view — a
+    // plain Postgres view runs as its owner (bypassing the underlying
+    // table's RLS) unless created with security_invoker, so without this
+    // filter the query returned every user's balance row instead of just
+    // this one. supabase/schema.sql now creates the view with
+    // security_invoker too, but this filter is correct either way.
     const [balanceRes, txRes, redemptionRes] = await Promise.all([
-      supabase.from('user_points_balance').select('balance').maybeSingle(),
+      supabase.from('user_points_balance').select('balance').eq('user_id', userId).maybeSingle(),
       supabase.from('points_transactions').select('*').order('created_at', { ascending: false }),
       supabase.from('redemptions').select('*').order('created_at', { ascending: false }),
     ]);

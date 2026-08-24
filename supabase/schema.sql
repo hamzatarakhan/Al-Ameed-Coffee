@@ -196,7 +196,13 @@ drop policy if exists "own notifications only" on notifications;
 create policy "own notifications only" on notifications for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 -- Derived, always-correct points balance — never trust a stored counter.
-create or replace view user_points_balance as
+-- security_invoker: a plain view runs queries as its OWNER by default
+-- (the role that ran this script, e.g. postgres), which bypasses RLS on
+-- points_transactions entirely and returns every user's balance row
+-- instead of just the caller's. security_invoker makes it run as the
+-- querying role instead, so RLS applies normally.
+create or replace view user_points_balance
+  with (security_invoker = true) as
   select user_id, coalesce(sum(points), 0)::integer as balance
   from points_transactions
   group by user_id;
