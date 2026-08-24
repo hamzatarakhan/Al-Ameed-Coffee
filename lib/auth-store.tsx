@@ -24,7 +24,8 @@ interface AuthValue {
 const AuthContext = createContext<AuthValue | null>(null);
 
 async function statusForSession(session: Session): Promise<AuthStatus> {
-  const { data } = await supabase.from('profiles').select('profile_completed').eq('id', session.user.id).maybeSingle();
+  const { data, error } = await supabase.from('profiles').select('profile_completed').eq('id', session.user.id).maybeSingle();
+  if (error) console.error('[auth] profile lookup failed:', error);
   return data?.profile_completed ? 'signedIn' : 'needsProfile';
 }
 
@@ -61,9 +62,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // No account for this phone yet — the "OTP" just verified it well
       // enough to create one.
       const signUp = await supabase.auth.signUp({ email, password });
-      if (signUp.error || !signUp.data.session) return false;
+      if (signUp.error || !signUp.data.session) {
+        console.error('[auth] signUp failed:', signUp.error);
+        return false;
+      }
       session = signUp.data.session;
-      await supabase.from('profiles').update({ phone: canonicalPhone }).eq('id', session.user.id);
+      const { error: profileError } = await supabase.from('profiles').update({ phone: canonicalPhone }).eq('id', session.user.id);
+      if (profileError) console.error('[auth] profile phone update failed:', profileError);
     }
 
     setStatus(await statusForSession(session));
