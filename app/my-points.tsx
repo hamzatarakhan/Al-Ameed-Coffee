@@ -7,6 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { AppText } from '@/components/AppText';
 import { Row } from '@/components/Row';
 import { Card } from '@/components/Card';
+import { Button } from '@/components/Button';
 import { StatTile } from '@/components/StatTile';
 import { ProgressBar } from '@/components/ProgressBar';
 import { EmptyState } from '@/components/EmptyState';
@@ -24,7 +25,7 @@ export default function MyPointsScreen() {
   const router = useRouter();
   const { pastOrders } = useOrderCart();
   const { openSheet } = useOrderSheet();
-  const { userPoints, transactions, redemptions } = usePoints();
+  const { userPoints, transactions, redemptions, addTestPoints } = usePoints();
   const cheapest = getNextReward(userPoints);
   // Real transaction ids are Supabase UUIDs (no stable prefix to match on),
   // so this counts by the check-in label instead — always 'تسجيل حضور',
@@ -65,6 +66,11 @@ export default function MyPointsScreen() {
             </Row>
           </LinearGradient>
         </Pressable>
+
+        {/* ponytail: temporary demo button so points/rewards can be tested
+            without waiting on real earning flows — remove once those are
+            trusted end to end. */}
+        <Button label={t('points.testAddPoints')} variant="secondary" onPress={addTestPoints} style={{ marginBottom: space.lg }} />
 
         <Card style={{ marginBottom: space.lg }}>
           <Row>

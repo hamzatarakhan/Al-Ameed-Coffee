@@ -11,6 +11,9 @@ interface PointsValue {
   redemptions: Redemption[];
   redeem: (reward: Reward, qty: number) => void;
   checkin: () => void;
+  // ponytail: temporary demo-only button (see app/my-points.tsx) — remove
+  // this and its button once real earning flows are trusted end to end.
+  addTestPoints: () => void;
 }
 
 const PointsContext = createContext<PointsValue | null>(null);
@@ -102,7 +105,15 @@ export function PointsProvider({ children }: { children: React.ReactNode }) {
     refresh();
   }, [refresh]);
 
-  return <PointsContext.Provider value={{ userPoints, transactions, redemptions, redeem, checkin }}>{children}</PointsContext.Provider>;
+  const addTestPoints = useCallback(async () => {
+    const { error } = await supabase.rpc('checkin', { p_label_ar: 'نقاط تجريبية', p_label_en: 'Test points', p_points: 100 });
+    if (error) console.error('[points] addTestPoints failed:', error);
+    refresh();
+  }, [refresh]);
+
+  return (
+    <PointsContext.Provider value={{ userPoints, transactions, redemptions, redeem, checkin, addTestPoints }}>{children}</PointsContext.Provider>
+  );
 }
 
 export function usePoints() {

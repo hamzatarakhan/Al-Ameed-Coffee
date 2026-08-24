@@ -65,6 +65,7 @@ const dict = {
     earnCheckin: { ar: 'سجّل حضورك بأي فرع', en: 'Check in at any branch' },
     earnOrder: { ar: 'اطلب من التطبيق', en: 'Order through the app' },
     earnInvite: { ar: 'ادعُ أصدقاءك', en: 'Invite friends' },
+    testAddPoints: { ar: 'إضافة 100 نقطة (تجريبي)', en: 'Add 100 points (test)' },
     redeemedStat: { ar: 'مستبدلة', en: 'Redeemed' },
     visitsStat: { ar: 'زيارات', en: 'Visits' },
     expiredStat: { ar: 'منتهية', en: 'Expired' },
