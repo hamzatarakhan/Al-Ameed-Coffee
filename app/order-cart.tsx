@@ -50,13 +50,13 @@ export default function OrderCartScreen() {
     setConfirmVisible(true);
   };
 
-  const submitOrder = () => {
+  const submitOrder = async () => {
     setConfirmVisible(false);
     setPlacedSummary({
       fulfillment,
       location: fulfillment === 'pickup' ? (branch ? (lang === 'ar' ? branch.nameAr : branch.nameEn) : '') : address ? address.line : '',
     });
-    setPlacedOrderId(placeOrder());
+    setPlacedOrderId(await placeOrder());
     setSuccess(true);
   };
 

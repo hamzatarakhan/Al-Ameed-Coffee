@@ -26,7 +26,10 @@ export default function MyPointsScreen() {
   const { openSheet } = useOrderSheet();
   const { userPoints, transactions, redemptions } = usePoints();
   const cheapest = getNextReward(userPoints);
-  const checkinCount = transactions.filter((tx) => tx.id.startsWith('tx-checkin')).length;
+  // Real transaction ids are Supabase UUIDs (no stable prefix to match on),
+  // so this counts by the check-in label instead — always 'تسجيل حضور',
+  // set by points-store.tsx's checkin().
+  const checkinCount = transactions.filter((tx) => tx.labelAr.startsWith('تسجيل حضور')).length;
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>

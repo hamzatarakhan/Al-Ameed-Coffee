@@ -1,12 +1,7 @@
-import React, { createContext, useCallback, useContext, useState } from 'react';
-import {
-  transactions as initialTransactions,
-  redemptions as initialRedemptions,
-  userPoints as initialUserPoints,
-  type Transaction,
-  type Redemption,
-  type Reward,
-} from './mock-data';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { supabase } from './supabase';
+import { useAuth } from './auth-store';
+import type { Transaction, Redemption, Reward } from './mock-data';
 
 export const CHECKIN_POINTS = 10;
 
@@ -20,33 +15,82 @@ interface PointsValue {
 
 const PointsContext = createContext<PointsValue | null>(null);
 
+function txFromRow(row: Record<string, unknown>): Transaction {
+  return {
+    id: row.id as string,
+    labelAr: row.label_ar as string,
+    labelEn: row.label_en as string,
+    points: row.points as number,
+    date: (row.created_at as string).slice(0, 10),
+  };
+}
+
+function redemptionFromRow(row: Record<string, unknown>): Redemption {
+  return {
+    id: row.id as string,
+    nameAr: row.name_ar as string,
+    nameEn: row.name_en as string,
+    emoji: row.emoji as string,
+    ref: row.ref as string,
+    date: (row.created_at as string).slice(0, 10),
+  };
+}
+
 export function PointsProvider({ children }: { children: React.ReactNode }) {
-  const [userPoints, setUserPoints] = useState(initialUserPoints);
-  const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
-  const [redemptions, setRedemptions] = useState<Redemption[]>(initialRedemptions);
+  const { status } = useAuth();
+  const [userPoints, setUserPoints] = useState(0);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [redemptions, setRedemptions] = useState<Redemption[]>([]);
 
-  const redeem = useCallback((reward: Reward, qty: number) => {
-    const cost = reward.cost * qty;
-    const date = new Date().toISOString().slice(0, 10);
-    setUserPoints((p) => p - cost);
-    setTransactions((prev) => [
-      { id: `tx-redeem-${Date.now()}`, labelAr: `استبدال: ${reward.nameAr}`, labelEn: `Redeemed: ${reward.nameEn}`, points: -cost, date },
-      ...prev,
+  const refresh = useCallback(async () => {
+    const [balanceRes, txRes, redemptionRes] = await Promise.all([
+      supabase.from('user_points_balance').select('balance').maybeSingle(),
+      supabase.from('points_transactions').select('*').order('created_at', { ascending: false }),
+      supabase.from('redemptions').select('*').order('created_at', { ascending: false }),
     ]);
-    setRedemptions((prev) => [
-      { id: `redeem-${Date.now()}`, nameAr: reward.nameAr, nameEn: reward.nameEn, emoji: reward.emoji, ref: `RD-${Math.floor(10000 + Math.random() * 90000)}`, date },
-      ...prev,
-    ]);
+    if (balanceRes.error) console.error('[points] balance fetch failed:', balanceRes.error);
+    if (txRes.error) console.error('[points] transactions fetch failed:', txRes.error);
+    if (redemptionRes.error) console.error('[points] redemptions fetch failed:', redemptionRes.error);
+    setUserPoints((balanceRes.data?.balance as number) ?? 0);
+    setTransactions((txRes.data ?? []).map(txFromRow));
+    setRedemptions((redemptionRes.data ?? []).map(redemptionFromRow));
   }, []);
 
-  const checkin = useCallback(() => {
-    const date = new Date().toISOString().slice(0, 10);
-    setUserPoints((p) => p + CHECKIN_POINTS);
-    setTransactions((prev) => [
-      { id: `tx-checkin-${Date.now()}`, labelAr: 'تسجيل حضور', labelEn: 'Check-in', points: CHECKIN_POINTS, date },
-      ...prev,
-    ]);
-  }, []);
+  // Reloads whenever auth status changes, same as profile-store.tsx — covers
+  // both "just signed in" and "app relaunched with an existing session".
+  useEffect(() => {
+    if (status !== 'signedIn') {
+      setUserPoints(0);
+      setTransactions([]);
+      setRedemptions([]);
+      return;
+    }
+    refresh();
+  }, [status, refresh]);
+
+  // The redeem_reward RPC only spends one reward's cost per call (see
+  // supabase/schema.sql) — qty > 1 just calls it that many times. Each call
+  // re-checks the balance server-side, so this can't overspend even if a
+  // later call in the loop fails.
+  const redeem = useCallback(
+    async (reward: Reward, qty: number) => {
+      for (let i = 0; i < qty; i++) {
+        const { error } = await supabase.rpc('redeem_reward', { p_reward_id: reward.id });
+        if (error) {
+          console.error('[points] redeem_reward failed:', error);
+          break;
+        }
+      }
+      refresh();
+    },
+    [refresh]
+  );
+
+  const checkin = useCallback(async () => {
+    const { error } = await supabase.rpc('checkin', { p_label_ar: 'تسجيل حضور', p_label_en: 'Check-in', p_points: CHECKIN_POINTS });
+    if (error) console.error('[points] checkin failed:', error);
+    refresh();
+  }, [refresh]);
 
   return <PointsContext.Provider value={{ userPoints, transactions, redemptions, redeem, checkin }}>{children}</PointsContext.Provider>;
 }

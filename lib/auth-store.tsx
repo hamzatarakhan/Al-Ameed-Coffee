@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from './supabase';
-import { phoneAuthCredentials } from './phone-auth';
+import { normalizeJordanPhone } from './phone';
 
 // signedOut -> needsProfile (first successful "OTP" only) -> signedIn.
 // profiles.profile_completed (not "is name_ar set") is what gates the
@@ -55,21 +55,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const verifyOtp = async (code: string) => {
     if (!/^\d{4}$/.test(code) || !pendingPhone) return false;
 
-    const { email, password, canonicalPhone } = phoneAuthCredentials(pendingPhone);
-    let session = (await supabase.auth.signInWithPassword({ email, password })).data.session;
+    // The synthetic-email-account approach (phone -> fixed email+password)
+    // depended on Supabase's shared/free email service for signUp, which
+    // turned out to hit that service's own low rate limit even with
+    // "Confirm email" disabled — a live device test caught this before it
+    // shipped further. Anonymous Auth sends no email/SMS at all, so there's
+    // no quota to hit. Trade-off: identity is per-device, not per-phone —
+    // signing out (or a fresh install) starts a new anonymous account with
+    // no link back to the old one's data. Acceptable for now; revisit once
+    // a paid SMS provider makes real phone auth worth wiring in.
+    const { data: { session: existing } } = await supabase.auth.getSession();
+    let session = existing;
 
     if (!session) {
-      // No account for this phone yet — the "OTP" just verified it well
-      // enough to create one.
-      const signUp = await supabase.auth.signUp({ email, password });
-      if (signUp.error || !signUp.data.session) {
-        console.error('[auth] signUp failed:', signUp.error);
+      const { data, error } = await supabase.auth.signInAnonymously();
+      if (error || !data.session) {
+        console.error('[auth] signInAnonymously failed:', error);
         return false;
       }
-      session = signUp.data.session;
-      const { error: profileError } = await supabase.from('profiles').update({ phone: canonicalPhone }).eq('id', session.user.id);
-      if (profileError) console.error('[auth] profile phone update failed:', profileError);
+      session = data.session;
     }
+
+    const canonicalPhone = `+962 ${normalizeJordanPhone(pendingPhone)}`;
+    const { error: profileError } = await supabase.from('profiles').update({ phone: canonicalPhone }).eq('id', session.user.id);
+    if (profileError) console.error('[auth] profile phone update failed:', profileError);
 
     setStatus(await statusForSession(session));
     return true;
