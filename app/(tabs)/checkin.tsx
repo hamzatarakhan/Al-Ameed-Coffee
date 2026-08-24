@@ -16,7 +16,7 @@ export default function CheckinScreen() {
   const { t } = useLang();
   const insets = useSafeAreaInsets();
   const tabBarInset = useTabBarInset();
-  const { checkin } = usePoints();
+  const { checkin, addTestPoints } = usePoints();
   const [scanned, setScanned] = useState(false);
 
   const toggle = () => {
@@ -59,6 +59,10 @@ export default function CheckinScreen() {
         onPress={toggle}
         style={{ width: '100%' }}
       />
+
+      {/* ponytail: temporary demo button (see lib/points-store.tsx) —
+          remove once real earning flows are trusted end to end. */}
+      <Button label={t('points.testAddPoints')} variant="secondary" onPress={addTestPoints} style={{ width: '100%', marginTop: space.sm }} />
     </View>
   );
 }
