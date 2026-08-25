@@ -85,6 +85,7 @@ export default function OrderCartScreen() {
       }
       doneLabel={t('orderStatus.viewOrder')}
       onDone={finish}
+      celebrate
     />
   );
 

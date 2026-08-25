@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, StyleSheet, ViewStyle } from 'react-nativ
 import { AppText } from './AppText';
 import { Row } from './Row';
 import { colors, radius, space } from '@/lib/theme';
+import { playTap } from '@/lib/sound';
 
 type Variant = 'primary' | 'secondary' | 'ghost';
 
@@ -23,7 +24,14 @@ export function Button({ label, onPress, variant = 'primary', loading, disabled,
     <Pressable
       accessibilityRole="button"
       accessibilityState={{ disabled: isDisabled }}
-      onPress={isDisabled ? undefined : onPress}
+      onPress={
+        isDisabled
+          ? undefined
+          : () => {
+              playTap();
+              onPress?.();
+            }
+      }
       hitSlop={8}
       style={({ pressed }) => [
         styles.base,

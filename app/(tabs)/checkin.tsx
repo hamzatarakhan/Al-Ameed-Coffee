@@ -11,6 +11,7 @@ import { colors, space } from '@/lib/theme';
 import { useLang } from '@/lib/i18n';
 import { useTabBarInset } from '@/lib/useTabBarInset';
 import { usePoints, CHECKIN_POINTS } from '@/lib/points-store';
+import { playSuccess } from '@/lib/sound';
 
 export default function CheckinScreen() {
   const { t } = useLang();
@@ -20,7 +21,10 @@ export default function CheckinScreen() {
   const [scanned, setScanned] = useState(false);
 
   const toggle = () => {
-    if (!scanned) checkin();
+    if (!scanned) {
+      checkin();
+      playSuccess();
+    }
     setScanned((s) => !s);
   };
 
