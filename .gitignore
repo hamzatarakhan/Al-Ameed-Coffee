@@ -41,7 +41,7 @@ app-example
 # generated native folders
 /ios
 /android
-expo-start.log
+expo-*.log
 
 # Supabase CLI local cache
 supabase/.temp/
