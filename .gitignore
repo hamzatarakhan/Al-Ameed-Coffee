@@ -45,3 +45,4 @@ expo-*.log
 
 # Supabase CLI local cache
 supabase/.temp/
+.env
